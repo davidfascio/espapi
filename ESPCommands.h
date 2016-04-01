@@ -8,7 +8,11 @@
 #ifndef __ESP_COMMANDS_H__
 #define	__ESP_COMMANDS_H__
 
-/*Local READ Command Types*/
+
+//******************************************************************************
+// Local READ Command Types
+//******************************************************************************
+
 #define READMODE_VERSION_COOR_LOCAL                                 0x40
 #define ZBEE_GRAL_CMD                                               0x41
 #define RESET_COOR_LCL                                              0x22
@@ -33,6 +37,25 @@
 #define READ_MODE_UPDATE_RLY_REMOTE                                 0x36
 #define READ_MODE_ANALOG_REMOTE                                     0x3A
 #define READ_MODE_UPDATE_RLY_ANALOG_REMOTE                          0x3D
+
+
+
+//******************************************************************************
+// Local Buffer Commands
+//******************************************************************************
+
+#define BUFFERMODE_READ_TEMPORAL_BUFFER                             0x33
+#define BUFFERMODE_READ_DEVICES_ZBEE_BUFFER                         0x31
+#define BUFFERMODE_READ_ALL_MTR_READINGS_BUFFER                     0x32
+#define BUFFERMODE_READ_TEMPORAL_BUFFER                             0x33
+#define BUFFERMODE_READ_ALL_MTR_MACS_BUFFER                         0x30
+#define BUFFERMODE_READ_ALL_SHORTS_MACS_TYPES_BUFFER                0x3E
+#define DEL_METERS_TABLE                                            0x34
+#define DEL_DEVICES_TABLE                                           0x35
+#define LEAVE_DELETE_DEVICE_CMD                                     0x07
+#define DELETE_DEVICE_CMD                                           0x08
+#define DEL_READINGS_TABLE                                          0x36
+
 
 #endif	/* __ESP_COMMANDS_H__ */
 

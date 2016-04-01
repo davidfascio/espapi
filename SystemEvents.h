@@ -62,13 +62,13 @@
                 MAIN_TASK_TEST = SELF_CLEARING_EVENTS_LIST_END,
                 I2C_DRIVER_EVENT,                                        //Siempre va la maquina de estados despues de events list
                 IIC_EVENT,
-                ADD_DEL_MTR_EVENT,
+                BACKUP_START_EVENT,
                 BACKUP_EVENT,
+                BUFFER_EVENT,
                 RLY_BACKUP_EVENT,
-                #if IT_HAS_SHELL
+                MAC_BACKUP_EVENT,
+                TIME_BACKUP_EVENT,
                 SHELL_TASK_EVENT,
-                ZIGBEE_NETWORK_CONNECTION_CHECK_EVENT,
-                #endif
                 MAX_EVENTS
 	}eEvents;
 	

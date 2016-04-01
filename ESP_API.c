@@ -1,5 +1,5 @@
 #include "ESP_API.h"
-#include "ComSerialInterface.h"
+
 
 ESP_API_FUNCTION_LIST espAPIFunctionList[] = {
     

@@ -11,12 +11,13 @@
 //******************************************************************************
 // Includes
 //******************************************************************************
-
+#include "ComSerialInterface.h"
 #include "ESPComInterface.h"
 #include "ESPCommands.h"
 #include "SystemLog.h"
 
 #include "System.h"
+#include "ESPMeteringTable.h"
 
 //******************************************************************************
 // Defines

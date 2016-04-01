@@ -36,13 +36,16 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 # Object Files
 OBJECTFILES= \
 	${OBJECTDIR}/ComSerialInterface.o \
+	${OBJECTDIR}/Data_Base_Handler.o \
 	${OBJECTDIR}/ESPComInterface.o \
+	${OBJECTDIR}/ESPMeteringTable.o \
 	${OBJECTDIR}/ESP_API.o \
 	${OBJECTDIR}/EventsEngine.o \
 	${OBJECTDIR}/System.o \
 	${OBJECTDIR}/SystemLog.o \
 	${OBJECTDIR}/Utility.o \
-	${OBJECTDIR}/main.o
+	${OBJECTDIR}/main.o \
+	${OBJECTDIR}/mem24_1025_I2C.o
 
 
 # C Compiler Flags
@@ -74,10 +77,20 @@ ${OBJECTDIR}/ComSerialInterface.o: ComSerialInterface.c
 	${RM} "$@.d"
 	$(COMPILE.c) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/ComSerialInterface.o ComSerialInterface.c
 
+${OBJECTDIR}/Data_Base_Handler.o: Data_Base_Handler.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.c) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Data_Base_Handler.o Data_Base_Handler.c
+
 ${OBJECTDIR}/ESPComInterface.o: ESPComInterface.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.c) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/ESPComInterface.o ESPComInterface.c
+
+${OBJECTDIR}/ESPMeteringTable.o: ESPMeteringTable.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.c) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/ESPMeteringTable.o ESPMeteringTable.c
 
 ${OBJECTDIR}/ESP_API.o: ESP_API.c 
 	${MKDIR} -p ${OBJECTDIR}
@@ -108,6 +121,11 @@ ${OBJECTDIR}/main.o: main.c
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.c) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/main.o main.c
+
+${OBJECTDIR}/mem24_1025_I2C.o: mem24_1025_I2C.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.c) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/mem24_1025_I2C.o mem24_1025_I2C.c
 
 # Subprojects
 .build-subprojects:
