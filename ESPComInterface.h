@@ -66,18 +66,21 @@ typedef struct {
     BYTE invokedFunctionCode;
     BYTE data[ESP_COM_INTERFACE_RECEIVED_DATA_MAX_SIZE];
     WORD dataSize;
-} ESP_COM_INTERFACE_RESPONSE, * ESP_COM_INTERFACE_RESPONSE_PTR;
+} ESP_COM_INTERFACE_REQUEST, * ESP_COM_INTERFACE_REQUEST_PTR;
 
-void ESPComInterfaceResponse_Setup(ESP_COM_INTERFACE_RESPONSE_PTR responseControl, BYTE invokedFunctionCode, BYTE * data, WORD dataSize);
-void ESPComInterfaceResponse_Clear(ESP_COM_INTERFACE_RESPONSE_PTR responseControl);
+typedef ESP_COM_INTERFACE_REQUEST ESP_COM_INTERFACE_RESPONSE;
+typedef ESP_COM_INTERFACE_REQUEST_PTR ESP_COM_INTERFACE_RESPONSE_PTR;
 
-void ESPComInterfaceResponse_SetInvokedFunctionCode(ESP_COM_INTERFACE_RESPONSE_PTR responseControl, BYTE invokedFunctionCode);
-void ESPComInterfaceResponse_SetData(ESP_COM_INTERFACE_RESPONSE_PTR responseControl, BYTE * data, WORD dataSize);
+void ESPComInterfaceRequest_Setup(ESP_COM_INTERFACE_REQUEST_PTR requestControl, BYTE invokedFunctionCode, BYTE * data, WORD dataSize);
+void ESPComInterfaceRequest_Clear(ESP_COM_INTERFACE_REQUEST_PTR requestControl);
 
-BYTE ESPComInterfaceResponse_GetInvokedFunctionCode(ESP_COM_INTERFACE_RESPONSE_PTR responseControl);
-WORD ESPComInterfaceResponse_GetData(ESP_COM_INTERFACE_RESPONSE_PTR responseControl, BYTE * data, WORD  dataSize);
+void ESPComInterfaceRequest_SetInvokedFunctionCode(ESP_COM_INTERFACE_REQUEST_PTR requestControl, BYTE invokedFunctionCode);
+void ESPComInterfaceRequest_SetData(ESP_COM_INTERFACE_REQUEST_PTR requestControl, BYTE * data, WORD dataSize);
 
-void ESPComInterfaceResponse_Print(ESP_COM_INTERFACE_RESPONSE_PTR responseControl);
+BYTE ESPComInterfaceRequest_GetInvokedFunctionCode(ESP_COM_INTERFACE_REQUEST_PTR requestControl);
+WORD ESPComInterfaceRequest_GetData(ESP_COM_INTERFACE_REQUEST_PTR requestControl, BYTE * data, WORD  dataSize);
+
+void ESPComInterfaceRequest_Print(ESP_COM_INTERFACE_REQUEST_PTR requestControl);
 //******************************************************************************
 // ESP_COM_INTERFACE Function Prototypes
 //******************************************************************************
@@ -92,7 +95,7 @@ void ESPComInterface_SendCustomFrame(WORD startOfHeader, BYTE * macAddress, BYTE
 
 void ESPComInterface_SendFrame( BYTE functionCode, BYTE * data, WORD dataSize);
 
-BYTE ESPComInterface_ReceivedHandler(BYTE * buffer, WORD bufferSize, ESP_COM_INTERFACE_RESPONSE_PTR responseControl);
+BYTE ESPComInterface_ReceivedHandler(BYTE * buffer, WORD bufferSize, ESP_COM_INTERFACE_REQUEST_PTR requestControl);
 
 
 #endif	/* __ESP_COM_INTERFACE_H__ */

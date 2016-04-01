@@ -11,18 +11,30 @@
 //******************************************************************************
 // Includes
 //******************************************************************************
+
 #include "ESPComInterface.h"
+#include "ESPCommands.h"
 #include "SystemLog.h"
+
+#include "System.h"
 
 //******************************************************************************
 // Defines
 //******************************************************************************
+
 #define ESP_API_NO_INVOKED_FUNCTION_CODE                                    (0)
 #define ESP_API_FUNCTION_LIST_NULL      {ESP_API_NO_INVOKED_FUNCTION_CODE, NULL}
+
+
+// Error Codes
+#define ESP_API_NO_ERROR_CODE                                               (0)
+#define ESP_API_REQUEST_NULL_ERROR_CODE                                     (1)
+#define ESP_API_FUNCTION_LIST_IS_NOT_FOUND_ERROR_CODE                       (2)
 
 //******************************************************************************
 // ESP_COM_INTERFACE Data types
 //******************************************************************************
+
 typedef BYTE(* ESP_API_FunctionCallBack)(BYTE * dataRequest, WORD dataRequestSize,
         BYTE * dataResponse, WORD * dataResponseSize);
 
@@ -31,10 +43,14 @@ typedef struct {
     ESP_API_FunctionCallBack functionCallBack;
 } ESP_API_FUNCTION_LIST, * ESP_API_FUNCTION_LIST_PTR;
 
+
 //******************************************************************************
 // ESP_API Function Prototypes
 //******************************************************************************
-void ESP_API_ResponseProcess(BYTE functionCode, BYTE status_code);
+
+ESP_API_FUNCTION_LIST_PTR ESP_API_GetESPAPIFunctionList(BYTE functionCode);
+
+BYTE ESP_API_ResponseProcess(ESP_COM_INTERFACE_REQUEST_PTR requestControl);
 void ESP_API_ReceivedHandler(void);
 
 #endif	/* __ESP_API_H__ */

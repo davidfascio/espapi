@@ -6,9 +6,11 @@
                    projectFiles="true">
       <itemPath>ComSerialInterface.h</itemPath>
       <itemPath>ESPComInterface.h</itemPath>
+      <itemPath>ESPCommands.h</itemPath>
       <itemPath>ESP_API.h</itemPath>
       <itemPath>EventsEngine.h</itemPath>
       <itemPath>GenericTypeDefs.h</itemPath>
+      <itemPath>System.h</itemPath>
       <itemPath>SystemEvents.h</itemPath>
       <itemPath>SystemLog.h</itemPath>
       <itemPath>Utility.h</itemPath>
@@ -24,6 +26,7 @@
       <itemPath>ESPComInterface.c</itemPath>
       <itemPath>ESP_API.c</itemPath>
       <itemPath>EventsEngine.c</itemPath>
+      <itemPath>System.c</itemPath>
       <itemPath>SystemLog.c</itemPath>
       <itemPath>Utility.c</itemPath>
       <itemPath>main.c</itemPath>
@@ -58,6 +61,8 @@
       </item>
       <item path="ESPComInterface.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="ESPCommands.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="ESP_API.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="ESP_API.h" ex="false" tool="3" flavor2="0">
@@ -67,6 +72,10 @@
       <item path="EventsEngine.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="GenericTypeDefs.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="System.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="System.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="SystemEvents.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -109,6 +118,8 @@
       </item>
       <item path="ESPComInterface.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="ESPCommands.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="ESP_API.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="ESP_API.h" ex="false" tool="3" flavor2="0">
@@ -118,6 +129,10 @@
       <item path="EventsEngine.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="GenericTypeDefs.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="System.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="System.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="SystemEvents.h" ex="false" tool="3" flavor2="0">
       </item>

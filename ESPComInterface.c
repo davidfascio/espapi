@@ -13,64 +13,64 @@ INPUT_BUFFER_T ESPComInterfaceBuffer;
 // ESP_COM_INTERFACE Function
 //******************************************************************************
 
-void ESPComInterfaceResponse_Setup(ESP_COM_INTERFACE_RESPONSE_PTR responseControl, BYTE invokedFunctionCode, BYTE * data, WORD dataSize){
+void ESPComInterfaceRequest_Setup(ESP_COM_INTERFACE_REQUEST_PTR requestControl, BYTE invokedFunctionCode, BYTE * data, WORD dataSize){
     
-    ESPComInterfaceResponse_Clear(responseControl);
-    ESPComInterfaceResponse_SetInvokedFunctionCode(responseControl, invokedFunctionCode);
-    ESPComInterfaceResponse_SetData(responseControl, data, dataSize);    
+    ESPComInterfaceRequest_Clear(requestControl);
+    ESPComInterfaceRequest_SetInvokedFunctionCode(requestControl, invokedFunctionCode);
+    ESPComInterfaceRequest_SetData(requestControl, data, dataSize);    
 }
 
-void ESPComInterfaceResponse_Clear(ESP_COM_INTERFACE_RESPONSE_PTR responseControl){
+void ESPComInterfaceRequest_Clear(ESP_COM_INTERFACE_REQUEST_PTR requestControl){
     
-    if(responseControl == NULL)
+    if(requestControl == NULL)
         return;
     
-    memset(responseControl, 0, sizeof(ESP_COM_INTERFACE_RESPONSE));
+    memset(requestControl, 0, sizeof(ESP_COM_INTERFACE_REQUEST));
 }
 
-void ESPComInterfaceResponse_SetInvokedFunctionCode(ESP_COM_INTERFACE_RESPONSE_PTR responseControl, BYTE invokedFunctionCode){
+void ESPComInterfaceRequest_SetInvokedFunctionCode(ESP_COM_INTERFACE_REQUEST_PTR requestControl, BYTE invokedFunctionCode){
 
-    if(responseControl == NULL)
+    if(requestControl == NULL)
         return;
     
-    responseControl->invokedFunctionCode = invokedFunctionCode;
+    requestControl->invokedFunctionCode = invokedFunctionCode;
 }
 
-void ESPComInterfaceResponse_SetData(ESP_COM_INTERFACE_RESPONSE_PTR responseControl, BYTE * data, WORD dataSize){
+void ESPComInterfaceRequest_SetData(ESP_COM_INTERFACE_REQUEST_PTR requestControl, BYTE * data, WORD dataSize){
     
-    if(responseControl == NULL)
+    if(requestControl == NULL)
         return;
     
     if(dataSize > ESP_COM_INTERFACE_RECEIVED_DATA_MAX_SIZE)
         return;
     
-    memset(responseControl->data, 0, ESP_COM_INTERFACE_RECEIVED_DATA_MAX_SIZE);
-    memcpy(responseControl->data, data, dataSize);
-    responseControl->dataSize = dataSize; 
+    memset(requestControl->data, 0, ESP_COM_INTERFACE_RECEIVED_DATA_MAX_SIZE);
+    memcpy(requestControl->data, data, dataSize);
+    requestControl->dataSize = dataSize; 
 }
 
-BYTE ESPComInterfaceResponse_GetInvokedFunctionCode(ESP_COM_INTERFACE_RESPONSE_PTR responseControl){
+BYTE ESPComInterfaceRequest_GetInvokedFunctionCode(ESP_COM_INTERFACE_REQUEST_PTR requestControl){
 
-    return responseControl->invokedFunctionCode;
+    return requestControl->invokedFunctionCode;
 }
 
-WORD ESPComInterfaceResponse_GetData(ESP_COM_INTERFACE_RESPONSE_PTR responseControl, BYTE * data, WORD  dataSize){
+WORD ESPComInterfaceRequest_GetData(ESP_COM_INTERFACE_REQUEST_PTR requestControl, BYTE * data, WORD  dataSize){
     
-    if(responseControl->dataSize > dataSize)
+    if(requestControl->dataSize > dataSize)
         return 0;
     
     memset(data, 0, dataSize);
-    memcpy(data, responseControl->data, responseControl->dataSize);
+    memcpy(data, requestControl->data, requestControl->dataSize);
     
-    return responseControl->dataSize;
+    return requestControl->dataSize;
 }
 
 
-void ESPComInterfaceResponse_Print(ESP_COM_INTERFACE_RESPONSE_PTR responseControl){
+void ESPComInterfaceRequest_Print(ESP_COM_INTERFACE_REQUEST_PTR requestControl){
     
-    print_log("InvokedFunctionCode %02X", responseControl->invokedFunctionCode);
+    print_log("InvokedFunctionCode %02X", requestControl->invokedFunctionCode);
     print_log("ReceivedData: ");
-    print_buffer(responseControl->data, responseControl->dataSize);    
+    print_buffer(requestControl->data, requestControl->dataSize);    
 }
 
 void ESPComInterface_Setup(BYTE one_shot_event, BYTE time_delay) {
@@ -157,7 +157,7 @@ void ESPComInterface_SendFrame(BYTE functionCode, BYTE * data, WORD dataSize) {
     ESPComInterface_SendCustomFrame(ESP_COM_INTERFACE_START_OF_HEADER, macLongAddrByte, functionCode, data, dataSize, ESP_COM_INTERFACE_END_OF_HEADER);
 }
 
-BYTE ESPComInterface_ReceivedHandler(BYTE * buffer, WORD bufferSize, ESP_COM_INTERFACE_RESPONSE_PTR responseControl) {
+BYTE ESPComInterface_ReceivedHandler(BYTE * buffer, WORD bufferSize, ESP_COM_INTERFACE_REQUEST_PTR requestControl) {
 
     BYTE * buffer_ptr = buffer;
     WORD startOfHeader;
@@ -245,7 +245,7 @@ BYTE ESPComInterface_ReceivedHandler(BYTE * buffer, WORD bufferSize, ESP_COM_INT
         return ESP_COM_INTERFACE_END_OF_HEADER_ERROR_CODE;
 
 
-    ESPComInterfaceResponse_Setup(responseControl, functionCode, receivedData, receivedDataSize);
+    ESPComInterfaceRequest_Setup(requestControl, functionCode, receivedData, receivedDataSize);
     
     return ESP_COM_INTERFACE_NO_ERROR_CODE;
 }

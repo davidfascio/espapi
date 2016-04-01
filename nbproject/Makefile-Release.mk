@@ -39,6 +39,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/ESPComInterface.o \
 	${OBJECTDIR}/ESP_API.o \
 	${OBJECTDIR}/EventsEngine.o \
+	${OBJECTDIR}/System.o \
 	${OBJECTDIR}/SystemLog.o \
 	${OBJECTDIR}/Utility.o \
 	${OBJECTDIR}/main.o
@@ -87,6 +88,11 @@ ${OBJECTDIR}/EventsEngine.o: EventsEngine.c
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.c) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/EventsEngine.o EventsEngine.c
+
+${OBJECTDIR}/System.o: System.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.c) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/System.o System.c
 
 ${OBJECTDIR}/SystemLog.o: SystemLog.c 
 	${MKDIR} -p ${OBJECTDIR}
