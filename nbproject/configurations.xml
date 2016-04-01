@@ -4,9 +4,12 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
+      <itemPath>ComSerialInterface.h</itemPath>
       <itemPath>ESPComInterface.h</itemPath>
       <itemPath>ESP_API.h</itemPath>
+      <itemPath>EventsEngine.h</itemPath>
       <itemPath>GenericTypeDefs.h</itemPath>
+      <itemPath>SystemEvents.h</itemPath>
       <itemPath>SystemLog.h</itemPath>
       <itemPath>Utility.h</itemPath>
     </logicalFolder>
@@ -17,8 +20,10 @@
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
+      <itemPath>ComSerialInterface.c</itemPath>
       <itemPath>ESPComInterface.c</itemPath>
       <itemPath>ESP_API.c</itemPath>
+      <itemPath>EventsEngine.c</itemPath>
       <itemPath>SystemLog.c</itemPath>
       <itemPath>Utility.c</itemPath>
       <itemPath>main.c</itemPath>
@@ -45,6 +50,10 @@
       </toolsSet>
       <compileType>
       </compileType>
+      <item path="ComSerialInterface.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="ComSerialInterface.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="ESPComInterface.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="ESPComInterface.h" ex="false" tool="3" flavor2="0">
@@ -53,7 +62,13 @@
       </item>
       <item path="ESP_API.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="EventsEngine.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="EventsEngine.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="GenericTypeDefs.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="SystemEvents.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="SystemLog.c" ex="false" tool="0" flavor2="0">
       </item>
@@ -86,6 +101,10 @@
           <developmentMode>5</developmentMode>
         </asmTool>
       </compileType>
+      <item path="ComSerialInterface.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="ComSerialInterface.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="ESPComInterface.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="ESPComInterface.h" ex="false" tool="3" flavor2="0">
@@ -94,7 +113,13 @@
       </item>
       <item path="ESP_API.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="EventsEngine.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="EventsEngine.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="GenericTypeDefs.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="SystemEvents.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="SystemLog.c" ex="false" tool="0" flavor2="0">
       </item>

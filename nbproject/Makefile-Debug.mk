@@ -35,8 +35,10 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
+	${OBJECTDIR}/ComSerialInterface.o \
 	${OBJECTDIR}/ESPComInterface.o \
 	${OBJECTDIR}/ESP_API.o \
+	${OBJECTDIR}/EventsEngine.o \
 	${OBJECTDIR}/SystemLog.o \
 	${OBJECTDIR}/Utility.o \
 	${OBJECTDIR}/main.o
@@ -66,6 +68,11 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/espapi.exe: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.c} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/espapi ${OBJECTFILES} ${LDLIBSOPTIONS}
 
+${OBJECTDIR}/ComSerialInterface.o: ComSerialInterface.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.c) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/ComSerialInterface.o ComSerialInterface.c
+
 ${OBJECTDIR}/ESPComInterface.o: ESPComInterface.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
@@ -75,6 +82,11 @@ ${OBJECTDIR}/ESP_API.o: ESP_API.c
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.c) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/ESP_API.o ESP_API.c
+
+${OBJECTDIR}/EventsEngine.o: EventsEngine.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.c) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/EventsEngine.o EventsEngine.c
 
 ${OBJECTDIR}/SystemLog.o: SystemLog.c 
 	${MKDIR} -p ${OBJECTDIR}

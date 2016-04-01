@@ -1,7 +1,7 @@
 #include "Utility.h"
 
 BYTE macLongAddrByteInverse[MAC_SIZE] = {0x24, 0xda, 0xb6, 0x0a, 0x02, 0x00, 0x09, 0x1b};
-BYTE macLongAddrByte[MAC_SIZE];
+BYTE macLongAddrByte[MAC_SIZE] = {0x1b, 0x09, 0x00, 0x02, 0x0a ,0xb6, 0xda, 0x24};
 
 WORD wfnCRC_CALC (BYTE *ptFRAME, WORD wSizeFrame, WORD wCRCStart){
     WORD temp;

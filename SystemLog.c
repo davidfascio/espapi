@@ -5,6 +5,8 @@
 #define SHELL_CONTEXT_PROMPT                            "\n\rwsacii-1.0> "
 #define SHELL_CONTEXT_PROMPT_LEN                        (strlen(SHELL_CONTEXT_PROMPT))
 
+BYTE systemLogTrace = SYSTEM_LOG_PRINT_ALL;
+
 BYTE printTerminal (BYTE* Ptr, boolean hasPrompt){
 
     BYTE buffer[500];
@@ -22,11 +24,14 @@ BYTE printTerminal (BYTE* Ptr, boolean hasPrompt){
     return 0;
 }
 
-void SystemLog_Printf(BOOL hasPrompt, const char * format, ...){
+void SystemLog_Printf(BOOL hasPrompt, BYTE tagTrace, const char * format, ...){
 
     char buffer[SYSTEM_LOG_PRINT_MAX_BUFFER_SIZE];
     va_list argptr;
 
+    if(!(tagTrace & systemLogTrace))
+        return;
+    
     va_start(argptr, format);
     vsprintf(buffer, format, argptr);
     va_end(argptr);

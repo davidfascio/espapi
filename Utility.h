@@ -22,6 +22,12 @@ typedef struct {
     	BYTE bErrorState;
 } sSM;
 
+typedef struct INPUT_BUFFER_TAG
+{
+    BYTE buffer[240];
+    BYTE used;
+}INPUT_BUFFER_T;
+
 WORD wfnCRC_CALC (BYTE *ptFRAME, WORD wSizeFrame, WORD wCRCStart);
 BYTE wfnBCC_CALC (BYTE * frame, WORD frameLen, BYTE bccStart);
 void inverted_memcpy(BYTE * data1, BYTE * data2, WORD data_size);
