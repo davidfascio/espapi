@@ -17,7 +17,9 @@
       <itemPath>System.h</itemPath>
       <itemPath>SystemEvents.h</itemPath>
       <itemPath>SystemLog.h</itemPath>
+      <itemPath>SystemTime.h</itemPath>
       <itemPath>Utility.h</itemPath>
+      <itemPath>ZDOControl.h</itemPath>
       <itemPath>mem24_1025_I2C.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
@@ -35,7 +37,9 @@
       <itemPath>EventsEngine.c</itemPath>
       <itemPath>System.c</itemPath>
       <itemPath>SystemLog.c</itemPath>
+      <itemPath>SystemTime.c</itemPath>
       <itemPath>Utility.c</itemPath>
+      <itemPath>ZDOControl.c</itemPath>
       <itemPath>main.c</itemPath>
       <itemPath>mem24_1025_I2C.c</itemPath>
     </logicalFolder>
@@ -103,9 +107,17 @@
       </item>
       <item path="SystemLog.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="SystemTime.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="SystemTime.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="Utility.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="Utility.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="ZDOControl.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="ZDOControl.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="main.c" ex="false" tool="0" flavor2="0">
       </item>
@@ -176,9 +188,17 @@
       </item>
       <item path="SystemLog.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="SystemTime.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="SystemTime.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="Utility.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="Utility.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="ZDOControl.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="ZDOControl.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="main.c" ex="false" tool="0" flavor2="0">
       </item>

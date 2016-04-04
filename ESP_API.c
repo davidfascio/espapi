@@ -10,6 +10,34 @@ ESP_API_FUNCTION_LIST espAPIFunctionList[] = {
     {   READMODE_STATUS_LOCAL,                  /*  functionCode                */
         bfnReadStatusCoordinator },             /*  functionCallBack            */
         
+    {   READMODE_VERSION_COOR_LOCAL,            /*  functionCode                */
+        bfnVersionCoordinatorLocal },           /*  functionCallBack            */
+    
+    {   RESET_COOR_LCL,                         /*  functionCode                */
+        bfnResetCoordinatorLocal },             /*  functionCallBack            */
+    
+        
+    //***********************************************************************************************************
+    //* ESP API SYSTEM CALLBACK FUNCTIONS
+    //***********************************************************************************************************
+    
+    {   READMODE_TIME_DATE_LOCAL,               /*  functionCode                */
+        bfnReadTimeDateLocal },                 /*  functionCallBack            */
+    
+    {   WRITE_MODE_UPDATE_TIME_DATE,               /*  functionCode                */
+        bfnWriteTimeDateLocal },                 /*  functionCallBack            */
+    //***********************************************************************************************************
+    //* ESP API ZDO CONTROL CALLBACK FUNCTIONS
+    //***********************************************************************************************************
+    {   READMODE_CHANNEL_COOR_LOCAL,            /*  functionCode                */
+        bfnReadChannelLocal },                  /*  functionCallBack            */
+        
+    {   READMODE_PAN_ID_COOR_LOCAL,             /*  functionCode                */
+        bfnReadPANIDLocal},                     /*  functionCallBack            */
+        
+    {   WRITE_MODE_UPDATE_PAN_ID,               /*  functionCode                */
+        bfnWritePANIDLocal},                    /*  functionCallBack            */
+        
     //***********************************************************************************************************
     //* ESP API METERING TABLE CALLBACK FUNCTIONS
     //***********************************************************************************************************
@@ -20,6 +48,8 @@ ESP_API_FUNCTION_LIST espAPIFunctionList[] = {
     {   BUFFERMODE_READ_ALL_MTR_READINGS_BUFFER,/*  functionCode                */
         bfnReadMTRReadingsTable},               /*  functionCallBack            */
     
+    
+        
     ESP_API_FUNCTION_LIST_NULL
 };
 
@@ -45,6 +75,7 @@ BYTE ESP_API_ResponseProcess(ESP_COM_INTERFACE_REQUEST_PTR requestControl) {
     
     ESP_API_FUNCTION_LIST_PTR espAPIFunctionList_ptr;
     ESP_COM_INTERFACE_RESPONSE response;
+    BYTE error_code;
     
     if(requestControl == NULL)
         return ESP_API_REQUEST_NULL_ERROR_CODE;
@@ -55,12 +86,32 @@ BYTE ESP_API_ResponseProcess(ESP_COM_INTERFACE_REQUEST_PTR requestControl) {
         return ESP_API_FUNCTION_LIST_IS_NOT_FOUND_ERROR_CODE;
     
     response.invokedFunctionCode = requestControl->invokedFunctionCode;
-    espAPIFunctionList_ptr->functionCallBack(requestControl->data, requestControl->dataSize, response.data, &response.dataSize );
-        
-    // IMPORTANT Implement Paging
-    ESPComInterface_SendFrame(response.invokedFunctionCode, response.data, response.dataSize);
+    error_code = espAPIFunctionList_ptr->functionCallBack(requestControl->data, requestControl->dataSize, response.data, &response.dataSize );
     
-    return ESP_API_NO_ERROR_CODE;
+    switch(error_code){
+    
+        case ESP_DOES_NOT_WAIT_ANSWER:
+            ESPComInterface_SendFrame(response.invokedFunctionCode, response.data, response.dataSize);
+            break;
+            
+        case WAIT_ANSWER:
+            // IMPORTANT Implement Paging
+            break;
+            
+        /*case NO_SEND_ANSWER:
+            print_error("DONT_SEND_ANSWER");
+            break;
+            
+        case ESP_DATA_SIZE_ERROR_CODE:    
+            print_error("ESP_DATA_SIZE_ERROR_CODE");
+            break;*/
+        
+        default:
+            break;
+        
+    }
+    
+    return error_code;
 }
 
 void ESP_API_ReceivedHandler(void) {

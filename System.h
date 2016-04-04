@@ -12,6 +12,7 @@
 // Includes
 //******************************************************************************
 #include "GenericTypeDefs.h"
+#include "ESPCommons.h"
 
 
 //******************************************************************************
@@ -48,11 +49,33 @@
 #define METER_NO_SAVE_IN_DB                                         0x8D
 #define PARAMETERS_NO_SAVE                                          0x8E
 
+typedef union {
+    struct{        
+        unsigned fix        :5;        
+        unsigned function   :5;
+        unsigned product    :6;
+    };    
+    
+    struct {
+        unsigned version :16;
+    };
+} SYSTEM_FIRMWARE_VERSION;
+
+void System_SetStatus(BYTE status);
+BYTE System_GetStatus(void);
+WORD System_GetFirmwareVersion(void);
+
 //******************************************************************************
 // ESP_API Function Prototypes
 //******************************************************************************
 
 BYTE bfnReadStatusCoordinator(BYTE * dataRequest, WORD dataRequestSize,
+        BYTE * dataResponse, WORD * dataResponseSize);
+
+BYTE bfnVersionCoordinatorLocal(BYTE * dataRequest, WORD dataRequestSize,
+        BYTE * dataResponse, WORD * dataResponseSize);
+
+BYTE bfnResetCoordinatorLocal(BYTE * dataRequest, WORD dataRequestSize,
         BYTE * dataResponse, WORD * dataResponseSize);
 
 #endif	/* __SYSTEM_H__ */

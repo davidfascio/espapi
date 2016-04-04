@@ -38,7 +38,28 @@
 #define READ_MODE_ANALOG_REMOTE                                     0x3A
 #define READ_MODE_UPDATE_RLY_ANALOG_REMOTE                          0x3D
 
-
+//******************************************************************************
+// Local WRITE Command Types
+//******************************************************************************
+#define WRITE_MODE_RST_RED_COOR_LOCAL                               0x99
+#define WRITE_MODE_RST_COOR_LOCAL                                   0x22
+#define WRITE_MODE_DPY_BUFFER_LOAD_LOCAL                            0x36
+#define WRITE_MODE_DPY_BUFFER_SEND_IPD                              0x37
+#define WRITE_MODE_UPDATE_TIME_DATE                                 0x50
+#define WRITE_MODE_UPDATE_RELAY_STATE                               0xA0
+#define WRITE_MODE_UPDATE_RELAY_SECURE_STATE                        0xA1
+#define WRITE_MODE_UPDATE_RELAY_GROUP_STATE                         0xA2
+#define WRITE_MODE_DEL_INDEX_READINGS_TABLE                         0x78
+#define WRITE_MODE_DEL_INDEX_ALL_TABLES                             0x3C
+#define WRITE_MODE_UPDATE_FRECUENCY_AUTOMATIC_READINGS              0x2E
+#define WRITE_MODE_UPDATE_PERMIT_JOIN_MODE                          0x20
+#define WRITE_MODE_UPDATE_PERMIT_REMOTE                             0x21
+#define WRITE_MODE_UPDATE_CONFIG_ALARM_REMOTE                       0x24            //Escribir alarma
+#define WRITE_MODE_UPDATE_PAN_ID                                    0x60
+#define WRITE_MODE_CHANNEL_COOR_LOCAL                               0x71
+#define WRITE_MODE_UPDATE_RLY_REMOTE                                0x38
+#define WRITE_MODE_UPDATE_RLY_SECURE_REMOTE                         0x39
+#define WRITE_MODE_UPDATE_GROUP_RLY_REMOTE                          0x3B
 
 //******************************************************************************
 // Local Buffer Commands

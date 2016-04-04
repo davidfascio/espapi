@@ -11,6 +11,16 @@
 #define ESP_DOES_NOT_WAIT_ANSWER                            (0)
 #define WAIT_ANSWER                                         (1)
 #define NO_SEND_ANSWER                                      (2)
+#define ESP_DATA_SIZE_ERROR_CODE                            (3)
+
+//*******************************************************************
+// Version Information
+//*******************************************************************
+
+#define Producto_Num                                    5
+#define Funcionalidad_Num                               6
+#define Fix_Num                                         1
+
 
 #endif	/* __ESP_COMMONS_H__ */
 

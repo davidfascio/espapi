@@ -43,7 +43,9 @@ OBJECTFILES= \
 	${OBJECTDIR}/EventsEngine.o \
 	${OBJECTDIR}/System.o \
 	${OBJECTDIR}/SystemLog.o \
+	${OBJECTDIR}/SystemTime.o \
 	${OBJECTDIR}/Utility.o \
+	${OBJECTDIR}/ZDOControl.o \
 	${OBJECTDIR}/main.o \
 	${OBJECTDIR}/mem24_1025_I2C.o
 
@@ -112,10 +114,20 @@ ${OBJECTDIR}/SystemLog.o: SystemLog.c
 	${RM} "$@.d"
 	$(COMPILE.c) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/SystemLog.o SystemLog.c
 
+${OBJECTDIR}/SystemTime.o: SystemTime.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.c) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/SystemTime.o SystemTime.c
+
 ${OBJECTDIR}/Utility.o: Utility.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.c) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Utility.o Utility.c
+
+${OBJECTDIR}/ZDOControl.o: ZDOControl.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.c) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/ZDOControl.o ZDOControl.c
 
 ${OBJECTDIR}/main.o: main.c 
 	${MKDIR} -p ${OBJECTDIR}
