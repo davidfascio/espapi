@@ -15,6 +15,11 @@
 #include "GenericTypeDefs.h"
 #include "System.h"
 #include "Data_Base_Handler.h"
+#include "ESPCommons.h"
+
+
+BYTE bfnReadDevicesTable(BYTE * dataRequest, WORD dataRequestSize,
+        BYTE * dataResponse, WORD * dataResponseSize);
 
 BYTE bfnReadMTRReadingsTable(BYTE * dataRequest, WORD dataRequestSize,
         BYTE * dataResponse, WORD * dataResponseSize);

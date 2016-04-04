@@ -8,6 +8,7 @@
       <itemPath>Data_Base_Handler.h</itemPath>
       <itemPath>ESPComInterface.h</itemPath>
       <itemPath>ESPCommands.h</itemPath>
+      <itemPath>ESPCommons.h</itemPath>
       <itemPath>ESPMeteringCommons.h</itemPath>
       <itemPath>ESPMeteringTable.h</itemPath>
       <itemPath>ESP_API.h</itemPath>
@@ -73,6 +74,8 @@
       <item path="ESPComInterface.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="ESPCommands.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="ESPCommons.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="ESPMeteringCommons.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -144,6 +147,8 @@
       <item path="ESPComInterface.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="ESPCommands.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="ESPCommons.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="ESPMeteringCommons.h" ex="false" tool="3" flavor2="0">
       </item>

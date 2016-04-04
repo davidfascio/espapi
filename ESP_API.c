@@ -4,12 +4,22 @@
 ESP_API_FUNCTION_LIST espAPIFunctionList[] = {
     
     //***********************************************************************************************************
-    //* ESP API CALLBACK FUNCTIONS
+    //* ESP API SYSTEM CALLBACK FUNCTIONS
     //***********************************************************************************************************
     
     {   READMODE_STATUS_LOCAL,                  /*  functionCode                */
         bfnReadStatusCoordinator },             /*  functionCallBack            */
-
+        
+    //***********************************************************************************************************
+    //* ESP API METERING TABLE CALLBACK FUNCTIONS
+    //***********************************************************************************************************
+    
+    {   BUFFERMODE_READ_DEVICES_ZBEE_BUFFER,
+        bfnReadDevicesTable},
+        
+    {   BUFFERMODE_READ_ALL_MTR_READINGS_BUFFER,/*  functionCode                */
+        bfnReadMTRReadingsTable},               /*  functionCallBack            */
+    
     ESP_API_FUNCTION_LIST_NULL
 };
 
@@ -47,7 +57,7 @@ BYTE ESP_API_ResponseProcess(ESP_COM_INTERFACE_REQUEST_PTR requestControl) {
     response.invokedFunctionCode = requestControl->invokedFunctionCode;
     espAPIFunctionList_ptr->functionCallBack(requestControl->data, requestControl->dataSize, response.data, &response.dataSize );
         
-    // Implement Paging
+    // IMPORTANT Implement Paging
     ESPComInterface_SendFrame(response.invokedFunctionCode, response.data, response.dataSize);
     
     return ESP_API_NO_ERROR_CODE;
@@ -82,7 +92,15 @@ void ESP_API_ReceivedHandler(void) {
             ESPComInterfaceRequest_Print(&requestControl);
             
             error_code = ESP_API_ResponseProcess(&requestControl);
-            print_log("ESP_API_ResponseProcess Error Code: %04d", error_code);
+            
+            if (error_code != ESP_API_NO_ERROR_CODE){
+                
+                print_error("ESP_API_ResponseProcess Error Code: %04d", error_code);                
+            } else {
+                
+                print_log("ESP_API_ResponseProcess Successfully");
+            }
+            
             break;
 
         case ESP_COM_INTERFACE_START_OF_HEADER_ERROR_CODE:
