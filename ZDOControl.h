@@ -13,6 +13,8 @@
 #include "SystemLog.h"
 
 BYTE ZDOControl_SetPANID(WORD panid);
+BYTE ZDOControl_SetLocalPermitJoin(BYTE permit);
+
 //******************************************************************************
 // ESP_API Function Prototypes
 //******************************************************************************
@@ -26,6 +28,8 @@ BYTE bfnReadPANIDLocal(BYTE * dataRequest, WORD dataRequestSize,
 BYTE bfnWritePANIDLocal(BYTE * dataRequest, WORD dataRequestSize,
         BYTE * dataResponse, WORD * dataResponseSize);
 
+BYTE bfnWritePermitJoinLocal(BYTE * dataRequest, WORD dataRequestSize,
+        BYTE * dataResponse, WORD * dataResponseSize);
 
 #endif	/* __ZDO_CONTROL_H__ */
 

@@ -26,7 +26,7 @@ const sEvent taEvents[] =
     NULL, //vfnMainTask,
     NULL, //vfnI2CDriver,
     NULL, //vfnIIC_MEM24_1025Driver,
-    NULL,
+    vfnBackUpStartDriver,
     NULL, //vfnBackUpDriver,
     NULL //vfnRLYBackUpStartDriver,
     #if IT_HAS_SHELL

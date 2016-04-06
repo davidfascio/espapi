@@ -45,6 +45,8 @@ OBJECTFILES= \
 	${OBJECTDIR}/SystemLog.o \
 	${OBJECTDIR}/SystemTime.o \
 	${OBJECTDIR}/Utility.o \
+	${OBJECTDIR}/ZCLComProtocol.o \
+	${OBJECTDIR}/ZCLMeteringControl.o \
 	${OBJECTDIR}/ZDOControl.o \
 	${OBJECTDIR}/main.o \
 	${OBJECTDIR}/mem24_1025_I2C.o
@@ -123,6 +125,16 @@ ${OBJECTDIR}/Utility.o: Utility.c
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.c) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Utility.o Utility.c
+
+${OBJECTDIR}/ZCLComProtocol.o: ZCLComProtocol.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.c) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/ZCLComProtocol.o ZCLComProtocol.c
+
+${OBJECTDIR}/ZCLMeteringControl.o: ZCLMeteringControl.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.c) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/ZCLMeteringControl.o ZCLMeteringControl.c
 
 ${OBJECTDIR}/ZDOControl.o: ZDOControl.c 
 	${MKDIR} -p ${OBJECTDIR}

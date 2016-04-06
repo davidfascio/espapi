@@ -18,7 +18,7 @@ ESP_API_FUNCTION_LIST espAPIFunctionList[] = {
     
         
     //***********************************************************************************************************
-    //* ESP API SYSTEM CALLBACK FUNCTIONS
+    //* ESP API SYSTEM TIME CALLBACK FUNCTIONS
     //***********************************************************************************************************
     
     {   READMODE_TIME_DATE_LOCAL,               /*  functionCode                */
@@ -26,6 +26,7 @@ ESP_API_FUNCTION_LIST espAPIFunctionList[] = {
     
     {   WRITE_MODE_UPDATE_TIME_DATE,               /*  functionCode                */
         bfnWriteTimeDateLocal },                 /*  functionCallBack            */
+        
     //***********************************************************************************************************
     //* ESP API ZDO CONTROL CALLBACK FUNCTIONS
     //***********************************************************************************************************
@@ -38,17 +39,37 @@ ESP_API_FUNCTION_LIST espAPIFunctionList[] = {
     {   WRITE_MODE_UPDATE_PAN_ID,               /*  functionCode                */
         bfnWritePANIDLocal},                    /*  functionCallBack            */
         
+    {   WRITE_MODE_UPDATE_PERMIT_JOIN_MODE,
+        bfnWritePermitJoinLocal },
+        
     //***********************************************************************************************************
     //* ESP API METERING TABLE CALLBACK FUNCTIONS
     //***********************************************************************************************************
     
-    {   BUFFERMODE_READ_DEVICES_ZBEE_BUFFER,
-        bfnReadDevicesTable},
+    {   BUFFERMODE_READ_ALL_MTR_MACS_BUFFER,    /*  functionCode                */
+        bfnReadMTRSTable},                      /*  functionCallBack            */
+        
+    {   BUFFERMODE_READ_DEVICES_ZBEE_BUFFER,    /*  functionCode                */
+        bfnReadDevicesTable},                   /*  functionCallBack            */
         
     {   BUFFERMODE_READ_ALL_MTR_READINGS_BUFFER,/*  functionCode                */
         bfnReadMTRReadingsTable},               /*  functionCallBack            */
+        
+    {   DEL_METERS_TABLE,                       /*  functionCode                */
+        bfnDelMTRMetersTable},                  /*  functionCallBack            */
+        
+    {   DEL_DEVICES_TABLE,                      /*  functionCode                */
+        bfnDelMTRDevicesTable},                 /*  functionCallBack            */
     
+    //***********************************************************************************************************
+    //* ESP API METERING TABLE CALLBACK FUNCTIONS
+    //***********************************************************************************************************
     
+    {   READ_MODE_UPDATE_FRECUENCY_AUTOMATIC_READING,    /*  functionCode                */
+        bfnReadFrecuencyAutoReadingsLocal},              /*  functionCallBack            */  
+        
+    {   WRITE_MODE_UPDATE_FRECUENCY_AUTOMATIC_READINGS,  /*  functionCode                */
+        bfnWriteFrecuencyAutoReadingsLocal},             /*  functionCallBack            */  
         
     ESP_API_FUNCTION_LIST_NULL
 };

@@ -19,6 +19,8 @@
       <itemPath>SystemLog.h</itemPath>
       <itemPath>SystemTime.h</itemPath>
       <itemPath>Utility.h</itemPath>
+      <itemPath>ZCLComProtocol.h</itemPath>
+      <itemPath>ZCLMeteringControl.h</itemPath>
       <itemPath>ZDOControl.h</itemPath>
       <itemPath>mem24_1025_I2C.h</itemPath>
     </logicalFolder>
@@ -39,6 +41,8 @@
       <itemPath>SystemLog.c</itemPath>
       <itemPath>SystemTime.c</itemPath>
       <itemPath>Utility.c</itemPath>
+      <itemPath>ZCLComProtocol.c</itemPath>
+      <itemPath>ZCLMeteringControl.c</itemPath>
       <itemPath>ZDOControl.c</itemPath>
       <itemPath>main.c</itemPath>
       <itemPath>mem24_1025_I2C.c</itemPath>
@@ -114,6 +118,14 @@
       <item path="Utility.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="Utility.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="ZCLComProtocol.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="ZCLComProtocol.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="ZCLMeteringControl.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="ZCLMeteringControl.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="ZDOControl.c" ex="false" tool="0" flavor2="0">
       </item>
@@ -195,6 +207,14 @@
       <item path="Utility.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="Utility.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="ZCLComProtocol.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="ZCLComProtocol.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="ZCLMeteringControl.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="ZCLMeteringControl.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="ZDOControl.c" ex="false" tool="0" flavor2="0">
       </item>

@@ -20,6 +20,7 @@
 #include "SystemTime.h"
 #include "ESPMeteringTable.h"
 #include "ZDOControl.h"
+#include "ZCLMeteringControl.h"
 
 //******************************************************************************
 // Defines

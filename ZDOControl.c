@@ -6,6 +6,12 @@ BYTE ZDOControl_SetPANID(WORD panid){
     return SUCCESS_CMD;
 }
 
+BYTE ZDOControl_SetLocalPermitJoin(BYTE permit){
+ 
+    print_debug("LocalPermitJoin: %d", permit);
+    return SUCCESS_CMD;
+}
+
 BYTE bfnReadChannelLocal(BYTE * dataRequest, WORD dataRequestSize,
         BYTE * dataResponse, WORD * dataResponseSize){
     
@@ -57,6 +63,26 @@ BYTE bfnWritePANIDLocal(BYTE * dataRequest, WORD dataRequestSize,
     memcpy((BYTE *) &currentPANID, dataRequest, dataRequestSize);
     
     error_code = ZDOControl_SetPANID(currentPANID);
+
+    * dataResponse_ptr = error_code;
+    * dataResponseSize = sizeof (BYTE);   
+    
+    return ESP_DOES_NOT_WAIT_ANSWER;
+}
+
+BYTE bfnWritePermitJoinLocal(BYTE * dataRequest, WORD dataRequestSize,
+        BYTE * dataResponse, WORD * dataResponseSize){
+    
+    BYTE permit;
+    BYTE error_code;
+    BYTE * dataResponse_ptr = dataResponse;
+
+    if(dataRequestSize != sizeof(permit))
+        return ESP_DATA_SIZE_ERROR_CODE;
+    
+    memcpy((BYTE *) &permit, dataRequest, dataRequestSize);
+    
+    error_code = ZDOControl_SetLocalPermitJoin(permit);
 
     * dataResponse_ptr = error_code;
     * dataResponseSize = sizeof (BYTE);   
