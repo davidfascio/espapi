@@ -132,7 +132,7 @@ void FillDemoDevices(void){
     DEV_LIST demo_dev;
     MTR_LIST demo_mtr;                                                 
     BYTE index;
-    if(demo_dev_index  < 2){
+    if(demo_dev_index  < 10){
         
         
         memcpy(demo_dev.Short_Add, demo_dev_default_short_addr, sizeof(demo_dev_default_short_addr));
@@ -150,7 +150,7 @@ void FillDemoDevices(void){
         demo_mtr.Type = demo_meter_type;
         demo_mtr.Signature = demo_meter_signature;
         
-        for(index = 0; index < 24; index++){
+        for(index = 0; index < 12; index++){
             
             sprintf(demo_meter_serial_number, "%016d", demo_mtr_index);
             inverted_memcpy(demo_mtr.Serial_Num, demo_meter_serial_number, 16);

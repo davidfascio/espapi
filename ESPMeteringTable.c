@@ -165,17 +165,15 @@ BYTE bfnReadMTRReadingsTable(BYTE * dataRequest, WORD dataRequestSize,
     * dataResponse_ptr = SUCCESS_CMD;
     dataResponse_ptr += sizeof (BYTE);
 
-    wIndexData = wfnIndexConsutl(METERSTABLE);
+    wIndexData = wfnIndexConsutl(READING_LIST);
 
     if (wIndexData) {
 
-        wDataSize = (wIndexData * sizeof (READING_LIST));
-        memcpy(dataResponse_ptr, (BYTE *) & wDataSize, sizeof (WORD));
-        dataResponse_ptr += sizeof (WORD);
-
-
-
-        // bfnBuffer_Table_Meter(wIndexData, sizeof(READING_LIST), &bpOutputData[0]); 
+        * pagingDataResponseSize = (wIndexData * sizeof (READING_LIST));
+        
+        //! bfnBuffer_Table_Meter(wIndexData, sizeof(MTR_LIST), &bpOutputData[0]); 
+        bfnBuffer_Table_Meter(wIndexData, READING_TABLE_LIST);
+        
         answer_code = WAIT_ANSWER;
     }
 
@@ -291,6 +289,11 @@ void vfnBufferConsultTableState(void){
         case DEVICE_TABLE_LIST:
             
             bStatusData = bfnConsultData(ALLDATADEV, ZERO, startItem, ZERO , queryResponseBuffer, &queryResponseBufferSize);
+            break;
+            
+        case READING_TABLE_LIST:
+            
+            bStatusData = bfnConsultData(ALLDATAREADINGS, ZERO, ZERO, startItem , queryResponseBuffer, &queryResponseBufferSize);
             break;
             
         default:
