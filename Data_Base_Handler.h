@@ -33,8 +33,8 @@
 
 /*-- Functions -------------------------------------------------------------------------*/
 BYTE bfnSaveData(BYTE bTableType,BYTE *vptrTableStructure);
-BYTE bfnConsultData(BYTE bTableType,BYTE *bptrKeyID,BYTE *bptrDataWrite,WORD wAllDataIndex
-                  ,WORD wAllDataIndexMtr);
+BYTE bfnConsultData(BYTE bTableType, BYTE *bptrKeyID, WORD wAllDataIndexDev
+        , WORD wAllDataIndexMtr, BYTE *bptrDataWrite, WORD * bptrDataWriteSize);
 void vfnInitDataBase(void);
 BYTE bfnBackUp_Init (void);
 WORD wfnIndexConsutl(BYTE bTableType);

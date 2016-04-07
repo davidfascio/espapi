@@ -106,16 +106,22 @@ BYTE ESP_API_ResponseProcess(ESP_COM_INTERFACE_REQUEST_PTR requestControl) {
     if(espAPIFunctionList_ptr == NULL)
         return ESP_API_FUNCTION_LIST_IS_NOT_FOUND_ERROR_CODE;
     
+    ESPComInterfaceResponse_Clear(&response);
     response.invokedFunctionCode = requestControl->invokedFunctionCode;
-    error_code = espAPIFunctionList_ptr->functionCallBack(requestControl->data, requestControl->dataSize, response.data, &response.dataSize );
+    error_code = espAPIFunctionList_ptr->functionCallBack(requestControl->data, requestControl->dataSize, response.data, &response.dataSize, &response.pagingDataSize );
     
     switch(error_code){
     
         case ESP_DOES_NOT_WAIT_ANSWER:
-            ESPComInterface_SendFrame(response.invokedFunctionCode, response.data, response.dataSize);
+            ESPComInterface_SendFrame(response.invokedFunctionCode, response.data, response.dataSize, FALSE, FALSE, FALSE, 0);
             break;
             
         case WAIT_ANSWER:
+            
+            ESPComInterface_SendFrame(response.invokedFunctionCode, response.data, response.dataSize, TRUE, TRUE, FALSE, response.pagingDataSize);
+            
+            
+        
             // IMPORTANT Implement Paging
             break;
             

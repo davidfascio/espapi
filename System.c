@@ -37,7 +37,7 @@ WORD System_GetFirmwareVersion(void) {
 }
 
 BYTE bfnReadStatusCoordinator(BYTE * dataRequest, WORD dataRequestSize,
-        BYTE * dataResponse, WORD * dataResponseSize) {
+        BYTE * dataResponse, WORD * dataResponseSize, WORD * pagingDataResponseSize) {
 
     * dataResponse = System_GetStatus();
     * dataResponseSize = sizeof (BYTE);
@@ -46,7 +46,7 @@ BYTE bfnReadStatusCoordinator(BYTE * dataRequest, WORD dataRequestSize,
 }
 
 BYTE bfnVersionCoordinatorLocal(BYTE * dataRequest, WORD dataRequestSize,
-        BYTE * dataResponse, WORD * dataResponseSize) {
+        BYTE * dataResponse, WORD * dataResponseSize, WORD * pagingDataResponseSize) {
 
     WORD wFirmwareVersion;
     BYTE * dataResponse_ptr = dataResponse;
@@ -65,7 +65,7 @@ BYTE bfnVersionCoordinatorLocal(BYTE * dataRequest, WORD dataRequestSize,
 }
 
 BYTE bfnResetCoordinatorLocal(BYTE * dataRequest, WORD dataRequestSize,
-        BYTE * dataResponse, WORD * dataResponseSize){
+        BYTE * dataResponse, WORD * dataResponseSize, WORD * pagingDataResponseSize){
     
     BYTE * dataResponse_ptr = dataResponse;
     

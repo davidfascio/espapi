@@ -789,8 +789,8 @@ void vfnAllocDev(WORD wIndex, BYTE bStatus)
  */
 
 /****************************************************************************************/
-BYTE bfnConsultData(BYTE bTableType, BYTE *bptrKeyID, BYTE *bptrDataWrite, WORD wAllDataIndexDev
-        , WORD wAllDataIndexMtr)
+BYTE bfnConsultData(BYTE bTableType, BYTE *bptrKeyID, WORD wAllDataIndexDev
+        , WORD wAllDataIndexMtr, BYTE *bptrDataWrite, WORD * bptrDataWriteSize)
 {
     WORD wIndex      = FALSE;
     WORD wIndexBckUp = FALSE;
@@ -799,6 +799,9 @@ BYTE bfnConsultData(BYTE bTableType, BYTE *bptrKeyID, BYTE *bptrDataWrite, WORD 
     BYTE *apTemp2;
     static WORD wIndexm=FALSE;
     bSpace          = FALSE;
+    
+    * bptrDataWriteSize = 0;
+    
     switch (bTableType)
     {
         case METERSTABLE:
@@ -871,7 +874,7 @@ BYTE bfnConsultData(BYTE bTableType, BYTE *bptrKeyID, BYTE *bptrDataWrite, WORD 
                             , (const void*) &tsDevice[wIndex].Short_Add[0]
                             , Buffer_Lenght_MAC_Info - 4);
                     return TRUE;
-                }
+                  }
                 else
                 {   /*if not located*/
                     return FALSE;
@@ -960,6 +963,7 @@ BYTE bfnConsultData(BYTE bTableType, BYTE *bptrKeyID, BYTE *bptrDataWrite, WORD 
                 memcpy((void*) bptrDataWrite
                         , (const void*) &tsDevice[wAllDataIndexDev].Short_Add[0]
                         , Buffer_Lenght_MAC_Info - 4);
+                * bptrDataWriteSize = Buffer_Lenght_MAC_Info - 4;
                 return TRUE;
             }else
             {
@@ -973,6 +977,8 @@ BYTE bfnConsultData(BYTE bTableType, BYTE *bptrKeyID, BYTE *bptrDataWrite, WORD 
                 memcpy((void*) bptrDataWrite
                         , (const void*) &tsMeter[wAllDataIndexMtr].Serial_Num[0]
                         , METER_NAME_SIZE - 4);
+                
+                * bptrDataWriteSize = METER_NAME_SIZE - 4;
                 return TRUE;
              }else
              {

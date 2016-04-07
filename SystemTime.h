@@ -22,10 +22,10 @@ DWORD SystemTime_GetTime(void);
 BYTE SystemTime_SetTime(SYSTEM_TIME time);
 
 BYTE bfnReadTimeDateLocal(BYTE * dataRequest, WORD dataRequestSize,
-        BYTE * dataResponse, WORD * dataResponseSize);
+        BYTE * dataResponse, WORD * dataResponseSize, WORD * pagingDataResponseSize);
 
 BYTE bfnWriteTimeDateLocal(BYTE * dataRequest, WORD dataRequestSize,
-        BYTE * dataResponse, WORD * dataResponseSize);
+        BYTE * dataResponse, WORD * dataResponseSize, WORD * pagingDataResponseSize);
 
 #endif	/* __SYSTEM_TIME_H__ */
 

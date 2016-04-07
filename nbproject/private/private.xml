@@ -18,9 +18,11 @@
             <file>file:/C:/development/test/ESPAPI/ESP_API.c</file>
             <file>file:/C:/development/test/ESPAPI/ESPComInterface.c</file>
             <file>file:/C:/development/test/ESPAPI/SystemTime.c</file>
+            <file>file:/C:/development/test/ESPAPI/ComSerialInterface.c</file>
             <file>file:/C:/development/test/ESPAPI/mem24_1025_I2C.c</file>
             <file>file:/C:/development/test/ESPAPI/main.c</file>
             <file>file:/C:/development/test/ESPAPI/ZCLMeteringControl.h</file>
+            <file>file:/C:/development/test/ESPAPI/Utility.c</file>
             <file>file:/C:/development/test/ESPAPI/SystemEvents.h</file>
             <file>file:/C:/development/test/ESPAPI/EventsEngine.h</file>
             <file>file:/C:/development/test/ESPAPI/ZDOControl.c</file>

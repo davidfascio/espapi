@@ -20,16 +20,16 @@ BYTE ZDOControl_SetLocalPermitJoin(BYTE permit);
 //******************************************************************************
 
 BYTE bfnReadChannelLocal(BYTE * dataRequest, WORD dataRequestSize,
-        BYTE * dataResponse, WORD * dataResponseSize);
+        BYTE * dataResponse, WORD * dataResponseSize, WORD * pagingDataResponseSize);
 
 BYTE bfnReadPANIDLocal(BYTE * dataRequest, WORD dataRequestSize,
-        BYTE * dataResponse, WORD * dataResponseSize);
+        BYTE * dataResponse, WORD * dataResponseSize, WORD * pagingDataResponseSize);
 
 BYTE bfnWritePANIDLocal(BYTE * dataRequest, WORD dataRequestSize,
-        BYTE * dataResponse, WORD * dataResponseSize);
+        BYTE * dataResponse, WORD * dataResponseSize, WORD * pagingDataResponseSize);
 
 BYTE bfnWritePermitJoinLocal(BYTE * dataRequest, WORD dataRequestSize,
-        BYTE * dataResponse, WORD * dataResponseSize);
+        BYTE * dataResponse, WORD * dataResponseSize, WORD * pagingDataResponseSize);
 
 #endif	/* __ZDO_CONTROL_H__ */
 

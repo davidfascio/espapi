@@ -40,7 +40,7 @@
 //******************************************************************************
 
 typedef BYTE(* ESP_API_FunctionCallBack)(BYTE * dataRequest, WORD dataRequestSize,
-        BYTE * dataResponse, WORD * dataResponseSize);
+        BYTE * dataResponse, WORD * dataResponseSize, WORD * pagingDataResponseSize);
 
 typedef struct {
     BYTE functionCode;

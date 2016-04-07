@@ -14,6 +14,7 @@
   Constants and Enumerations
  *****************************************************************************/
 /* None */
+#define _1_MSEC_                                             1
 #define _25_MSEC_                                            25
 #define _500_MSEC_                                          50
 #define _100_MSEC_                                          10

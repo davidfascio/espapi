@@ -14,7 +14,7 @@ BYTE SystemTime_SetTime(SYSTEM_TIME time){
 }
 
 BYTE bfnReadTimeDateLocal(BYTE * dataRequest, WORD dataRequestSize,
-        BYTE * dataResponse, WORD * dataResponseSize){
+        BYTE * dataResponse, WORD * dataResponseSize, WORD * pagingDataResponseSize){
     
     DWORD currentTime;
     BYTE * dataResponse_ptr = dataResponse;
@@ -33,7 +33,7 @@ BYTE bfnReadTimeDateLocal(BYTE * dataRequest, WORD dataRequestSize,
 }
 
 BYTE bfnWriteTimeDateLocal(BYTE * dataRequest, WORD dataRequestSize,
-        BYTE * dataResponse, WORD * dataResponseSize){
+        BYTE * dataResponse, WORD * dataResponseSize, WORD * pagingDataResponseSize){
     
     SYSTEM_TIME currentTime;
     BYTE error_code;

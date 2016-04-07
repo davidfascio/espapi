@@ -66,6 +66,7 @@ typedef struct {
     BYTE invokedFunctionCode;
     BYTE data[ESP_COM_INTERFACE_RECEIVED_DATA_MAX_SIZE];
     WORD dataSize;
+    WORD pagingDataSize;
 } ESP_COM_INTERFACE_REQUEST, * ESP_COM_INTERFACE_REQUEST_PTR;
 
 typedef ESP_COM_INTERFACE_REQUEST ESP_COM_INTERFACE_RESPONSE;
@@ -73,6 +74,7 @@ typedef ESP_COM_INTERFACE_REQUEST_PTR ESP_COM_INTERFACE_RESPONSE_PTR;
 
 void ESPComInterfaceRequest_Setup(ESP_COM_INTERFACE_REQUEST_PTR requestControl, BYTE invokedFunctionCode, BYTE * data, WORD dataSize);
 void ESPComInterfaceRequest_Clear(ESP_COM_INTERFACE_REQUEST_PTR requestControl);
+void ESPComInterfaceResponse_Clear(ESP_COM_INTERFACE_RESPONSE_PTR responseControl);
 
 void ESPComInterfaceRequest_SetInvokedFunctionCode(ESP_COM_INTERFACE_REQUEST_PTR requestControl, BYTE invokedFunctionCode);
 void ESPComInterfaceRequest_SetData(ESP_COM_INTERFACE_REQUEST_PTR requestControl, BYTE * data, WORD dataSize);
@@ -84,16 +86,20 @@ void ESPComInterfaceRequest_Print(ESP_COM_INTERFACE_REQUEST_PTR requestControl);
 //******************************************************************************
 // ESP_COM_INTERFACE Function Prototypes
 //******************************************************************************
+void ESPComInterface_SetLastCRCFrame(WORD crcFrame);
+WORD ESPComInterface_GetLastCRCFrame(void);
 
 void ESPComInterface_Setup(BYTE one_shot_event, BYTE time_delay);
 
 BOOL ESPComInterface_BuildFrame(WORD startOfHeader, BYTE * macAddress, BYTE functionCode, 
-                                BYTE * data, WORD dataSize, WORD endOfHeader, BYTE * frame, WORD * frameLen);
+                                BYTE * data, WORD dataSize, WORD endOfHeader, 
+                                BOOL isPagingFrame, BOOL isFirstPagingFrame,  BOOL isLastPagingFrame,
+                                WORD pagingDataSize , BYTE * frame, WORD * frameLen);
 
 void ESPComInterface_SendCustomFrame(WORD startOfHeader, BYTE * macAddress, BYTE functionCode,
-        BYTE * data, WORD dataSize, WORD endOfHeader);
+        BYTE * data, WORD dataSize, WORD endOfHeader, BOOL isPagingFrame, BOOL isFirstPagingFrame, BOOL isLastPagingFrame, WORD pagingDataSize);
 
-void ESPComInterface_SendFrame( BYTE functionCode, BYTE * data, WORD dataSize);
+void ESPComInterface_SendFrame( BYTE functionCode, BYTE * data, WORD dataSize, BOOL isPagingFrame, BOOL isFirstPagingFrame,  BOOL isLastPagingFrame, WORD pagingDataSize);
 
 BYTE ESPComInterface_ReceivedHandler(BYTE * buffer, WORD bufferSize, ESP_COM_INTERFACE_REQUEST_PTR requestControl);
 

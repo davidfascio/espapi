@@ -70,13 +70,13 @@ WORD System_GetFirmwareVersion(void);
 //******************************************************************************
 
 BYTE bfnReadStatusCoordinator(BYTE * dataRequest, WORD dataRequestSize,
-        BYTE * dataResponse, WORD * dataResponseSize);
+        BYTE * dataResponse, WORD * dataResponseSize, WORD * pagingDataResponseSize);
 
 BYTE bfnVersionCoordinatorLocal(BYTE * dataRequest, WORD dataRequestSize,
-        BYTE * dataResponse, WORD * dataResponseSize);
+        BYTE * dataResponse, WORD * dataResponseSize, WORD * pagingDataResponseSize);
 
 BYTE bfnResetCoordinatorLocal(BYTE * dataRequest, WORD dataRequestSize,
-        BYTE * dataResponse, WORD * dataResponseSize);
+        BYTE * dataResponse, WORD * dataResponseSize, WORD * pagingDataResponseSize);
 
 #endif	/* __SYSTEM_H__ */
 

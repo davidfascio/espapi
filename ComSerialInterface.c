@@ -190,7 +190,7 @@ void ComSerialInterface_Check(void){
     if(arrivedBytes){
         
         ComSerialInterfaceBufferUsed += arrivedBytes;
-        vfnOneShotReload(WAIT_FRAME_UART_ONESHOT, _25_MSEC_);
+        vfnOneShotReload(WAIT_FRAME_UART_ONESHOT, _1_MSEC_);
     }
 }
 

@@ -7,11 +7,20 @@
 //******************************************************************************
 // Variables
 //******************************************************************************
-INPUT_BUFFER_T ESPComInterfaceBuffer;
-
+//INPUT_BUFFER_T ESPComInterfaceBuffer;
+WORD ESPComInterfaceLastCRCFrame = 0xFFFF;
 //******************************************************************************
 // ESP_COM_INTERFACE Function
 //******************************************************************************
+void ESPComInterface_SetLastCRCFrame(WORD crcFrame){
+    
+    ESPComInterfaceLastCRCFrame = crcFrame;
+}
+
+WORD ESPComInterface_GetLastCRCFrame(void){
+    
+    return ESPComInterfaceLastCRCFrame;
+}
 
 void ESPComInterfaceRequest_Setup(ESP_COM_INTERFACE_REQUEST_PTR requestControl, BYTE invokedFunctionCode, BYTE * data, WORD dataSize){
     
@@ -26,6 +35,14 @@ void ESPComInterfaceRequest_Clear(ESP_COM_INTERFACE_REQUEST_PTR requestControl){
         return;
     
     memset(requestControl, 0, sizeof(ESP_COM_INTERFACE_REQUEST));
+}
+
+void ESPComInterfaceResponse_Clear(ESP_COM_INTERFACE_RESPONSE_PTR responseControl){
+    
+    if(responseControl == NULL)
+        return;
+    
+    memset(responseControl, 0, sizeof(ESP_COM_INTERFACE_RESPONSE));
 }
 
 void ESPComInterfaceRequest_SetInvokedFunctionCode(ESP_COM_INTERFACE_REQUEST_PTR requestControl, BYTE invokedFunctionCode){
@@ -91,37 +108,54 @@ void ESPComInterface_Setup(BYTE one_shot_event, BYTE time_delay) {
 //    WORD endOfHeader;
 
 BOOL ESPComInterface_BuildFrame(WORD startOfHeader, BYTE * macAddress, BYTE functionCode,
-        BYTE * data, WORD dataSize, WORD endOfHeader, BYTE * frame, WORD * frameLen) {
+        BYTE * data, WORD dataSize, WORD endOfHeader, BOOL isPagingFrame, BOOL isFirstPagingFrame, 
+        BOOL isLastPagingFrame, WORD pagingDataSize, BYTE * frame, WORD * frameLen) {
 
     BYTE * frame_ptr = frame;
     WORD frameSize;
     WORD crcFrame;
+    WORD lastCRCFrame = ESPComInterface_GetLastCRCFrame();
 
-    inverted_memcpy(frame_ptr, (BYTE *) & startOfHeader, ESP_COM_INTERFACE_START_OF_HEADER_SIZE);
-    frame_ptr += ESP_COM_INTERFACE_START_OF_HEADER_SIZE;
+    if((!isPagingFrame)|| (isPagingFrame && isFirstPagingFrame)){
+        
+        inverted_memcpy(frame_ptr, (BYTE *) & startOfHeader, ESP_COM_INTERFACE_START_OF_HEADER_SIZE);
+        frame_ptr += ESP_COM_INTERFACE_START_OF_HEADER_SIZE;
 
-    frameSize = ESP_COM_INTERFACE_MAC_ADDRESS_SIZE + ESP_COM_INTERFACE_FUNCTION_CODE_HEADER_SIZE + dataSize;
+        frameSize = ESP_COM_INTERFACE_MAC_ADDRESS_SIZE + ESP_COM_INTERFACE_FUNCTION_CODE_HEADER_SIZE + dataSize + pagingDataSize;
 
-    memcpy(frame_ptr, (BYTE *) & frameSize, ESP_COM_INTERFACE_FRAME_SIZE_OF_HEADER_SIZE);
-    frame_ptr += ESP_COM_INTERFACE_FRAME_SIZE_OF_HEADER_SIZE;
+        memcpy(frame_ptr, (BYTE *) & frameSize, ESP_COM_INTERFACE_FRAME_SIZE_OF_HEADER_SIZE);
+        frame_ptr += ESP_COM_INTERFACE_FRAME_SIZE_OF_HEADER_SIZE;
 
-    memcpy(frame_ptr, macAddress, ESP_COM_INTERFACE_MAC_ADDRESS_SIZE);
-    frame_ptr += ESP_COM_INTERFACE_MAC_ADDRESS_SIZE;
+        memcpy(frame_ptr, macAddress, ESP_COM_INTERFACE_MAC_ADDRESS_SIZE);
+        frame_ptr += ESP_COM_INTERFACE_MAC_ADDRESS_SIZE;
 
-    * frame_ptr = functionCode;
-    frame_ptr += ESP_COM_INTERFACE_FUNCTION_CODE_HEADER_SIZE;
-
+        * frame_ptr = functionCode;
+        frame_ptr += ESP_COM_INTERFACE_FUNCTION_CODE_HEADER_SIZE;
+    }
+    
     memcpy(frame_ptr, data, dataSize);
     frame_ptr += dataSize;
 
-    crcFrame = wfnCRC16(frame + ESP_COM_INTERFACE_START_OF_HEADER_SIZE + ESP_COM_INTERFACE_FRAME_SIZE_OF_HEADER_SIZE,
-            frame_ptr - (frame + ESP_COM_INTERFACE_START_OF_HEADER_SIZE + ESP_COM_INTERFACE_FRAME_SIZE_OF_HEADER_SIZE));
+    if ((!isPagingFrame)|| (isPagingFrame && isFirstPagingFrame)){
+     
+        crcFrame = wfnCRC_CALC(frame + ESP_COM_INTERFACE_START_OF_HEADER_SIZE + ESP_COM_INTERFACE_FRAME_SIZE_OF_HEADER_SIZE,
+        frame_ptr - (frame + ESP_COM_INTERFACE_START_OF_HEADER_SIZE + ESP_COM_INTERFACE_FRAME_SIZE_OF_HEADER_SIZE), 0xFFFF);
+        
+    } else{
+        
+        crcFrame = wfnCRC_CALC(data, dataSize, lastCRCFrame);
+    }
+    
+    ESPComInterface_SetLastCRCFrame(crcFrame);
+    
+    if((!isPagingFrame) || (isPagingFrame && isLastPagingFrame)){
+        
+        memcpy(frame_ptr, (BYTE *) & crcFrame, ESP_COM_INTERFACE_CRC_HEADER_SIZE);
+        frame_ptr += ESP_COM_INTERFACE_CRC_HEADER_SIZE;
 
-    memcpy(frame_ptr, (BYTE *) & crcFrame, ESP_COM_INTERFACE_CRC_HEADER_SIZE);
-    frame_ptr += ESP_COM_INTERFACE_CRC_HEADER_SIZE;
-
-    inverted_memcpy(frame_ptr, (BYTE *) & endOfHeader, ESP_COM_INTERFACE_END_OF_HEADER_SIZE);
-    frame_ptr += ESP_COM_INTERFACE_END_OF_HEADER_SIZE;
+        inverted_memcpy(frame_ptr, (BYTE *) & endOfHeader, ESP_COM_INTERFACE_END_OF_HEADER_SIZE);
+        frame_ptr += ESP_COM_INTERFACE_END_OF_HEADER_SIZE;
+    }
 
     *frameLen = (frame_ptr - frame);
 
@@ -129,7 +163,8 @@ BOOL ESPComInterface_BuildFrame(WORD startOfHeader, BYTE * macAddress, BYTE func
 }
 
 void ESPComInterface_SendCustomFrame(WORD startOfHeader, BYTE * macAddress, BYTE functionCode,
-        BYTE * data, WORD dataSize, WORD endOfHeader) {
+        BYTE * data, WORD dataSize, WORD endOfHeader, 
+        BOOL isPagingFrame, BOOL isFirstPagingFrame, BOOL isLastPagingFrame, WORD pagingDataSize) {
 
     BYTE frame[ESP_COM_INTERFACE_FRAME_MAX_SIZE];
     WORD frameLen;
@@ -138,7 +173,7 @@ void ESPComInterface_SendCustomFrame(WORD startOfHeader, BYTE * macAddress, BYTE
     //! frameLen Validation
 
     frameBuilt = ESPComInterface_BuildFrame(startOfHeader, macAddress, functionCode,
-            data, dataSize, endOfHeader, frame, &frameLen);
+            data, dataSize, endOfHeader, isPagingFrame, isFirstPagingFrame, isLastPagingFrame, pagingDataSize, frame, &frameLen);
 
     if (frameBuilt == FALSE) {
 
@@ -152,9 +187,10 @@ void ESPComInterface_SendCustomFrame(WORD startOfHeader, BYTE * macAddress, BYTE
     ComSerialInterface_WriteData(frame, frameLen);
 }
 
-void ESPComInterface_SendFrame(BYTE functionCode, BYTE * data, WORD dataSize) {
+void ESPComInterface_SendFrame(BYTE functionCode, BYTE * data, WORD dataSize, BOOL isPagingFrame, BOOL isFirstPagingFrame, BOOL isLastPagingFrame, WORD pagingDataSize) {
 
-    ESPComInterface_SendCustomFrame(ESP_COM_INTERFACE_START_OF_HEADER, macLongAddrByte, functionCode, data, dataSize, ESP_COM_INTERFACE_END_OF_HEADER);
+    ESPComInterface_SendCustomFrame(ESP_COM_INTERFACE_START_OF_HEADER, macLongAddrByte, functionCode, data, dataSize, ESP_COM_INTERFACE_END_OF_HEADER,
+            isPagingFrame, isFirstPagingFrame, isLastPagingFrame, pagingDataSize);
 }
 
 BYTE ESPComInterface_ReceivedHandler(BYTE * buffer, WORD bufferSize, ESP_COM_INTERFACE_REQUEST_PTR requestControl) {

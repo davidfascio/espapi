@@ -13,7 +13,7 @@ BYTE ZDOControl_SetLocalPermitJoin(BYTE permit){
 }
 
 BYTE bfnReadChannelLocal(BYTE * dataRequest, WORD dataRequestSize,
-        BYTE * dataResponse, WORD * dataResponseSize){
+        BYTE * dataResponse, WORD * dataResponseSize, WORD * pagingDataResponseSize){
     
     BYTE currentChannel;
     BYTE * dataResponse_ptr = dataResponse;
@@ -32,7 +32,7 @@ BYTE bfnReadChannelLocal(BYTE * dataRequest, WORD dataRequestSize,
 }
 
 BYTE bfnReadPANIDLocal(BYTE * dataRequest, WORD dataRequestSize,
-        BYTE * dataResponse, WORD * dataResponseSize){
+        BYTE * dataResponse, WORD * dataResponseSize, WORD * pagingDataResponseSize){
     
     WORD currentPANID;
     BYTE * dataResponse_ptr = dataResponse;
@@ -51,7 +51,7 @@ BYTE bfnReadPANIDLocal(BYTE * dataRequest, WORD dataRequestSize,
 }
 
 BYTE bfnWritePANIDLocal(BYTE * dataRequest, WORD dataRequestSize,
-        BYTE * dataResponse, WORD * dataResponseSize){
+        BYTE * dataResponse, WORD * dataResponseSize, WORD * pagingDataResponseSize){
     
     WORD currentPANID;
     BYTE error_code;
@@ -71,7 +71,7 @@ BYTE bfnWritePANIDLocal(BYTE * dataRequest, WORD dataRequestSize,
 }
 
 BYTE bfnWritePermitJoinLocal(BYTE * dataRequest, WORD dataRequestSize,
-        BYTE * dataResponse, WORD * dataResponseSize){
+        BYTE * dataResponse, WORD * dataResponseSize, WORD * pagingDataResponseSize){
     
     BYTE permit;
     BYTE error_code;

@@ -16,7 +16,7 @@ BYTE ZCLMeteringControl_SetAutomaticReadingTime(WORD automaticReadingTime){
 // ESP_API Function Prototypes
 //******************************************************************************
 BYTE bfnReadFrecuencyAutoReadingsLocal(BYTE * dataRequest, WORD dataRequestSize,
-        BYTE * dataResponse, WORD * dataResponseSize){
+        BYTE * dataResponse, WORD * dataResponseSize, WORD * pagingDataResponseSize){
  
     BYTE * dataResponse_ptr = dataResponse;
     
@@ -33,7 +33,7 @@ BYTE bfnReadFrecuencyAutoReadingsLocal(BYTE * dataRequest, WORD dataRequestSize,
 }
 
 BYTE bfnWriteFrecuencyAutoReadingsLocal(BYTE * dataRequest, WORD dataRequestSize,
-        BYTE * dataResponse, WORD * dataResponseSize){
+        BYTE * dataResponse, WORD * dataResponseSize, WORD * pagingDataResponseSize){
     
     WORD automaticReadingTime;
     BYTE error_code;
