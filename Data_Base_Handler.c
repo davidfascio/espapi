@@ -72,6 +72,8 @@ void (*const vfnaBACKUPStartDriverState[]) (void) =
 
 sSM _tBackStartUpSM = {ZERO, ZERO, ZERO, ZERO};
 
+BOOL temporal;
+
 /*-- Variables -------------------------------------------------------------------------*/
 /*Empty Array*/
 BYTE bEmpty[MAC_SIZE];
@@ -93,6 +95,97 @@ WORD wAddressGLOBAL;
 BYTE bSpace;
 BYTE bSpace1;
 //BYTE tsReading[];
+
+void ESPMeteringTable_SetupQuery(ESP_METERING_TABLE_QUERY_PTR query, WORD startItem, WORD quantityOfItems, ESP_METERING_TABLE_LIST_TYPE tableListType) {
+
+    if(query == NULL)
+        return;
+    
+    ESPMeteringTable_ClearQuery(query);
+    
+    query->startItem = startItem;
+    query->quantityOfItems = quantityOfItems;
+    query->tableListType = tableListType;
+    
+    return;
+}
+
+void ESPMeteringTable_ClearQuery(ESP_METERING_TABLE_QUERY_PTR query){
+    
+    if(query == NULL)
+        return;
+    
+    memset(query, 0, sizeof(ESP_METERING_TABLE_QUERY));
+    return;
+}
+
+WORD ESPMeteringTable_GetStartItem(ESP_METERING_TABLE_QUERY_PTR query){
+    
+    return query->startItem;
+}
+
+void ESPMeteringTable_SetStartItem(ESP_METERING_TABLE_QUERY_PTR query, WORD startItem){
+    
+    if(query == NULL)
+        return;
+    
+    query->startItem = startItem;
+    return;
+}
+
+WORD ESPMeteringTable_GetQuantityOfItems(ESP_METERING_TABLE_QUERY_PTR query){
+    
+    return query->quantityOfItems;
+}
+
+void ESPMeteringTable_SetQuantityOfItems(ESP_METERING_TABLE_QUERY_PTR query, WORD quantityOfItems){
+    
+    if(query == NULL)
+        return;
+    
+    query->quantityOfItems = quantityOfItems;
+    return;
+}
+
+ESP_METERING_TABLE_LIST_TYPE ESPMeteringTable_GetTableListType(ESP_METERING_TABLE_QUERY_PTR query){
+    
+    return query->tableListType;
+}
+
+BYTE * ESPMeteringTable_GetQueryResponseBuffer(ESP_METERING_TABLE_QUERY_PTR query){
+    
+    return query->queryResponseBuffer;
+}
+
+WORD ESPMeteringTable_GetQueryResponseBufferSize(ESP_METERING_TABLE_QUERY_PTR query){
+    
+    return query->queryResponseBufferSize;
+}
+
+void ESPMeteringTable_SetQueryResponseBufferSize(ESP_METERING_TABLE_QUERY_PTR query, WORD queryResponseBufferSize){
+
+    if(query == NULL)
+        return;
+    
+    query->queryResponseBufferSize = queryResponseBufferSize;
+    return;    
+}
+
+BOOL ESPMeteringTable_IsWaitingForQueryResponse(ESP_METERING_TABLE_QUERY_PTR query){
+    
+    return query->isWaitingForQueryResponse;
+}
+
+void ESPMeteringTable_SetWaitingForQueryResponse(ESP_METERING_TABLE_QUERY_PTR query, BOOL isWaitingForQueryResponse){
+    
+    if(query == NULL)
+        return;
+    
+    query->isWaitingForQueryResponse = isWaitingForQueryResponse;
+    return;
+}
+
+
 /****************************************************************************************/
 /*
  * \brief    vfnBackUpStartDriver - State Machine Driver
@@ -131,7 +224,7 @@ BYTE bfnBackUp_Init(void)
     vfnEventPost(BACKUP_START_EVENT);
     /*Read Devices Index From EEPROM*/
     bBufferIICRead = (BYTE*) & wDevicesIndxBckUp;
-    bfnIIC_MEM24_1025_Read(NODES_INDEX_BCKUP, Address_Size);
+    bfnIIC_MEM24_1025_Read(NODES_INDEX_BCKUP, Address_Size, &temporal);
     return (TRUE);
 }
 /****************************************************************************************/
@@ -198,7 +291,7 @@ void vfnBKUPReadDevicesBKIndxState(void){
     if (!bfnIICIsBusy())
     {   /*Starts Reading*/
         bBufferIICRead = (BYTE*) & wDevicesIndex;
-        bfnIIC_MEM24_1025_Read(NODES_INDEX_ADD, Address_Size);
+        bfnIIC_MEM24_1025_Read(NODES_INDEX_ADD, Address_Size, &temporal);
         _tBackStartUpSM.bActualState = _BACKUP_DEV_ADD_STATE;
         _tBackStartUpSM.bNextState = _BACKUP_END_STATE;
     }
@@ -221,7 +314,7 @@ void vfnBKUPGetDevicesIndexState(void)
             static WORD wIndexDevicesTemp=FALSE;
             if(wDevicesIndex>=NUM_MAX_NODES)wDevicesIndex=0;
             bBufferIICRead = (BYTE *) & tsDevice[wIndexDevicesTemp].Short_Add[0];
-            if(bfnIIC_MEM24_1025_Read(CAB_READ_Meter_MAC_SHORT+(wIndexDevicesTemp*Buffer_Lenght_MAC_Info), Buffer_Lenght_MAC_Info)){
+            if(bfnIIC_MEM24_1025_Read(CAB_READ_Meter_MAC_SHORT+(wIndexDevicesTemp*Buffer_Lenght_MAC_Info), Buffer_Lenght_MAC_Info, &temporal)){
                 wIndexDevicesTemp++;
             }
             if(wIndexDevicesTemp>=wDevicesIndxBckUp){
@@ -234,7 +327,7 @@ void vfnBKUPGetDevicesIndexState(void)
         {   /*If there is not a valid Device Index, starts reading MetersIndex*/
             wDevicesIndex = FALSE;
             bBufferIICRead = (BYTE*) & wMetersIndex;
-            bfnIIC_MEM24_1025_Read(METERS_INDEX_ADD, Address_Size);
+            bfnIIC_MEM24_1025_Read(METERS_INDEX_ADD, Address_Size, &temporal);
             _tBackStartUpSM.bActualState = _BACKUP_METERS_INDEX_STATE;
             _tBackStartUpSM.bNextState = _BACKUP_END_STATE;
         }
@@ -254,7 +347,7 @@ void vfnBKUPReadMetersBKIndxState(void)
     if (!bfnIICIsBusy())
     {   /*Starts Reading*/
         bBufferIICRead = (BYTE *) & wMetersIndxBckUp;
-        bfnIIC_MEM24_1025_Read(METERS_INDEX_BCKUP, Address_Size);
+        bfnIIC_MEM24_1025_Read(METERS_INDEX_BCKUP, Address_Size, &temporal);
         _tBackStartUpSM.bActualState = _BACKUP_METERS_ADD_STATE;
         _tBackStartUpSM.bNextState = _BACKUP_END_STATE;
     }
@@ -273,7 +366,7 @@ void vfnBKUPReadDevicesState(void)
     if (!bfnIICIsBusy())
     {   /*Starts reading*/
         bBufferIICRead = (BYTE *) & wMetersIndex;
-        bfnIIC_MEM24_1025_Read(METERS_INDEX_ADD, Address_Size);
+        bfnIIC_MEM24_1025_Read(METERS_INDEX_ADD, Address_Size,&temporal );
         _tBackStartUpSM.bActualState =  _BACKUP_METERS_INDEX_STATE;
         _tBackStartUpSM.bNextState = _BACKUP_END_STATE;
     }
@@ -295,7 +388,7 @@ void vfnBKUPGetMetersIndexState(void)
         {   /*Starts reading*/
             static WORD wMeterIndexTemp=0;
             bBufferIICRead = (BYTE *) & tsMeter[wMeterIndexTemp];
-            if(bfnIIC_MEM24_1025_Read(CAB_READ_Meter_ADD+(wMeterIndexTemp*METER_NAME_SIZE),METER_NAME_SIZE)){
+            if(bfnIIC_MEM24_1025_Read(CAB_READ_Meter_ADD+(wMeterIndexTemp*METER_NAME_SIZE),METER_NAME_SIZE, &temporal)){
                 wMeterIndexTemp++;
             }
             if(wMeterIndexTemp>=wMetersIndxBckUp){
@@ -790,7 +883,7 @@ void vfnAllocDev(WORD wIndex, BYTE bStatus)
 
 /****************************************************************************************/
 BYTE bfnConsultData(BYTE bTableType, BYTE *bptrKeyID, WORD wAllDataIndexDev
-        , WORD wAllDataIndexMtr, BYTE *bptrDataWrite, WORD * bptrDataWriteSize)
+        , WORD wAllDataIndexMtr, ESP_METERING_TABLE_QUERY_PTR query)
 {
     WORD wIndex      = FALSE;
     WORD wIndexBckUp = FALSE;
@@ -800,7 +893,9 @@ BYTE bfnConsultData(BYTE bTableType, BYTE *bptrKeyID, WORD wAllDataIndexDev
     static WORD wIndexm=FALSE;
     bSpace          = FALSE;
     
-    * bptrDataWriteSize = 0;
+    BYTE * query_response_buffer_ptr =  ESPMeteringTable_GetQueryResponseBuffer(query);
+    //* bptrDataWriteSize = 0;
+    
     
     switch (bTableType)
     {
@@ -832,10 +927,10 @@ BYTE bfnConsultData(BYTE bTableType, BYTE *bptrKeyID, WORD wAllDataIndexDev
                 }
                 if (bLocated)
                 {   /*if located store data in a buffer defined by user*/
-                    if(!bptrDataWrite){
+                    if(!query_response_buffer_ptr){
                         return TRUE;
                     }
-                    memcpy((void*) bptrDataWrite
+                    memcpy(query_response_buffer_ptr
                             , (const void*) &tsMeter[wIndex].Serial_Num[0]
                             , METER_NAME_SIZE - 4);
                     return TRUE;
@@ -870,7 +965,7 @@ BYTE bfnConsultData(BYTE bTableType, BYTE *bptrKeyID, WORD wAllDataIndexDev
                 }
                 if (bLocated)
                 {    /*if located store data in a buffer defined by user*/
-                    memcpy((void*) bptrDataWrite
+                    memcpy(query_response_buffer_ptr
                             , (const void*) &tsDevice[wIndex].Short_Add[0]
                             , Buffer_Lenght_MAC_Info - 4);
                     return TRUE;
@@ -905,7 +1000,7 @@ BYTE bfnConsultData(BYTE bTableType, BYTE *bptrKeyID, WORD wAllDataIndexDev
                 }
                 if (bLocated)
                 {    /*if located store data in a buffer defined by user*/
-                    memcpy((void*) bptrDataWrite
+                    memcpy(query_response_buffer_ptr
                             , (const void*) &tsDevice[wIndex].Short_Add[0]
                             , Buffer_Lenght_MAC_Info - 4);
                     return TRUE;
@@ -944,10 +1039,10 @@ BYTE bfnConsultData(BYTE bTableType, BYTE *bptrKeyID, WORD wAllDataIndexDev
             }
             if (bLocated)
             {
-                if(!bptrDataWrite){
+                if(!query_response_buffer_ptr){
                     return TRUE;
                 }
-                memcpy((void*) bptrDataWrite
+                memcpy(query_response_buffer_ptr
                         , (const void*) &tsMeter[wIndexm++].Serial_Num[0]
                         , METER_NAME_SIZE_FRAG);
                 return TRUE;
@@ -960,10 +1055,13 @@ BYTE bfnConsultData(BYTE bTableType, BYTE *bptrKeyID, WORD wAllDataIndexDev
             /*Store data in a buffer defined by user*/
             if(tsDevice[wAllDataIndexDev].Type)
             {
-                memcpy((void*) bptrDataWrite
+                memcpy( query_response_buffer_ptr
                         , (const void*) &tsDevice[wAllDataIndexDev].Short_Add[0]
                         , Buffer_Lenght_MAC_Info - 4);
-                * bptrDataWriteSize = Buffer_Lenght_MAC_Info - 4;
+                
+                ESPMeteringTable_SetQueryResponseBufferSize(query, Buffer_Lenght_MAC_Info - 4);
+                
+                
                 return TRUE;
             }else
             {
@@ -974,11 +1072,11 @@ BYTE bfnConsultData(BYTE bTableType, BYTE *bptrKeyID, WORD wAllDataIndexDev
             /*Store data in a buffer defined by user*/
              if(tsMeter[wAllDataIndexMtr].Type)
              {
-                memcpy((void*) bptrDataWrite
+                memcpy(query_response_buffer_ptr
                         , (const void*) &tsMeter[wAllDataIndexMtr].Serial_Num[0]
                         , METER_NAME_SIZE - 4);
                 
-                * bptrDataWriteSize = METER_NAME_SIZE - 4;
+                ESPMeteringTable_SetQueryResponseBufferSize(query, METER_NAME_SIZE - 4);
                 return TRUE;
              }else
              {
@@ -989,10 +1087,14 @@ BYTE bfnConsultData(BYTE bTableType, BYTE *bptrKeyID, WORD wAllDataIndexDev
             /*Blank Spaces Filter*/
             if(tsMeter[wAllDataIndexMtr].Type)
             {   /*Store data in a buffer defined by user*/
-                bBufferIICRead = bptrDataWrite;
+                bBufferIICRead = query_response_buffer_ptr;
                 wAddressGLOBAL = (WORD)(((wAllDataIndexMtr)*Buffer_Lenght_Single_reading) + CAB_READ_Readings_ADD);
                 bfnIIC_MEM24_1025_Read(wAddressGLOBAL
-                                    , (WORD)Buffer_Lenght_Single_reading);
+                                    , (WORD)Buffer_Lenght_Single_reading, &query->isWaitingForQueryResponse);
+                
+                ESPMeteringTable_SetQueryResponseBufferSize(query, Buffer_Lenght_Single_reading);
+                ESPMeteringTable_SetWaitingForQueryResponse(query, TRUE);
+                
                 return TRUE;
             }else
             {

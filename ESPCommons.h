@@ -23,4 +23,3 @@
 
 
 #endif	/* __ESP_COMMONS_H__ */
-

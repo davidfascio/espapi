@@ -1,6 +1,16 @@
+//******************************************************************************
+//* File: ESP_API.c
+//
+
+
+//******************************************************************************
+// Includes
+//******************************************************************************
 #include "ESP_API.h"
 
-
+//******************************************************************************
+// Variables
+//******************************************************************************
 ESP_API_FUNCTION_LIST espAPIFunctionList[] = {
     
     //***********************************************************************************************************
@@ -74,6 +84,10 @@ ESP_API_FUNCTION_LIST espAPIFunctionList[] = {
     ESP_API_FUNCTION_LIST_NULL
 };
 
+//******************************************************************************
+// ESP_API Functions
+//******************************************************************************
+
 ESP_API_FUNCTION_LIST_PTR ESP_API_GetESPAPIFunctionList(BYTE functionCode) {
 
     ESP_API_FUNCTION_LIST_PTR espAPIFunctionList_ptr = espAPIFunctionList;
@@ -113,16 +127,15 @@ BYTE ESP_API_ResponseProcess(ESP_COM_INTERFACE_REQUEST_PTR requestControl) {
     switch(error_code){
     
         case ESP_DOES_NOT_WAIT_ANSWER:
+            
             ESPComInterface_SendFrame(response.invokedFunctionCode, response.data, response.dataSize, FALSE, FALSE, FALSE, 0);
+            error_code = ESP_API_NO_ERROR_CODE;
             break;
             
         case WAIT_ANSWER:
             
             ESPComInterface_SendFrame(response.invokedFunctionCode, response.data, response.dataSize, TRUE, TRUE, FALSE, response.pagingDataSize);
-            
-            
-        
-            // IMPORTANT Implement Paging
+            error_code = ESP_API_NO_ERROR_CODE;
             break;
             
         /*case NO_SEND_ANSWER:
@@ -186,8 +199,7 @@ void ESP_API_ReceivedHandler(void) {
         case ESP_COM_INTERFACE_MAC_ADDRESS_ERROR_CODE:
         case ESP_COM_INTERFACE_CRC_ERROR_CODE:
         case ESP_COM_INTERFACE_END_OF_HEADER_ERROR_CODE:
-
-            //! debug
+            
             print_error("ESPComInterface_ReceivedHandler: %04d", error_code);
             break;
 
@@ -198,4 +210,3 @@ void ESP_API_ReceivedHandler(void) {
     //!ESPComInterface_CleanBuffer();
     ComSerialInterface_CleanBuffer();
 }
-

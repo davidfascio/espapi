@@ -204,3 +204,10 @@ WORD ComSerialInterface_GetBufferSize(void){
     
     return ComSerialInterfaceBufferUsed;
 }
+
+void ComSerialInterface_FillBuffer(BYTE * buffer, WORD bufferSize){
+    
+    memcpy(ComSerialInterfaceBuffer, buffer, bufferSize);
+    ComSerialInterfaceBufferUsed = bufferSize;
+            vfnOneShotReload(WAIT_FRAME_UART_ONESHOT, _1_MSEC_);
+}

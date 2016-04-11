@@ -49,6 +49,9 @@
 #define METER_NO_SAVE_IN_DB                                         0x8D
 #define PARAMETERS_NO_SAVE                                          0x8E
 
+//******************************************************************************
+// SYSTEM Vartypes
+//******************************************************************************
 typedef union {
     struct{        
         unsigned fix        :5;        
@@ -79,4 +82,3 @@ BYTE bfnResetCoordinatorLocal(BYTE * dataRequest, WORD dataRequestSize,
         BYTE * dataResponse, WORD * dataResponseSize, WORD * pagingDataResponseSize);
 
 #endif	/* __SYSTEM_H__ */
-

@@ -72,6 +72,10 @@ typedef struct {
 typedef ESP_COM_INTERFACE_REQUEST ESP_COM_INTERFACE_RESPONSE;
 typedef ESP_COM_INTERFACE_REQUEST_PTR ESP_COM_INTERFACE_RESPONSE_PTR;
 
+//******************************************************************************
+// ESP_COM_INTERFACE REQUEST and RESPONSE Function Prototypes
+//******************************************************************************
+
 void ESPComInterfaceRequest_Setup(ESP_COM_INTERFACE_REQUEST_PTR requestControl, BYTE invokedFunctionCode, BYTE * data, WORD dataSize);
 void ESPComInterfaceRequest_Clear(ESP_COM_INTERFACE_REQUEST_PTR requestControl);
 void ESPComInterfaceResponse_Clear(ESP_COM_INTERFACE_RESPONSE_PTR responseControl);
@@ -83,6 +87,7 @@ BYTE ESPComInterfaceRequest_GetInvokedFunctionCode(ESP_COM_INTERFACE_REQUEST_PTR
 WORD ESPComInterfaceRequest_GetData(ESP_COM_INTERFACE_REQUEST_PTR requestControl, BYTE * data, WORD  dataSize);
 
 void ESPComInterfaceRequest_Print(ESP_COM_INTERFACE_REQUEST_PTR requestControl);
+
 //******************************************************************************
 // ESP_COM_INTERFACE Function Prototypes
 //******************************************************************************
@@ -105,4 +110,3 @@ BYTE ESPComInterface_ReceivedHandler(BYTE * buffer, WORD bufferSize, ESP_COM_INT
 
 
 #endif	/* __ESP_COM_INTERFACE_H__ */
-

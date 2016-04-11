@@ -8,10 +8,16 @@
 #ifndef __ZDO_CONTROL_H__
 #define	__ZDO_CONTROL_H__
 
+//******************************************************************************
+// Includes
+//******************************************************************************
 #include "ESPCommons.h"
 #include "System.h"
 #include "SystemLog.h"
 
+//******************************************************************************
+// ZDOControl Function Prototypes
+//******************************************************************************
 BYTE ZDOControl_SetPANID(WORD panid);
 BYTE ZDOControl_SetLocalPermitJoin(BYTE permit);
 

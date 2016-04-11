@@ -48,6 +48,7 @@ void ComSerialInterface_Check(void);
 void ComSerialInterface_PrintData(BYTE * frame, WORD frameLen);
 BYTE * ComSerialInterface_GetBuffer( void);    
 WORD ComSerialInterface_GetBufferSize(void);
+void ComSerialInterface_FillBuffer(BYTE * buffer, WORD bufferSize);
 
 #endif	/* __COM_SERIAL_INTERFACE_H__ */
 

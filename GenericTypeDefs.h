@@ -26,4 +26,3 @@ typedef struct _LONG_ADDR
 } LONG_ADDR;
 
 #endif	/* __GENERIC_TYPE_DEFS_H__ */
-

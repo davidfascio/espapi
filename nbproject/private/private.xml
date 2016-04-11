@@ -9,6 +9,7 @@
         <group>
             <file>file:/C:/development/test/ESPAPI/Utility.h</file>
             <file>file:/C:/development/test/ESPAPI/ZCLComProtocol.c</file>
+            <file>file:/C:/development/test/ESPAPI/GenericTypeDefs.h</file>
             <file>file:/C:/development/test/ESPAPI/mem24_1025_I2C.h</file>
             <file>file:/C:/development/test/ESPAPI/SystemTime.h</file>
             <file>file:/C:/development/test/ESPAPI/ZCLComProtocol.h</file>
@@ -16,6 +17,7 @@
             <file>file:/C:/development/test/ESPAPI/ESPMeteringTable.h</file>
             <file>file:/C:/development/test/ESPAPI/ESPComInterface.h</file>
             <file>file:/C:/development/test/ESPAPI/ESP_API.c</file>
+            <file>file:/C:/development/test/ESPAPI/ComSerialInterface.h</file>
             <file>file:/C:/development/test/ESPAPI/ESPComInterface.c</file>
             <file>file:/C:/development/test/ESPAPI/SystemTime.c</file>
             <file>file:/C:/development/test/ESPAPI/ComSerialInterface.c</file>

@@ -53,7 +53,6 @@ typedef struct {
 //******************************************************************************
 
 ESP_API_FUNCTION_LIST_PTR ESP_API_GetESPAPIFunctionList(BYTE functionCode);
-
 BYTE ESP_API_ResponseProcess(ESP_COM_INTERFACE_REQUEST_PTR requestControl);
 void ESP_API_ReceivedHandler(void);
 

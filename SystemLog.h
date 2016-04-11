@@ -3,9 +3,12 @@
 
 #include <stdarg.h>
 #include <stdio.h>
+#include <string.h>
 #include "GenericTypeDefs.h"
 //! #include "Shell.h"
 
+#define SHELL_CONTEXT_PROMPT                            "\n\rwsacii-1.0> "
+#define SHELL_CONTEXT_PROMPT_LEN                        (strlen(SHELL_CONTEXT_PROMPT))
 #define __FILENAME__ (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
 
 #define SYSTEM_LOG_PRINT_MAX_BUFFER_SIZE                                (300)

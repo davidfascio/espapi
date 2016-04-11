@@ -1,6 +1,15 @@
-#include "SystemTime.h"
-#include "SystemLog.h"
+//******************************************************************************
+//* File ESPComInterface.c
+//
 
+//******************************************************************************
+// Includes
+//******************************************************************************
+#include "SystemTime.h"
+
+//******************************************************************************
+// SYSTEM TIME Function
+//******************************************************************************
 DWORD SystemTime_GetTime(void){
     time_t sec;
     sec = time(NULL);
@@ -9,10 +18,13 @@ DWORD SystemTime_GetTime(void){
 }
 BYTE SystemTime_SetTime(SYSTEM_TIME time){
     
-    print_debug("TimeZone :d, Time: %d",  time.timeZone, time.time);
+    print_debug("TimeZone :%d, Time: %d",  time.timeZone, time.time);
     return SUCCESS_CMD;
 }
 
+//******************************************************************************
+// ESP_API Function Prototypes
+//******************************************************************************
 BYTE bfnReadTimeDateLocal(BYTE * dataRequest, WORD dataRequestSize,
         BYTE * dataResponse, WORD * dataResponseSize, WORD * pagingDataResponseSize){
     

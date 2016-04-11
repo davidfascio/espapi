@@ -85,6 +85,7 @@ void vfnTime_Out_Meter_Stabilize_OneShot(void){
 
 void vfnTime_Out_Meter_Response_OneShot(void){
     
+    bfnIIC_MEM24_1025_Notification();
     //!MeterControl_ExpireResponseTimeout();
     // For Debug proporse
     //MeterControl_SetDataAvailable(TRUE);    
@@ -130,9 +131,26 @@ void FillDemoDevices(void);
 void FillDemoDevices(void){
     
     DEV_LIST demo_dev;
-    MTR_LIST demo_mtr;                                                 
+    MTR_LIST demo_mtr; 
+    READING_LIST demo_reading;
     BYTE index;
-    if(demo_dev_index  < 10){
+    Data_Readings dataReading;
+    WORD crcFrame;
+    
+    memset((BYTE *) &dataReading, 0x00, sizeof(Data_Readings));
+    
+    dataReading.CURRENT_A_Add = 30;
+    dataReading.VOLTAGE_A_Add = 12000;
+    dataReading.TIME_STAMP_Add = 0;
+    dataReading.FRECUENCY_Add = 60;
+    
+    
+    memcpy(demo_reading.Reading, (BYTE *) & dataReading, sizeof(demo_reading.Reading));
+    crcFrame = wfnCRC_CALC(demo_reading.Reading, sizeof(demo_reading.Reading), 0xFFFF);
+    
+    inverted_memcpy((BYTE *) demo_reading.CRC, (BYTE *) &crcFrame, 2);
+    
+    if(demo_dev_index  < 20){
         
         
         memcpy(demo_dev.Short_Add, demo_dev_default_short_addr, sizeof(demo_dev_default_short_addr));
@@ -150,11 +168,19 @@ void FillDemoDevices(void){
         demo_mtr.Type = demo_meter_type;
         demo_mtr.Signature = demo_meter_signature;
         
+        
+        
+        
         for(index = 0; index < 12; index++){
             
             sprintf(demo_meter_serial_number, "%016d", demo_mtr_index);
             inverted_memcpy(demo_mtr.Serial_Num, demo_meter_serial_number, 16);
             bfnSaveData (METERSTABLE, (BYTE *) &demo_mtr);
+            
+            inverted_memcpy(demo_reading.Serial_Num , demo_meter_serial_number, 16);
+            
+            bfnSaveData(READINGSTABLE, (BYTE *) &demo_reading);
+            
             
             demo_mtr_index++;
             demo_mtr.Signature++;
@@ -172,6 +198,8 @@ int main(int argc, char** argv) {
     
     FillDemoDevices();
     
+    BYTE buffer[]= { 0x55, 0xCC, 0x09, 0x00, 0x1B, 0x09, 0x00, 0x02, 0x0A, 0xB6, 0xDA, 0x24, 0x32, 0x70, 0xEF, 0x33, 0xCC };
+    WORD bufferSize = sizeof(buffer);
     
     vfnEventsEngineInit();
     vfnEventEnable(TB_EVENT);
@@ -181,6 +209,8 @@ int main(int argc, char** argv) {
     
     vfnPeriodicTimerEnable(LED_TOGGLE_MAIN_PERTASK);
     vfnPeriodicTimerEnable(GO_TO_READ_MTR_PERTASK);
+    
+    ComSerialInterface_FillBuffer(buffer,  bufferSize);
     
     while(TRUE){
         vfnEventsEngine();

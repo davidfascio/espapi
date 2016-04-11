@@ -1,5 +1,15 @@
+//******************************************************************************
+//* File: ZDOControl.c
+//
+
+//******************************************************************************
+// Includes
+//******************************************************************************
 #include "ZDOControl.h"
 
+//******************************************************************************
+// ZDOControl Function
+//******************************************************************************
 BYTE ZDOControl_SetPANID(WORD panid){
     
     print_debug("New PANID: %04X", panid);
@@ -12,6 +22,9 @@ BYTE ZDOControl_SetLocalPermitJoin(BYTE permit){
     return SUCCESS_CMD;
 }
 
+//******************************************************************************
+// ESP_API Function Prototypes
+//******************************************************************************
 BYTE bfnReadChannelLocal(BYTE * dataRequest, WORD dataRequestSize,
         BYTE * dataResponse, WORD * dataResponseSize, WORD * pagingDataResponseSize){
     

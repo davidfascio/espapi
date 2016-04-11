@@ -82,4 +82,3 @@ typedef union
 Flags sFlags;
 
 #endif	/* __EVENTS_ENGINE_H__ */
-
