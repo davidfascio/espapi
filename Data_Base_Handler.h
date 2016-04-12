@@ -23,36 +23,36 @@
 #include "SystemEvents.h"
 
 /*-- Types Definitions -----------------------------------------------------------------*/
-#define ESP_METERING_TABLE_QUERY_RESPONSE_MAX_SIZE                         (100)
+#define DATA_BASE_HANDLER_QUERY_RESPONSE_MAX_SIZE                         (100)
 
 typedef enum{
     METER_TABLE_LIST,
     READING_TABLE_LIST,
     DEVICE_TABLE_LIST
-}ESP_METERING_TABLE_LIST_TYPE;
+}DATA_BASE_HANDLER_LIST_TYPE;
 
 typedef struct{
     WORD startItem;
     WORD quantityOfItems;
-    ESP_METERING_TABLE_LIST_TYPE tableListType;
-    BYTE queryResponseBuffer[ESP_METERING_TABLE_QUERY_RESPONSE_MAX_SIZE];
+    DATA_BASE_HANDLER_LIST_TYPE tableListType;
+    BYTE queryResponseBuffer[DATA_BASE_HANDLER_QUERY_RESPONSE_MAX_SIZE];
     WORD queryResponseBufferSize;
     BOOL isWaitingForQueryResponse;
-}ESP_METERING_TABLE_QUERY, * ESP_METERING_TABLE_QUERY_PTR;
+}DATA_BASE_HANDLER_QUERY, * DATA_BASE_HANDLER_QUERY_PTR;
 
 /*-- Local functions prototypes --------------------------------------------------------*/
-void ESPMeteringTable_SetupQuery(ESP_METERING_TABLE_QUERY_PTR query, WORD startItem, WORD quantityOfItems, ESP_METERING_TABLE_LIST_TYPE tableListType);
-void ESPMeteringTable_ClearQuery(ESP_METERING_TABLE_QUERY_PTR query);
-WORD ESPMeteringTable_GetStartItem(ESP_METERING_TABLE_QUERY_PTR query);
-void ESPMeteringTable_SetStartItem(ESP_METERING_TABLE_QUERY_PTR query, WORD startItem);
-WORD ESPMeteringTable_GetQuantityOfItems(ESP_METERING_TABLE_QUERY_PTR query);
-void ESPMeteringTable_SetQuantityOfItems(ESP_METERING_TABLE_QUERY_PTR query, WORD quantityOfItems);
-ESP_METERING_TABLE_LIST_TYPE ESPMeteringTable_GetTableListType(ESP_METERING_TABLE_QUERY_PTR query);
-BYTE * ESPMeteringTable_GetQueryResponseBuffer(ESP_METERING_TABLE_QUERY_PTR query);
-WORD ESPMeteringTable_GetQueryResponseBufferSize(ESP_METERING_TABLE_QUERY_PTR query);
-void ESPMeteringTable_SetQueryResponseBufferSize(ESP_METERING_TABLE_QUERY_PTR query, WORD queryResponseBufferSize);
-BOOL ESPMeteringTable_IsWaitingForQueryResponse(ESP_METERING_TABLE_QUERY_PTR query);
-void ESPMeteringTable_SetWaitingForQueryResponse(ESP_METERING_TABLE_QUERY_PTR query, BOOL isWaitingForQueryResponse);
+void DataBaseHandler_SetupQuery(DATA_BASE_HANDLER_QUERY_PTR query, WORD startItem, WORD quantityOfItems, DATA_BASE_HANDLER_LIST_TYPE tableListType);
+void DataBaseHandler_ClearQuery(DATA_BASE_HANDLER_QUERY_PTR query);
+WORD DataBaseHandler_GetStartItem(DATA_BASE_HANDLER_QUERY_PTR query);
+void DataBaseHandler_SetStartItem(DATA_BASE_HANDLER_QUERY_PTR query, WORD startItem);
+WORD DataBaseHandler_GetQuantityOfItems(DATA_BASE_HANDLER_QUERY_PTR query);
+void DataBaseHandler_SetQuantityOfItems(DATA_BASE_HANDLER_QUERY_PTR query, WORD quantityOfItems);
+DATA_BASE_HANDLER_LIST_TYPE DataBaseHandler_GetTableListType(DATA_BASE_HANDLER_QUERY_PTR query);
+BYTE * DataBaseHandler_GetQueryResponseBuffer(DATA_BASE_HANDLER_QUERY_PTR query);
+WORD DataBaseHandler_GetQueryResponseBufferSize(DATA_BASE_HANDLER_QUERY_PTR query);
+void DataBaseHandler_SetQueryResponseBufferSize(DATA_BASE_HANDLER_QUERY_PTR query, WORD queryResponseBufferSize);
+BOOL DataBaseHandler_IsWaitingForQueryResponse(DATA_BASE_HANDLER_QUERY_PTR query);
+void DataBaseHandler_SetWaitingForQueryResponse(DATA_BASE_HANDLER_QUERY_PTR query, BOOL isWaitingForQueryResponse);
 
 /*-- Defines ---------------------------------------------------------------------------*/
 #define NEW_MTR_ADD                 0x02
@@ -62,7 +62,7 @@ void ESPMeteringTable_SetWaitingForQueryResponse(ESP_METERING_TABLE_QUERY_PTR qu
 /*-- Functions -------------------------------------------------------------------------*/
 BYTE bfnSaveData(BYTE bTableType,BYTE *vptrTableStructure);
 BYTE bfnConsultData(BYTE bTableType, BYTE *bptrKeyID, WORD wAllDataIndexDev
-        , WORD wAllDataIndexMtr, ESP_METERING_TABLE_QUERY_PTR query);
+        , WORD wAllDataIndexMtr, DATA_BASE_HANDLER_QUERY_PTR query);
 void vfnInitDataBase(void);
 BYTE bfnBackUp_Init (void);
 WORD wfnIndexConsutl(BYTE bTableType);

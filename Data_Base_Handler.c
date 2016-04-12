@@ -96,12 +96,12 @@ BYTE bSpace;
 BYTE bSpace1;
 //BYTE tsReading[];
 
-void ESPMeteringTable_SetupQuery(ESP_METERING_TABLE_QUERY_PTR query, WORD startItem, WORD quantityOfItems, ESP_METERING_TABLE_LIST_TYPE tableListType) {
+void DataBaseHandler_SetupQuery(DATA_BASE_HANDLER_QUERY_PTR query, WORD startItem, WORD quantityOfItems, DATA_BASE_HANDLER_LIST_TYPE tableListType) {
 
     if(query == NULL)
         return;
     
-    ESPMeteringTable_ClearQuery(query);
+    DataBaseHandler_ClearQuery(query);
     
     query->startItem = startItem;
     query->quantityOfItems = quantityOfItems;
@@ -110,21 +110,21 @@ void ESPMeteringTable_SetupQuery(ESP_METERING_TABLE_QUERY_PTR query, WORD startI
     return;
 }
 
-void ESPMeteringTable_ClearQuery(ESP_METERING_TABLE_QUERY_PTR query){
+void DataBaseHandler_ClearQuery(DATA_BASE_HANDLER_QUERY_PTR query){
     
     if(query == NULL)
         return;
     
-    memset(query, 0, sizeof(ESP_METERING_TABLE_QUERY));
+    memset(query, 0, sizeof(DATA_BASE_HANDLER_QUERY));
     return;
 }
 
-WORD ESPMeteringTable_GetStartItem(ESP_METERING_TABLE_QUERY_PTR query){
+WORD DataBaseHandler_GetStartItem(DATA_BASE_HANDLER_QUERY_PTR query){
     
     return query->startItem;
 }
 
-void ESPMeteringTable_SetStartItem(ESP_METERING_TABLE_QUERY_PTR query, WORD startItem){
+void DataBaseHandler_SetStartItem(DATA_BASE_HANDLER_QUERY_PTR query, WORD startItem){
     
     if(query == NULL)
         return;
@@ -133,12 +133,12 @@ void ESPMeteringTable_SetStartItem(ESP_METERING_TABLE_QUERY_PTR query, WORD star
     return;
 }
 
-WORD ESPMeteringTable_GetQuantityOfItems(ESP_METERING_TABLE_QUERY_PTR query){
+WORD DataBaseHandler_GetQuantityOfItems(DATA_BASE_HANDLER_QUERY_PTR query){
     
     return query->quantityOfItems;
 }
 
-void ESPMeteringTable_SetQuantityOfItems(ESP_METERING_TABLE_QUERY_PTR query, WORD quantityOfItems){
+void DataBaseHandler_SetQuantityOfItems(DATA_BASE_HANDLER_QUERY_PTR query, WORD quantityOfItems){
     
     if(query == NULL)
         return;
@@ -147,22 +147,22 @@ void ESPMeteringTable_SetQuantityOfItems(ESP_METERING_TABLE_QUERY_PTR query, WOR
     return;
 }
 
-ESP_METERING_TABLE_LIST_TYPE ESPMeteringTable_GetTableListType(ESP_METERING_TABLE_QUERY_PTR query){
+DATA_BASE_HANDLER_LIST_TYPE DataBaseHandler_GetTableListType(DATA_BASE_HANDLER_QUERY_PTR query){
     
     return query->tableListType;
 }
 
-BYTE * ESPMeteringTable_GetQueryResponseBuffer(ESP_METERING_TABLE_QUERY_PTR query){
+BYTE * DataBaseHandler_GetQueryResponseBuffer(DATA_BASE_HANDLER_QUERY_PTR query){
     
     return query->queryResponseBuffer;
 }
 
-WORD ESPMeteringTable_GetQueryResponseBufferSize(ESP_METERING_TABLE_QUERY_PTR query){
+WORD DataBaseHandler_GetQueryResponseBufferSize(DATA_BASE_HANDLER_QUERY_PTR query){
     
     return query->queryResponseBufferSize;
 }
 
-void ESPMeteringTable_SetQueryResponseBufferSize(ESP_METERING_TABLE_QUERY_PTR query, WORD queryResponseBufferSize){
+void DataBaseHandler_SetQueryResponseBufferSize(DATA_BASE_HANDLER_QUERY_PTR query, WORD queryResponseBufferSize){
 
     if(query == NULL)
         return;
@@ -171,12 +171,12 @@ void ESPMeteringTable_SetQueryResponseBufferSize(ESP_METERING_TABLE_QUERY_PTR qu
     return;    
 }
 
-BOOL ESPMeteringTable_IsWaitingForQueryResponse(ESP_METERING_TABLE_QUERY_PTR query){
+BOOL DataBaseHandler_IsWaitingForQueryResponse(DATA_BASE_HANDLER_QUERY_PTR query){
     
     return query->isWaitingForQueryResponse;
 }
 
-void ESPMeteringTable_SetWaitingForQueryResponse(ESP_METERING_TABLE_QUERY_PTR query, BOOL isWaitingForQueryResponse){
+void DataBaseHandler_SetWaitingForQueryResponse(DATA_BASE_HANDLER_QUERY_PTR query, BOOL isWaitingForQueryResponse){
     
     if(query == NULL)
         return;
@@ -883,7 +883,7 @@ void vfnAllocDev(WORD wIndex, BYTE bStatus)
 
 /****************************************************************************************/
 BYTE bfnConsultData(BYTE bTableType, BYTE *bptrKeyID, WORD wAllDataIndexDev
-        , WORD wAllDataIndexMtr, ESP_METERING_TABLE_QUERY_PTR query)
+        , WORD wAllDataIndexMtr, DATA_BASE_HANDLER_QUERY_PTR query)
 {
     WORD wIndex      = FALSE;
     WORD wIndexBckUp = FALSE;
@@ -893,7 +893,7 @@ BYTE bfnConsultData(BYTE bTableType, BYTE *bptrKeyID, WORD wAllDataIndexDev
     static WORD wIndexm=FALSE;
     bSpace          = FALSE;
     
-    BYTE * query_response_buffer_ptr =  ESPMeteringTable_GetQueryResponseBuffer(query);
+    BYTE * query_response_buffer_ptr =  DataBaseHandler_GetQueryResponseBuffer(query);
     //* bptrDataWriteSize = 0;
     
     
@@ -1059,7 +1059,7 @@ BYTE bfnConsultData(BYTE bTableType, BYTE *bptrKeyID, WORD wAllDataIndexDev
                         , (const void*) &tsDevice[wAllDataIndexDev].Short_Add[0]
                         , Buffer_Lenght_MAC_Info - 4);
                 
-                ESPMeteringTable_SetQueryResponseBufferSize(query, Buffer_Lenght_MAC_Info - 4);
+                DataBaseHandler_SetQueryResponseBufferSize(query, Buffer_Lenght_MAC_Info - 4);
                 
                 
                 return TRUE;
@@ -1076,7 +1076,7 @@ BYTE bfnConsultData(BYTE bTableType, BYTE *bptrKeyID, WORD wAllDataIndexDev
                         , (const void*) &tsMeter[wAllDataIndexMtr].Serial_Num[0]
                         , METER_NAME_SIZE - 4);
                 
-                ESPMeteringTable_SetQueryResponseBufferSize(query, METER_NAME_SIZE - 4);
+                DataBaseHandler_SetQueryResponseBufferSize(query, METER_NAME_SIZE - 4);
                 return TRUE;
              }else
              {
@@ -1092,8 +1092,8 @@ BYTE bfnConsultData(BYTE bTableType, BYTE *bptrKeyID, WORD wAllDataIndexDev
                 bfnIIC_MEM24_1025_Read(wAddressGLOBAL
                                     , (WORD)Buffer_Lenght_Single_reading, &query->isWaitingForQueryResponse);
                 
-                ESPMeteringTable_SetQueryResponseBufferSize(query, Buffer_Lenght_Single_reading);
-                ESPMeteringTable_SetWaitingForQueryResponse(query, TRUE);
+                DataBaseHandler_SetQueryResponseBufferSize(query, Buffer_Lenght_Single_reading);
+                DataBaseHandler_SetWaitingForQueryResponse(query, TRUE);
                 
                 return TRUE;
             }else

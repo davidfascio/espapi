@@ -5,8 +5,8 @@
  * Created on 1 de abril de 2016, 13:07
  */
 
-#ifndef __ESP_METERING_TABLE_H__
-#define	__ESP_METERING_TABLE_H__
+#ifndef __DATA_BASE_HANDLER_H__
+#define	__DATA_BASE_HANDLER_H__
 
 //******************************************************************************
 // Includes
@@ -19,7 +19,7 @@
 //******************************************************************************
 // ESPMeteringTable Function Prototypes
 //******************************************************************************
-BYTE bfnBuffer_Table_Meter (WORD quantityOfItems, ESP_METERING_TABLE_LIST_TYPE tableListType);
+BYTE bfnBuffer_Table_Meter (WORD quantityOfItems, DATA_BASE_HANDLER_LIST_TYPE tableListType);
 
 //******************************************************************************
 // ESP_API Function Prototypes
@@ -48,4 +48,4 @@ void vfn_tBufferLocalDriver(void);
 void ESPMeteringTable_SetStateMachine(BYTE actualState, BYTE nextState);
 void ESPMeteringTable_ErrorProcess(void);
 
-#endif	/* __ESP_METERING_TABLE_H__ */
+#endif	/* __DATA_BASE_HANDLER_H__ */

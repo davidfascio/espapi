@@ -1,5 +1,5 @@
 //******************************************************************************
-//* File ESPMeteringTable.c
+//* File DataBaseHandler.c
 //
 
 //******************************************************************************
@@ -10,7 +10,7 @@
 //******************************************************************************
 // Variables
 //******************************************************************************
-ESP_METERING_TABLE_QUERY espMeteringTableQuery;
+DATA_BASE_HANDLER_QUERY espMeteringTableQuery;
 
 //******************************************************************************
 //                  LOCAL ESP METERING TABLE STATE MACHINE
@@ -42,9 +42,9 @@ sSM _tBufferSM = {  _BUFFER_METER_IDLE_STATE,               /* bActualState     
                     _BUFFER_METER_IDLE_STATE};              /* bErrorState      */
 
 //******************************************************************************
-// ESPMeteringTable Function Prototypes
+// DataBaseHandler Function Prototypes
 //******************************************************************************
-BYTE bfnBuffer_Table_Meter(WORD quantityOfItems, ESP_METERING_TABLE_LIST_TYPE tableListType) {
+BYTE bfnBuffer_Table_Meter(WORD quantityOfItems, DATA_BASE_HANDLER_LIST_TYPE tableListType) {
 
     switch (tableListType) {
 
@@ -57,7 +57,7 @@ BYTE bfnBuffer_Table_Meter(WORD quantityOfItems, ESP_METERING_TABLE_LIST_TYPE ta
             return FALSE;
     }
     
-    ESPMeteringTable_SetupQuery(&espMeteringTableQuery, 0, quantityOfItems, tableListType);
+    DataBaseHandler_SetupQuery(&espMeteringTableQuery, 0, quantityOfItems, tableListType);
     ESPMeteringTable_SetStateMachine(_BUFFER_CONSULT_TABLE_STATE, _BUFFER_TRANSMIT_TABLE_STATE);
     
     return TRUE;
@@ -209,7 +209,7 @@ void ESPMeteringTable_SetStateMachine(BYTE actualState, BYTE nextState) {
 
 void ESPMeteringTable_ErrorProcess(void){
     
-    ESPMeteringTable_ClearQuery(&espMeteringTableQuery);
+    DataBaseHandler_ClearQuery(&espMeteringTableQuery);
     ESPMeteringTable_SetStateMachine(_BUFFER_END_STATE, _BUFFER_END_STATE);    
 }
 
@@ -225,26 +225,26 @@ void vfnBufferConsultTableState(void){
     
     BYTE bStatusData;    
     
-    WORD quantityOfItems = ESPMeteringTable_GetQuantityOfItems(&espMeteringTableQuery);
-    WORD startItem = ESPMeteringTable_GetStartItem(&espMeteringTableQuery); 
-    ESP_METERING_TABLE_LIST_TYPE tableListType = ESPMeteringTable_GetTableListType(&espMeteringTableQuery);
-    BOOL isWaitingForQueryResponse = ESPMeteringTable_IsWaitingForQueryResponse(&espMeteringTableQuery);
+    WORD quantityOfItems = DataBaseHandler_GetQuantityOfItems(&espMeteringTableQuery);
+    WORD startItem = DataBaseHandler_GetStartItem(&espMeteringTableQuery); 
+    DATA_BASE_HANDLER_LIST_TYPE tableListType = DataBaseHandler_GetTableListType(&espMeteringTableQuery);
+    BOOL isWaitingForQueryResponse = DataBaseHandler_IsWaitingForQueryResponse(&espMeteringTableQuery);
     
     if(isWaitingForQueryResponse){
     
         return;
     }
     
-    if(ESPMeteringTable_GetQueryResponseBufferSize(&espMeteringTableQuery)){
+    if(DataBaseHandler_GetQueryResponseBufferSize(&espMeteringTableQuery)){
             
         startItem++;
         quantityOfItems--;
         
         //!print_info("Paging Data: ");
-        //!print_buffer(ESPMeteringTable_GetQueryResponseBuffer(&espMeteringTableQuery), ESPMeteringTable_GetQueryResponseBufferSize(&espMeteringTableQuery));
-        ESPComInterface_SendFrame(0, ESPMeteringTable_GetQueryResponseBuffer(&espMeteringTableQuery), ESPMeteringTable_GetQueryResponseBufferSize(&espMeteringTableQuery), TRUE, FALSE, quantityOfItems == 0 );
+        //!print_buffer(DataBaseHandler_GetQueryResponseBuffer(&espMeteringTableQuery), DataBaseHandler_GetQueryResponseBufferSize(&espMeteringTableQuery));
+        ESPComInterface_SendFrame(0, DataBaseHandler_GetQueryResponseBuffer(&espMeteringTableQuery), DataBaseHandler_GetQueryResponseBufferSize(&espMeteringTableQuery), TRUE, FALSE, quantityOfItems == 0 );
         
-        ESPMeteringTable_SetupQuery(&espMeteringTableQuery,startItem,quantityOfItems,tableListType);
+        DataBaseHandler_SetupQuery(&espMeteringTableQuery,startItem,quantityOfItems,tableListType);
                 
     }
     
