@@ -10,8 +10,8 @@
             <file>file:/C:/development/test/ESPAPI/Utility.h</file>
             <file>file:/C:/development/test/ESPAPI/ZCLComProtocol.c</file>
             <file>file:/C:/development/test/ESPAPI/GenericTypeDefs.h</file>
-            <file>file:/C:/development/test/ESPAPI/mem24_1025_I2C.h</file>
             <file>file:/C:/development/test/ESPAPI/SystemTime.h</file>
+            <file>file:/C:/development/test/ESPAPI/mem24_1025_I2C.h</file>
             <file>file:/C:/development/test/ESPAPI/ZCLComProtocol.h</file>
             <file>file:/C:/development/test/ESPAPI/ZCLMeteringControl.c</file>
             <file>file:/C:/development/test/ESPAPI/ESPMeteringTable.h</file>
@@ -22,22 +22,22 @@
             <file>file:/C:/development/test/ESPAPI/SystemTime.c</file>
             <file>file:/C:/development/test/ESPAPI/ComSerialInterface.c</file>
             <file>file:/C:/development/test/ESPAPI/mem24_1025_I2C.c</file>
-            <file>file:/C:/development/test/ESPAPI/main.c</file>
             <file>file:/C:/development/test/ESPAPI/ZCLMeteringControl.h</file>
             <file>file:/C:/development/test/ESPAPI/Utility.c</file>
             <file>file:/C:/development/test/ESPAPI/SystemEvents.h</file>
             <file>file:/C:/development/test/ESPAPI/EventsEngine.h</file>
-            <file>file:/C:/development/test/ESPAPI/ZDOControl.c</file>
             <file>file:/C:/development/test/ESPAPI/EventsEngine.c</file>
+            <file>file:/C:/development/test/ESPAPI/ZDOControl.c</file>
             <file>file:/C:/development/test/ESPAPI/System.c</file>
             <file>file:/C:/development/test/ESPAPI/ZDOControl.h</file>
-            <file>file:/C:/development/test/ESPAPI/System.h</file>
             <file>file:/C:/development/test/ESPAPI/ESPMeteringCommons.h</file>
+            <file>file:/C:/development/test/ESPAPI/System.h</file>
             <file>file:/C:/development/test/ESPAPI/ESPCommons.h</file>
             <file>file:/C:/development/test/ESPAPI/Data_Base_Handler.c</file>
             <file>file:/C:/development/test/ESPAPI/ESPCommands.h</file>
             <file>file:/C:/development/test/ESPAPI/Data_Base_Handler.h</file>
             <file>file:/C:/development/test/ESPAPI/ESP_API.h</file>
+            <file>file:/C:/development/test/ESPAPI/SystemLog.c</file>
             <file>file:/C:/development/test/ESPAPI/ESPMeteringTable.c</file>
             <file>file:/C:/development/test/ESPAPI/SystemLog.h</file>
         </group>
