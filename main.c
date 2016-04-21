@@ -23,17 +23,16 @@ void vfnUART_Char_Received_OneShot(void);
 
 const sEvent taEvents[] =
 {
-    vfnTimeBasedEventsEngine,
-    NULL, //vfnMainTask,
-    NULL, //vfnI2CDriver,
-    NULL, //vfnIIC_MEM24_1025Driver,
-    vfnBackUpStartDriver,
-    NULL, //vfnBackUpDriver,
-    vfn_tBufferLocalDriver, //vfnRLYBackUpStartDriver,
-    #if IT_HAS_SHELL
-    Shell_Task,
-    vfn_Zigbee_Network_Connection_Check,
-    #endif
+    vfnTimeBasedEventsEngine,                           //  TB_EVENT = 0
+    NULL, //vfnMainTask,                                //  SELF_CLEARING_EVENTS_LIST_END, MAIN_TASK_TEST = SELF_CLEARING_EVENTS_LIST_END,
+    vfnI2CDriver, //vfnI2CDriver,                               //  I2C_DRIVER_EVENT
+    vfnIIC_MEM24_1025Driver,                            //  IIC_EVENT,
+    vfnBackUpStartDriver,                               //  BACKUP_START_EVENT
+    NULL, //vfnBackUpDriver,                            //  BACKUP_EVENT
+    vfn_tBufferLocalDriver, //vfnRLYBackUpStartDriver,  //  BUFFER_EVENT
+    NULL, //vfnRLYBackUpStartDriver                     //  RLY_BACKUP_EVENT
+    NULL, //vfnMACBackUpStartDriver                     //  MAC_BACKUP_EVENT
+    NULL //vfnTIMEBackUpStartDriver                     //  TIME_BACKUP_EVENT
 };
 
 const sPeriodicTimers taPeriodicTimers[] =
@@ -150,7 +149,7 @@ void FillDemoDevices(void){
     
     inverted_memcpy((BYTE *) demo_reading.CRC, (BYTE *) &crcFrame, 2);
     
-    if(demo_dev_index  < 20){
+    if(demo_dev_index  < 1){
         
         
         memcpy(demo_dev.Short_Add, demo_dev_default_short_addr, sizeof(demo_dev_default_short_addr));
@@ -171,7 +170,7 @@ void FillDemoDevices(void){
         
         
         
-        for(index = 0; index < 12; index++){
+        for(index = 0; index < 0; index++){
             
             sprintf(demo_meter_serial_number, "%016d", demo_mtr_index);
             inverted_memcpy(demo_mtr.Serial_Num, demo_meter_serial_number, 16);
@@ -196,10 +195,11 @@ int main(int argc, char** argv) {
     
     print_log("ESP API Demo");
     
-    FillDemoDevices();
     
-    BYTE buffer[]= { 0x55, 0xCC, 0x09, 0x00, 0x1B, 0x09, 0x00, 0x02, 0x0A, 0xB6, 0xDA, 0x24, 0x32, 0x70, 0xEF, 0x33, 0xCC };
+    
+    BYTE buffer[500];
     WORD bufferSize = sizeof(buffer);
+    WORD address= 0x00b6;
     
     vfnEventsEngineInit();
     vfnEventEnable(TB_EVENT);
@@ -210,7 +210,10 @@ int main(int argc, char** argv) {
     vfnPeriodicTimerEnable(LED_TOGGLE_MAIN_PERTASK);
     vfnPeriodicTimerEnable(GO_TO_READ_MTR_PERTASK);
     
-    ComSerialInterface_FillBuffer(buffer,  bufferSize);
+    //ComSerialInterface_FillBuffer(buffer,  bufferSize);
+    //!FillDemoDevices();
+    memset(buffer, '1',bufferSize );
+    bfnIIC_MEM24_1025_Write(buffer,address,bufferSize);
     
     while(TRUE){
         vfnEventsEngine();

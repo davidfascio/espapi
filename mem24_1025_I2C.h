@@ -16,6 +16,7 @@
 #include "Utility.h"
 #include "SystemEvents.h"
 #include "EventsEngine.h"
+#include "I2C.h"
 
 //******************************************************************************
 //* MEM24_1025_I2C Defines
@@ -27,12 +28,16 @@
 
 #define MEM24_1025_IIC_EMPTY_LOCATION_VALUE                               (0xFF)
 
+
+#define CHIP_SELECT_MEM                         (0xA4)         
+
 // Error Codes
-#define MEM24_1025_IIC_API_IS_BUSY_ERROR_CODE                               (1)
+#define MEM24_1025_IIC_API_IS_BUSY_ERROR_CODE                               (0)
 
 typedef struct{
     
     WORD _wIICDataIndex;
+    WORD _wIICTxSize;    
     WORD _wIICTxSizeMAX;    
     WORD _wIICDataIndex_Div;
     WORD _wIICDataIndex_Res;
@@ -53,6 +58,9 @@ void MEM24_1025_IIC_ClearDataBuffer(MEM24_1025_IIC_CONTROL_PTR mem24_1025_contro
 BYTE bfnIIC_MEM24_1025_Write(BYTE* bpData, WORD wAddress, WORD wDataSize);
 BYTE bfnIIC_MEM24_1025_Read(WORD wAddress, WORD wDataSize, BOOL * isWaitingForResponse);
 void vfnIIC_MEM24_1025Driver(void);
+void MEM24_1025_I2C_SetStateMachine(BYTE actualState, BYTE nextState);
+WORD MEM24_1025_I2C_GetAddressByPacketPageSend(void);
+void MEM24_1025_I2C_UpdateTxPagingValues(WORD wAddress);
 BYTE bfnIICIsBusy(void);
 
 void bfnIIC_MEM24_1025_Notification(void);
