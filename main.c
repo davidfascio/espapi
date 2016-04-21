@@ -208,7 +208,7 @@ int main(int argc, char** argv) {
     ComSerialInterface_Init();
     
     vfnPeriodicTimerEnable(LED_TOGGLE_MAIN_PERTASK);
-    vfnPeriodicTimerEnable(GO_TO_READ_MTR_PERTASK);
+    //vfnPeriodicTimerEnable(GO_TO_READ_MTR_PERTASK);
     
     //ComSerialInterface_FillBuffer(buffer,  bufferSize);
     //!FillDemoDevices();

@@ -141,8 +141,7 @@ BYTE MEM24_1025_I2C_SendAddress(BYTE chipSelect, WORD wAddress){
     
     bufferSize =  buffer_ptr - buffer;
     
-    println("Send Address: ");
-    print_buffer(buffer, bufferSize);
+    
     
     //return TRUE;
     return bfnI2CTxRxBuffer(buffer, bufferSize, NULL, 0, TRUE, FALSE);
@@ -151,8 +150,7 @@ BYTE MEM24_1025_I2C_SendAddress(BYTE chipSelect, WORD wAddress){
 BYTE MEM24_1025_I2C_SendData(BYTE * data, WORD dataSize){
 
     //! return bfnI2CTxRxBuffer(data, dataSize, NULL, 0, FALSE, TRUE);
-    println("Send Data: ");
-    print_buffer(data, dataSize);
+    
     
     return bfnI2CTxRxBuffer(data, dataSize, NULL, 0, FALSE, TRUE);
 }
@@ -243,18 +241,20 @@ void vfnIICAddressToWriteState(void){
     //! if(MEM24_1025_IIC_IsAPIError())
     //!     return ERROR_CODE;
     
+    
     wAddress = MEM24_1025_I2C_GetAddressByPacketPageSend();
     //!error_code = MEM24_1025_I2C_UpdateTxPagingValues(wAddress);
-    MEM24_1025_I2C_UpdateTxPagingValues(wAddress);
+    
     
     //! if(error_code == NO_DATA_TO_TRANSMIT)
     //!     return ERROR_CODE
     
     error_code = MEM24_1025_I2C_SendAddress(CHIP_SELECT_MEM, wAddress);
     
-    //! if(error_code == DRIVER_BUSY)
-    //!     return;
+     if(error_code == I2C_DRIVER_CONTROL_API_IS_BUSY_ERROR_CODE)
+        return;
     
+    MEM24_1025_I2C_UpdateTxPagingValues(wAddress);
     MEM24_1025_I2C_SetStateMachine(_IIC_WRITE_DATA_STATE, _IIC_WRITE_DATA_CHECK_PAGE_STATE);
 }
 
@@ -271,8 +271,8 @@ void vfnIICWriteDataState(void){
     
     error_code = MEM24_1025_I2C_SendData(data_ptr, mem241025IICControl._wIICTxSize);
     
-    //! if(error_code)
-    // return ERROR_CODE_PROCESS
+    if(error_code == I2C_DRIVER_CONTROL_API_IS_BUSY_ERROR_CODE) // I2C_DRIVER_CONTROL_API_IS_BUSY_ERROR_CODE
+        return;
     
     mem241025IICControl._wIICDataIndex += mem241025IICControl._wIICTxSize;
     
