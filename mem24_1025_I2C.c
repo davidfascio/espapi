@@ -65,16 +65,6 @@ void MEM24_1025_IIC_SetAPIBusy(BOOL state){
     sFlags.MEM_Busy = state;
 }
 
-/*BOOL MEM24_1025_IIC_IsAPIError(void){
-    
-    return sFlags.IIC_Error;
-}
-
-void MEM24_1025_IIC_SetAPIError(BOOL state){
-    
-    sFlags.IIC_Error = state;
-}*/
-
 void MEM24_1025_I2C_Clear(MEM24_1025_IIC_CONTROL_PTR mem24_1025_control){
 
     if(mem24_1025_control == NULL)
@@ -205,8 +195,7 @@ BYTE bfnIIC_MEM24_1025_Read(WORD wAddress, WORD wDataSize, BOOL * isWaitingForRe
     
     memcpy(bBufferIICRead, mem24_buffer + wAddress,  wDataSize);
     notification = isWaitingForResponse;
-    vfnOneShotReload(TIME_OUT_METER_RESPONSE_ONESHOT, _1_MSEC_);
-            
+    vfnOneShotReload(TIME_OUT_METER_RESPONSE_ONESHOT, _1_MSEC_);            
 }
 
 //******************************************************************************
