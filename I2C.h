@@ -31,7 +31,7 @@
 #define SDA_B_LO                            
 #define SCL_B_HI                            
 #define SCL_B_LO                            
-#define SDA_B_IN                            SDAL
+//#define SDA_B_IN                            SDAL
 
 #define I2C_DRIVER_MAX_PAGING_DATA_SIZE                                     (128)
 
@@ -44,6 +44,12 @@ typedef enum
     I2C_NO_ACK_ERROR
 }eI2CFlags;
 
+typedef enum{
+    I2C_DRIVER_STOPPED,
+    I2C_DRIVER_INITIALIZED,
+    I2C_DRIVER_ENDED
+} TXRX_STATUS;
+
 typedef struct{
     
     WORD _wI2CRxCounter;
@@ -53,7 +59,7 @@ typedef struct{
     BYTE _bpI2CRxBuffer[I2C_DRIVER_MAX_PAGING_DATA_SIZE];
     BYTE _bpI2CTxBuffer[I2C_DRIVER_MAX_PAGING_DATA_SIZE];
     BYTE _bI2CFlags;
-    
+    TXRX_STATUS txrxStatus;    
 } I2C_DRIVER_CONTROL, * I2C_DRIVER_CONTROL_PTR;
 
 void I2CDriverControl_SetRxCounter(WORD _wI2CRxCounter);
@@ -78,6 +84,10 @@ BOOL I2CDriverControl_GetFlagsByIndex(eI2CFlags _bI2CFlags);
 void I2CDriverControl_ClearFlags( void );
 BYTE I2CDriverControl_GetFlags(void);
 
+void I2CDriverControl_SetTxRxStatus(TXRX_STATUS status);
+TXRX_STATUS I2CDriverControl_GetTxRxStatus( void );
+
+
 /*Funtion Prototypes*/
 void vfnI2CInit(void);
 BYTE bfnI2CError(void);
@@ -86,5 +96,6 @@ BYTE bfnI2CTxRxBuffer(BYTE* bpTxPtr, WORD wTxSize, BYTE* bpRxPtr, WORD wRxSize, 
 void vfnI2CDriver(void);
 void vfnRTCChipReset(void);
 
+extern BOOL SDA_B_IN;
 #endif	/* __I2C_H__ */
 

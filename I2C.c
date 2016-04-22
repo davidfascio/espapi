@@ -14,6 +14,7 @@ WORD _wI2CRxIndex=0;
 */
 
 I2C_DRIVER_CONTROL i2cDriverControl;
+BOOL SDA_B_IN;
 
 //------------------------------------------------------------------------------
 // Local functions prototypes
@@ -129,6 +130,16 @@ BYTE I2CDriverControl_GetFlags( void ){
     return i2cDriverControl._bI2CFlags;
 }
 
+void I2CDriverControl_SetTxRxStatus(TXRX_STATUS status){
+    
+    i2cDriverControl.txrxStatus = status;    
+}
+
+TXRX_STATUS I2CDriverControl_GetTxRxStatus( void ){
+    
+    return i2cDriverControl.txrxStatus;
+}
+
 //------------------------------------------------------------------------------
 // Functions Declarations
 //------------------------------------------------------------------------------
@@ -196,7 +207,7 @@ BYTE bfnI2CTxRxBuffer(BYTE* bpTxPtr, WORD wTxSize, BYTE* bpRxPtr, WORD wRxSize, 
     
     if(bfnIsI2CBusy())
     {
-        I2CDriverControl_SetFlagsByIndex(I2C_NO_ACK_ERROR, FALSE);
+        //I2CDriverControl_SetFlagsByIndex(I2C_NO_ACK_ERROR, FALSE);
         return(FALSE);
     }
     
@@ -204,9 +215,10 @@ BYTE bfnI2CTxRxBuffer(BYTE* bpTxPtr, WORD wTxSize, BYTE* bpRxPtr, WORD wRxSize, 
     {        
         //!_wI2CTxCounter = wTxSize;
         //!_bpI2CTxPtr = bpTxPtr;
-        println("Packet Size: %d, Packet Data: ", wTxSize);
+        print_debug("Packet Size: %d, Packet Data: ", wTxSize);
         print_buffer(bpTxPtr, wTxSize);
         I2CDriverControl_SetTxBuffer(bpTxPtr, wTxSize);
+        I2CDriverControl_SetTxRxStatus(I2C_DRIVER_INITIALIZED);
         bError = FALSE;
     }
     
@@ -366,6 +378,7 @@ void vfnI2CDriver(void)
     {
             vfnI2C_StopBit();
             //IIC driver disable...
+            I2CDriverControl_SetTxRxStatus(I2C_DRIVER_ENDED);
             vfnEventClear(I2C_DRIVER_EVENT);
             vfnEventDisable(I2C_DRIVER_EVENT);
     }
