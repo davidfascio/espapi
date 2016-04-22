@@ -223,8 +223,8 @@ BYTE bfnBackUp_Init(void)
     vfnEventEnable(BACKUP_START_EVENT);
     vfnEventPost(BACKUP_START_EVENT);
     /*Read Devices Index From EEPROM*/
-    bBufferIICRead = (BYTE*) & wDevicesIndxBckUp;
-    bfnIIC_MEM24_1025_Read(NODES_INDEX_BCKUP, Address_Size, &temporal);
+    //! bBufferIICRead = (BYTE*) & wDevicesIndxBckUp;
+    bfnIIC_MEM24_1025_Read(NODES_INDEX_BCKUP, (BYTE*) & wDevicesIndxBckUp, Address_Size, &temporal);
     return (TRUE);
 }
 /****************************************************************************************/
@@ -290,8 +290,8 @@ void vfnBKUPReadDevicesBKIndxState(void){
     /*Asks if EEPROM is Busy*/
     if (!bfnIICIsBusy())
     {   /*Starts Reading*/
-        bBufferIICRead = (BYTE*) & wDevicesIndex;
-        bfnIIC_MEM24_1025_Read(NODES_INDEX_ADD, Address_Size, &temporal);
+        //! bBufferIICRead = (BYTE*) & wDevicesIndex;
+        bfnIIC_MEM24_1025_Read(NODES_INDEX_ADD, (BYTE*) & wDevicesIndex, Address_Size, &temporal);
         _tBackStartUpSM.bActualState = _BACKUP_DEV_ADD_STATE;
         _tBackStartUpSM.bNextState = _BACKUP_END_STATE;
     }
@@ -313,8 +313,9 @@ void vfnBKUPGetDevicesIndexState(void)
         {   /*Starts Reading*/
             static WORD wIndexDevicesTemp=FALSE;
             if(wDevicesIndex>=NUM_MAX_NODES)wDevicesIndex=0;
-            bBufferIICRead = (BYTE *) & tsDevice[wIndexDevicesTemp].Short_Add[0];
-            if(bfnIIC_MEM24_1025_Read(CAB_READ_Meter_MAC_SHORT+(wIndexDevicesTemp*Buffer_Lenght_MAC_Info), Buffer_Lenght_MAC_Info, &temporal)){
+            //! bBufferIICRead = (BYTE *) & tsDevice[wIndexDevicesTemp].Short_Add[0];
+            if(bfnIIC_MEM24_1025_Read(CAB_READ_Meter_MAC_SHORT+(wIndexDevicesTemp*Buffer_Lenght_MAC_Info), (BYTE *) & tsDevice[wIndexDevicesTemp].Short_Add[0],
+                    Buffer_Lenght_MAC_Info, &temporal)){
                 wIndexDevicesTemp++;
             }
             if(wIndexDevicesTemp>=wDevicesIndxBckUp){
@@ -326,8 +327,8 @@ void vfnBKUPGetDevicesIndexState(void)
         else
         {   /*If there is not a valid Device Index, starts reading MetersIndex*/
             wDevicesIndex = FALSE;
-            bBufferIICRead = (BYTE*) & wMetersIndex;
-            bfnIIC_MEM24_1025_Read(METERS_INDEX_ADD, Address_Size, &temporal);
+            //! bBufferIICRead = (BYTE*) & wMetersIndex;
+            bfnIIC_MEM24_1025_Read(METERS_INDEX_ADD, (BYTE*) & wMetersIndex, Address_Size, &temporal);
             _tBackStartUpSM.bActualState = _BACKUP_METERS_INDEX_STATE;
             _tBackStartUpSM.bNextState = _BACKUP_END_STATE;
         }
@@ -346,8 +347,8 @@ void vfnBKUPReadMetersBKIndxState(void)
 {   /*Asks if EEPROM is Busy*/
     if (!bfnIICIsBusy())
     {   /*Starts Reading*/
-        bBufferIICRead = (BYTE *) & wMetersIndxBckUp;
-        bfnIIC_MEM24_1025_Read(METERS_INDEX_BCKUP, Address_Size, &temporal);
+        //! bBufferIICRead = (BYTE *) & wMetersIndxBckUp;
+        bfnIIC_MEM24_1025_Read(METERS_INDEX_BCKUP, (BYTE *) & wMetersIndxBckUp, Address_Size, &temporal);
         _tBackStartUpSM.bActualState = _BACKUP_METERS_ADD_STATE;
         _tBackStartUpSM.bNextState = _BACKUP_END_STATE;
     }
@@ -365,8 +366,8 @@ void vfnBKUPReadDevicesState(void)
 {   /*Asks If EEPROM is busy*/
     if (!bfnIICIsBusy())
     {   /*Starts reading*/
-        bBufferIICRead = (BYTE *) & wMetersIndex;
-        bfnIIC_MEM24_1025_Read(METERS_INDEX_ADD, Address_Size,&temporal );
+        //bBufferIICRead = (BYTE *) & wMetersIndex;
+        bfnIIC_MEM24_1025_Read(METERS_INDEX_ADD, (BYTE *) & wMetersIndex, Address_Size,&temporal );
         _tBackStartUpSM.bActualState =  _BACKUP_METERS_INDEX_STATE;
         _tBackStartUpSM.bNextState = _BACKUP_END_STATE;
     }
@@ -387,8 +388,8 @@ void vfnBKUPGetMetersIndexState(void)
         if (wMetersIndxBckUp > 0 && wMetersIndxBckUp < NUM_MAX_METERS)
         {   /*Starts reading*/
             static WORD wMeterIndexTemp=0;
-            bBufferIICRead = (BYTE *) & tsMeter[wMeterIndexTemp];
-            if(bfnIIC_MEM24_1025_Read(CAB_READ_Meter_ADD+(wMeterIndexTemp*METER_NAME_SIZE),METER_NAME_SIZE, &temporal)){
+            //bBufferIICRead = (BYTE *) & tsMeter[wMeterIndexTemp];
+            if(bfnIIC_MEM24_1025_Read(CAB_READ_Meter_ADD+(wMeterIndexTemp*METER_NAME_SIZE), (BYTE *) & tsMeter[wMeterIndexTemp], METER_NAME_SIZE, &temporal)){
                 wMeterIndexTemp++;
             }
             if(wMeterIndexTemp>=wMetersIndxBckUp){
@@ -1087,10 +1088,10 @@ BYTE bfnConsultData(BYTE bTableType, BYTE *bptrKeyID, WORD wAllDataIndexDev
             /*Blank Spaces Filter*/
             if(tsMeter[wAllDataIndexMtr].Type)
             {   /*Store data in a buffer defined by user*/
-                bBufferIICRead = query_response_buffer_ptr;
+                //! bBufferIICRead = query_response_buffer_ptr;
                 wAddressGLOBAL = (WORD)(((wAllDataIndexMtr)*Buffer_Lenght_Single_reading) + CAB_READ_Readings_ADD);
-                bfnIIC_MEM24_1025_Read(wAddressGLOBAL
-                                    , (WORD)Buffer_Lenght_Single_reading, &query->isWaitingForQueryResponse);
+                bfnIIC_MEM24_1025_Read(wAddressGLOBAL, query_response_buffer_ptr, 
+                        (WORD)Buffer_Lenght_Single_reading, &query->isWaitingForQueryResponse);
                 
                 DataBaseHandler_SetQueryResponseBufferSize(query, Buffer_Lenght_Single_reading);
                 DataBaseHandler_SetWaitingForQueryResponse(query, TRUE);

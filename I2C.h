@@ -56,7 +56,7 @@ typedef struct{
     WORD _wI2CTxCounter;
     WORD _wI2CRxIndex;  
     WORD _wI2CTxIndex;
-    BYTE _bpI2CRxBuffer[I2C_DRIVER_MAX_PAGING_DATA_SIZE];
+    BYTE * _bpI2CRxBuffer;
     BYTE _bpI2CTxBuffer[I2C_DRIVER_MAX_PAGING_DATA_SIZE];
     BYTE _bI2CFlags;
     TXRX_STATUS txrxStatus;    

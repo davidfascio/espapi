@@ -77,12 +77,18 @@ WORD I2CDriverControl_GetTxIndex(void){
     return i2cDriverControl._wI2CTxIndex;
 }
 
+void I2CDriverControl_SetRxBuffer(BYTE * buffer, WORD _wI2CRxCounter){
+
+    i2cDriverControl._bpI2CRxBuffer = buffer;
+    i2cDriverControl._wI2CRxCounter = _wI2CRxCounter;
+}
+
 void I2CDriverControl_PutRxBufferByIndex( BYTE data, WORD _wI2CRxIndex ){
     
     if(_wI2CRxIndex > I2C_DRIVER_MAX_PAGING_DATA_SIZE)
         return;
     
-    i2cDriverControl._bpI2CRxBuffer[_wI2CRxIndex] = data;
+    * (i2cDriverControl._bpI2CRxBuffer + _wI2CRxIndex) = data;
 }
 
 void I2CDriverControl_SetTxBuffer( BYTE * buffer, WORD _wI2CTxCounter ){
@@ -218,7 +224,7 @@ BYTE bfnI2CTxRxBuffer(BYTE* bpTxPtr, WORD wTxSize, BYTE* bpRxPtr, WORD wRxSize, 
         print_debug("Packet Size: %d, Packet Data: ", wTxSize);
         print_buffer(bpTxPtr, wTxSize);
         I2CDriverControl_SetTxBuffer(bpTxPtr, wTxSize);
-        I2CDriverControl_SetTxRxStatus(I2C_DRIVER_INITIALIZED);
+        
         bError = FALSE;
     }
     
@@ -228,6 +234,8 @@ BYTE bfnI2CTxRxBuffer(BYTE* bpTxPtr, WORD wTxSize, BYTE* bpRxPtr, WORD wRxSize, 
         //! _wI2CRxCounter = wRxSize;
         //! _wI2CRxIndex=0;
         //! _bpI2CRxPtr = bpRxPtr;
+        print_debug("Reception Packet Size: %d ", wRxSize);
+        I2CDriverControl_SetRxBuffer(bpRxPtr ,wRxSize);
         bError = FALSE;
     }
     
@@ -248,6 +256,7 @@ BYTE bfnI2CTxRxBuffer(BYTE* bpTxPtr, WORD wTxSize, BYTE* bpRxPtr, WORD wRxSize, 
                 //!_bI2CFlags |= (1<<I2C_GEN_STOP);
                 I2CDriverControl_SetFlagsByIndex( I2C_GEN_STOP, TRUE);
             }
+            I2CDriverControl_SetTxRxStatus(I2C_DRIVER_INITIALIZED);
     }
     return(TRUE);
 }

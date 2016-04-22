@@ -197,9 +197,10 @@ int main(int argc, char** argv) {
     
     
     
-    BYTE buffer[500];
+    BYTE buffer[10];
     WORD bufferSize = sizeof(buffer);
     WORD address= 0x00b6;
+    BOOL notification;
     
     vfnEventsEngineInit();
     vfnEventEnable(TB_EVENT);
@@ -213,12 +214,19 @@ int main(int argc, char** argv) {
     //ComSerialInterface_FillBuffer(buffer,  bufferSize);
     //!FillDemoDevices();
     memset(buffer, '1',bufferSize );
-    bfnIIC_MEM24_1025_Write(buffer,address,bufferSize);
+    //!bfnIIC_MEM24_1025_Write(buffer,address,bufferSize);
+    bfnIIC_MEM24_1025_Read(address, buffer, 5, &notification);
     
     while(TRUE){
         vfnEventsEngine();
         vfnTimer();
         ComSerialInterface_Check();
+        
+        if( notification ){
+            print_info("Notify: Buffer has changed: ");
+            print_buffer(buffer, bufferSize);
+            notification = FALSE;
+        }
     }
 
     return (EXIT_SUCCESS);
