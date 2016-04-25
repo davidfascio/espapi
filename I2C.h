@@ -60,7 +60,8 @@ typedef struct{
     BYTE * _bpI2CRxBuffer;
     BYTE _bpI2CTxBuffer[I2C_DRIVER_MAX_PAGING_DATA_SIZE];
     BYTE _bI2CFlags;
-    TXRX_STATUS txrxStatus;    
+    TXRX_STATUS txrxStatus;
+    
 } I2C_DRIVER_CONTROL, * I2C_DRIVER_CONTROL_PTR;
 
 void I2CDriverControl_SetRxCounter(WORD _wI2CRxCounter);

@@ -23,15 +23,15 @@
 //******************************************************************************
 #define MAX_IIC_WRITE_PAGE_SIZE                                             (0x0080)
 #define MAX_IIC_BUFFER_SIZE                                                 (512)
-#define MEM24_1025_IIC_EMPTY_LOCATION_VALUE                                 (0xFF)
+#define MEM24_1025_I2C_EMPTY_LOCATION_VALUE                                 (0xFF)
 
 #define CHIP_SELECT_MEM                                                     (0xA4)         
-#define MEM24_1025_IIC_RETRIES                                              (10)
+#define MEM24_1025_I2C_RETRIES                                              (10)
 #define MEM24_1025_I2C_SELECT_ADDRESS_FRAME_SIZE                            (3)
 
 //
 // Error Codes
-#define MEM24_1025_IIC_API_IS_BUSY_ERROR_CODE                               (0)
+#define MEM24_1025_I2C_API_IS_BUSY_ERROR_CODE                               (0)
 
 //******************************************************************************
 //* MEM24_1025_I2C Vartypes
@@ -54,7 +54,7 @@ typedef struct {
     BOOL * notification;
     BYTE error_code;
     
-} MEM24_1025_IIC_CONTROL, * MEM24_1025_IIC_CONTROL_PTR;
+} MEM24_1025_I2C_CONTROL, * MEM24_1025_I2C_CONTROL_PTR;
 
 typedef void (* UpdateCallBack_Function)(void);
 
@@ -107,11 +107,11 @@ void MEM24_1025_I2C_Clear( void );
 //******************************************************************************
 //* MEM24_1025_I2C API Function
 //******************************************************************************
-BOOL MEM24_1025_IIC_IsAPIBusy(void);
-void MEM24_1025_IIC_SetAPIBusy(BOOL state);
+BOOL MEM24_1025_I2C_IsAPIBusy(void);
+void MEM24_1025_I2C_SetAPIBusy(BOOL state);
 
-BYTE bfnIIC_MEM24_1025_Write(BYTE* bpData, WORD wAddress, WORD wDataSize);
-BYTE bfnIIC_MEM24_1025_Read(WORD wAddress, BYTE * receptionBuffer, WORD wDataSize, BOOL * isWaitingForResponse);
+BYTE API_MEM24_1025_I2C_Write(BYTE* bpData, WORD wAddress, WORD wDataSize);
+BYTE API_MEM24_1025_I2C_Read(WORD wAddress, BYTE * receptionBuffer, WORD wDataSize, BOOL * isWaitingForResponse);
 void MEM24_1025_I2C_ResetRetriesCounter(void);
 void MEM24_1025_I2C_ErrorProcess(void);
 

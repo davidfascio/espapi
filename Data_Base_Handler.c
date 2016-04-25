@@ -224,7 +224,7 @@ BYTE bfnBackUp_Init(void)
     vfnEventPost(BACKUP_START_EVENT);
     /*Read Devices Index From EEPROM*/
     //! bBufferIICRead = (BYTE*) & wDevicesIndxBckUp;
-    bfnIIC_MEM24_1025_Read(NODES_INDEX_BCKUP, (BYTE*) & wDevicesIndxBckUp, Address_Size, &temporal);
+    API_MEM24_1025_I2C_Read(NODES_INDEX_BCKUP, (BYTE*) & wDevicesIndxBckUp, Address_Size, &temporal);
     return (TRUE);
 }
 /****************************************************************************************/
@@ -291,7 +291,7 @@ void vfnBKUPReadDevicesBKIndxState(void){
     if (!bfnIICIsBusy())
     {   /*Starts Reading*/
         //! bBufferIICRead = (BYTE*) & wDevicesIndex;
-        bfnIIC_MEM24_1025_Read(NODES_INDEX_ADD, (BYTE*) & wDevicesIndex, Address_Size, &temporal);
+        API_MEM24_1025_I2C_Read(NODES_INDEX_ADD, (BYTE*) & wDevicesIndex, Address_Size, &temporal);
         _tBackStartUpSM.bActualState = _BACKUP_DEV_ADD_STATE;
         _tBackStartUpSM.bNextState = _BACKUP_END_STATE;
     }
@@ -314,7 +314,7 @@ void vfnBKUPGetDevicesIndexState(void)
             static WORD wIndexDevicesTemp=FALSE;
             if(wDevicesIndex>=NUM_MAX_NODES)wDevicesIndex=0;
             //! bBufferIICRead = (BYTE *) & tsDevice[wIndexDevicesTemp].Short_Add[0];
-            if(bfnIIC_MEM24_1025_Read(CAB_READ_Meter_MAC_SHORT+(wIndexDevicesTemp*Buffer_Lenght_MAC_Info), (BYTE *) & tsDevice[wIndexDevicesTemp].Short_Add[0],
+            if(API_MEM24_1025_I2C_Read(CAB_READ_Meter_MAC_SHORT+(wIndexDevicesTemp*Buffer_Lenght_MAC_Info), (BYTE *) & tsDevice[wIndexDevicesTemp].Short_Add[0],
                     Buffer_Lenght_MAC_Info, &temporal)){
                 wIndexDevicesTemp++;
             }
@@ -328,7 +328,7 @@ void vfnBKUPGetDevicesIndexState(void)
         {   /*If there is not a valid Device Index, starts reading MetersIndex*/
             wDevicesIndex = FALSE;
             //! bBufferIICRead = (BYTE*) & wMetersIndex;
-            bfnIIC_MEM24_1025_Read(METERS_INDEX_ADD, (BYTE*) & wMetersIndex, Address_Size, &temporal);
+            API_MEM24_1025_I2C_Read(METERS_INDEX_ADD, (BYTE*) & wMetersIndex, Address_Size, &temporal);
             _tBackStartUpSM.bActualState = _BACKUP_METERS_INDEX_STATE;
             _tBackStartUpSM.bNextState = _BACKUP_END_STATE;
         }
@@ -348,7 +348,7 @@ void vfnBKUPReadMetersBKIndxState(void)
     if (!bfnIICIsBusy())
     {   /*Starts Reading*/
         //! bBufferIICRead = (BYTE *) & wMetersIndxBckUp;
-        bfnIIC_MEM24_1025_Read(METERS_INDEX_BCKUP, (BYTE *) & wMetersIndxBckUp, Address_Size, &temporal);
+        API_MEM24_1025_I2C_Read(METERS_INDEX_BCKUP, (BYTE *) & wMetersIndxBckUp, Address_Size, &temporal);
         _tBackStartUpSM.bActualState = _BACKUP_METERS_ADD_STATE;
         _tBackStartUpSM.bNextState = _BACKUP_END_STATE;
     }
@@ -367,7 +367,7 @@ void vfnBKUPReadDevicesState(void)
     if (!bfnIICIsBusy())
     {   /*Starts reading*/
         //bBufferIICRead = (BYTE *) & wMetersIndex;
-        bfnIIC_MEM24_1025_Read(METERS_INDEX_ADD, (BYTE *) & wMetersIndex, Address_Size,&temporal );
+        API_MEM24_1025_I2C_Read(METERS_INDEX_ADD, (BYTE *) & wMetersIndex, Address_Size,&temporal );
         _tBackStartUpSM.bActualState =  _BACKUP_METERS_INDEX_STATE;
         _tBackStartUpSM.bNextState = _BACKUP_END_STATE;
     }
@@ -389,7 +389,7 @@ void vfnBKUPGetMetersIndexState(void)
         {   /*Starts reading*/
             static WORD wMeterIndexTemp=0;
             //bBufferIICRead = (BYTE *) & tsMeter[wMeterIndexTemp];
-            if(bfnIIC_MEM24_1025_Read(CAB_READ_Meter_ADD+(wMeterIndexTemp*METER_NAME_SIZE), (BYTE *) & tsMeter[wMeterIndexTemp], METER_NAME_SIZE, &temporal)){
+            if(API_MEM24_1025_I2C_Read(CAB_READ_Meter_ADD+(wMeterIndexTemp*METER_NAME_SIZE), (BYTE *) & tsMeter[wMeterIndexTemp], METER_NAME_SIZE, &temporal)){
                 wMeterIndexTemp++;
             }
             if(wMeterIndexTemp>=wMetersIndxBckUp){
@@ -426,7 +426,7 @@ void vfnBKUPWriteDeviceIndexState(void)
         waDevicesIndex[0] = (BYTE) (wDevicesIndex & 0x00FF);
         waDevicesIndex[3] = (BYTE) ((wDevicesIndxBckUp & 0xFF00) >> 8);
         waDevicesIndex[2] = (BYTE) (wDevicesIndxBckUp & 0x00FF);
-        if(bfnIIC_MEM24_1025_Write(&waDevicesIndex[0]
+        if(API_MEM24_1025_I2C_Write(&waDevicesIndex[0]
                 , NODES_INDEX_ADD
                 , Address_Size*2)){
             _tBackStartUpSM.bActualState = _BACKUP_END_STATE;
@@ -453,7 +453,7 @@ void vfnBKUPWriteMeterIndexState(void)
         waMetersIndex[0] = (BYTE) (wMetersIndex  & 0x00FF);
         waMetersIndex[3] = (BYTE) ((wMetersIndxBckUp & 0xFF00) >> 8);
         waMetersIndex[2] = (BYTE) (wMetersIndxBckUp  & 0x00FF);
-        if(bfnIIC_MEM24_1025_Write(&waMetersIndex[0]
+        if(API_MEM24_1025_I2C_Write(&waMetersIndex[0]
                 , METERS_INDEX_ADD
                 , 4)){
             _tBackStartUpSM.bActualState = _BACKUP_END_STATE;
@@ -756,7 +756,7 @@ BYTE bfnSaveData(BYTE bTableType, BYTE *vptrTableStructure)
                 {     /*Starts reading of Data*/
                      wAddressGLOBAL = (WORD)((wIndex*Buffer_Lenght_Single_reading)
                                   +  CAB_READ_Readings_ADD);
-                     if(!bfnIIC_MEM24_1025_Write((BYTE*)apTemp3
+                     if(!API_MEM24_1025_I2C_Write((BYTE*)apTemp3
                                             , wAddressGLOBAL
                                             , Buffer_Lenght_Single_reading)){
                          return FALSE;
@@ -816,7 +816,7 @@ void vfnAllocMtr(WORD wIndex, BYTE bStatus)
     tsMeter[wIndex].CRC[1] = (wCRCTemp & 0x00FF);
     /*Start Writing*/
     //Aqui se deshabilitar las interrupciones
-    bfnIIC_MEM24_1025_Write(&tsMeter[wIndex].Serial_Num[0]
+    API_MEM24_1025_I2C_Write(&tsMeter[wIndex].Serial_Num[0]
             , wAddress
             , METER_NAME_SIZE);
 }
@@ -865,7 +865,7 @@ void vfnAllocDev(WORD wIndex, BYTE bStatus)
     tsDevice[wIndex].CRC[0] = (wCRCTemp & 0xFF00) >> 8;
     tsDevice[wIndex].CRC[1] = (wCRCTemp & 0x00FF);
     /*Start Writing*/
-    bfnIIC_MEM24_1025_Write(&tsDevice[wIndex].Short_Add[0]
+    API_MEM24_1025_I2C_Write(&tsDevice[wIndex].Short_Add[0]
             , wAddress
             , Buffer_Lenght_MAC_Info);
 }
@@ -1090,7 +1090,7 @@ BYTE bfnConsultData(BYTE bTableType, BYTE *bptrKeyID, WORD wAllDataIndexDev
             {   /*Store data in a buffer defined by user*/
                 //! bBufferIICRead = query_response_buffer_ptr;
                 wAddressGLOBAL = (WORD)(((wAllDataIndexMtr)*Buffer_Lenght_Single_reading) + CAB_READ_Readings_ADD);
-                bfnIIC_MEM24_1025_Read(wAddressGLOBAL, query_response_buffer_ptr, 
+                API_MEM24_1025_I2C_Read(wAddressGLOBAL, query_response_buffer_ptr, 
                         (WORD)Buffer_Lenght_Single_reading, &query->isWaitingForQueryResponse);
                 
                 DataBaseHandler_SetQueryResponseBufferSize(query, Buffer_Lenght_Single_reading);
@@ -1169,7 +1169,7 @@ BYTE bfnDelAllData(BYTE bTableType,BYTE *bptrKeyID)
                  wAddress = (tsMeter[wIndex].Address[0] << 8)
                           | (tsMeter[wIndex].Address[1]);
                  memset((BYTE*)&tsMeter[wIndex].Serial_Num[0],FALSE,METER_NAME_SIZE);
-                 if(!bfnIIC_MEM24_1025_Write((BYTE*)&tsMeter[wIndex].Serial_Num
+                 if(!API_MEM24_1025_I2C_Write((BYTE*)&tsMeter[wIndex].Serial_Num
                                         , wAddress
                                         , METER_NAME_SIZE)){
                      return FALSE;
@@ -1212,7 +1212,7 @@ BYTE bfnDelAllData(BYTE bTableType,BYTE *bptrKeyID)
                  wAddress = (tsDevice[wIndex].Address[0] << 8)
                           | (tsDevice[wIndex].Address[1]);
                  memset((BYTE*)&tsDevice[wIndex].Short_Add[0],FALSE,sizeof(MAC_Short_Type));
-                 if(!bfnIIC_MEM24_1025_Write((BYTE*)&tsDevice[wIndex].Short_Add[0]
+                 if(!API_MEM24_1025_I2C_Write((BYTE*)&tsDevice[wIndex].Short_Add[0]
                                         , wAddress
                                         , sizeof(MAC_Short_Type))){
                      return FALSE;
@@ -1260,7 +1260,7 @@ BYTE bfnDelAllData(BYTE bTableType,BYTE *bptrKeyID)
             waDevicesIndex[1] = (BYTE) ((wDevicesIndex & 0xFF00) >> 8);
             waDevicesIndex[0] = (BYTE) (wDevicesIndex & 0x00FF);
             wDevicesIndxBckUp = FALSE;
-            if(!bfnIIC_MEM24_1025_Write(&waDevicesIndex[0]
+            if(!API_MEM24_1025_I2C_Write(&waDevicesIndex[0]
                     , NODES_INDEX_ADD
                     , Address_Size)){
                 return FALSE;

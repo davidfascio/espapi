@@ -218,7 +218,7 @@ int main(int argc, char** argv) {
         buffer[index] = index;
     
     //bfnIIC_MEM24_1025_Write(buffer,address,bufferSize);
-    bfnIIC_MEM24_1025_Read(address, buffer, 450, &notification);
+    API_MEM24_1025_I2C_Read(address, buffer, 450, &notification);
     
     while(TRUE){
         vfnEventsEngine();

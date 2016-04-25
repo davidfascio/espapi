@@ -45,7 +45,7 @@ sSM MEM24_1025_IIC_SM = { _IIC_IDLE_STATE,      /*  bActualState    */
                           _IIC_IDLE_STATE};     /*  bErrorState     */
 
 
-MEM24_1025_IIC_CONTROL mem241025IICControl;
+MEM24_1025_I2C_CONTROL mem241025IICControl;
 
 //******************************************************************************
 //* MEM24_1025_IIC_CONTROL Functions
@@ -157,7 +157,7 @@ WORD MEM24_1025_I2C_GetPagingAddress(void){
 
 void MEM24_1025_I2C_ClearDataBuffer(void){
     
-    memset(mem241025IICControl.gbaIICDataBuffer, MEM24_1025_IIC_EMPTY_LOCATION_VALUE, MAX_IIC_BUFFER_SIZE);
+    memset(mem241025IICControl.gbaIICDataBuffer, MEM24_1025_I2C_EMPTY_LOCATION_VALUE, MAX_IIC_BUFFER_SIZE);
 }
 
 void MEM24_1025_I2C_SetDataBuffer( BYTE * data, WORD dataSize){
@@ -199,34 +199,34 @@ BOOL MEM24_1025_I2C_GetNotification(void){
 
 void MEM24_1025_I2C_Clear(void){
    
-    memset(&mem241025IICControl, 0, sizeof(MEM24_1025_IIC_CONTROL));
+    memset(&mem241025IICControl, 0, sizeof(MEM24_1025_I2C_CONTROL));
 }
 
 //******************************************************************************
 //* MEM24_1025_I2C API Function
 //******************************************************************************
 
-BOOL MEM24_1025_IIC_IsAPIBusy(void){
+BOOL MEM24_1025_I2C_IsAPIBusy(void){
     
     return sFlags.MEM_Busy;
 }
 
-void MEM24_1025_IIC_SetAPIBusy(BOOL state){
+void MEM24_1025_I2C_SetAPIBusy(BOOL state){
     
     sFlags.MEM_Busy = state;
 }
 
 BYTE bfnIICIsBusy(void){
-    return MEM24_1025_IIC_IsAPIBusy();
+    return MEM24_1025_I2C_IsAPIBusy();
 }
 
-BYTE bfnIIC_MEM24_1025_Write(BYTE* bpData, WORD wAddress, WORD wDataSize){
+BYTE API_MEM24_1025_I2C_Write(BYTE* bpData, WORD wAddress, WORD wDataSize){
     
     WORD iwAddress;
     inverted_memcpy((BYTE *) &iwAddress,(BYTE *) &wAddress, sizeof(iwAddress));
     
-    if(MEM24_1025_IIC_IsAPIBusy())
-        return MEM24_1025_IIC_API_IS_BUSY_ERROR_CODE;
+    if(MEM24_1025_I2C_IsAPIBusy())
+        return MEM24_1025_I2C_API_IS_BUSY_ERROR_CODE;
     
     print_debug("wAddress: %04X", iwAddress);
     print_debug("Data: ");
@@ -237,7 +237,7 @@ BYTE bfnIIC_MEM24_1025_Write(BYTE* bpData, WORD wAddress, WORD wDataSize){
     mem241025IICControl._wIICTxSizeMAX = wDataSize;    
     mem241025IICControl._wIICDataIndex_Div = 0;
     
-    MEM24_1025_IIC_SetAPIBusy(TRUE);    
+    MEM24_1025_I2C_SetAPIBusy(TRUE);    
 
     // If error exists generate ErrorProcess 
     MEM24_1025_I2C_ClearDataBuffer();
@@ -258,15 +258,15 @@ BYTE bfnIIC_MEM24_1025_Write(BYTE* bpData, WORD wAddress, WORD wDataSize){
     return TRUE;
 }
 
-BYTE bfnIIC_MEM24_1025_Read(WORD wAddress, BYTE * receptionBuffer, WORD wDataSize, BOOL * isWaitingForResponse){
+BYTE API_MEM24_1025_I2C_Read(WORD wAddress, BYTE * receptionBuffer, WORD wDataSize, BOOL * isWaitingForResponse){
     
     WORD iwAddress;
     inverted_memcpy((BYTE *) &iwAddress,(BYTE *) &wAddress, sizeof(iwAddress));
     
-    if(MEM24_1025_IIC_IsAPIBusy())
-        return MEM24_1025_IIC_API_IS_BUSY_ERROR_CODE;
+    if(MEM24_1025_I2C_IsAPIBusy())
+        return MEM24_1025_I2C_API_IS_BUSY_ERROR_CODE;
     
-    MEM24_1025_IIC_SetAPIBusy(TRUE);
+    MEM24_1025_I2C_SetAPIBusy(TRUE);
     
     print_debug("wAddress: %04X", iwAddress);
     print_debug("wDataSize: %d", wDataSize);
@@ -338,14 +338,14 @@ void MEM24_1025_I2C_SendTxRxDataProcess(    BYTE * txData,
     
     //  IF TRANSMITION DIFFERENT TO INITIALIZED  AND RETRIES IS MINOR TO MAX NUMBER OF RETRIES THEN
     if(     (I2CDriverControl_GetTxRxStatus() != I2C_DRIVER_INITIALIZED ) &&
-            (mem241025IICControl.retriesCount < MEM24_1025_IIC_RETRIES)){
+            (mem241025IICControl.retriesCount < MEM24_1025_I2C_RETRIES)){
     
         bfnI2CTxRxBuffer(txData, txDataSize, rxData, rxDataSize, isFirstFrame, isLastFrame);        
         mem241025IICControl.retriesCount++;
     }
     
     // OTHERWISE EXCECUTE AND NOTIFY ERROR PROCESS 
-    if(mem241025IICControl.retriesCount == MEM24_1025_IIC_RETRIES){
+    if(mem241025IICControl.retriesCount == MEM24_1025_I2C_RETRIES){
      
         print_error("MaxRetriesCount Allowed");
         MEM24_1025_I2C_ErrorProcess();
@@ -549,5 +549,5 @@ void vfnIICEndState(void){
     //! MEM24_1025_IIC_Clear();
     vfnEventClear(IIC_EVENT);
     vfnEventDisable(IIC_EVENT);
-    MEM24_1025_IIC_SetAPIBusy(FALSE);
+    MEM24_1025_I2C_SetAPIBusy(FALSE);
 }
