@@ -32,6 +32,7 @@
 #define SCL_B_HI                            
 #define SCL_B_LO                            
 //#define SDA_B_IN                            SDAL
+#define CLRWDT(x)
 
 #define I2C_DRIVER_MAX_PAGING_DATA_SIZE                                     (128)
 

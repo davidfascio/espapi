@@ -84,7 +84,7 @@ void vfnTime_Out_Meter_Stabilize_OneShot(void){
 
 void vfnTime_Out_Meter_Response_OneShot(void){
     
-    bfnIIC_MEM24_1025_Notification();
+    //! bfnIIC_MEM24_1025_Notification();
     //!MeterControl_ExpireResponseTimeout();
     // For Debug proporse
     //MeterControl_SetDataAvailable(TRUE);    
@@ -197,10 +197,11 @@ int main(int argc, char** argv) {
     
     
     
-    BYTE buffer[10];
+    BYTE buffer[500];
     WORD bufferSize = sizeof(buffer);
     WORD address= 0x00b6;
     BOOL notification;
+    WORD index;
     
     vfnEventsEngineInit();
     vfnEventEnable(TB_EVENT);
@@ -213,9 +214,11 @@ int main(int argc, char** argv) {
     
     //ComSerialInterface_FillBuffer(buffer,  bufferSize);
     //!FillDemoDevices();
-    memset(buffer, '1',bufferSize );
-    //!bfnIIC_MEM24_1025_Write(buffer,address,bufferSize);
-    bfnIIC_MEM24_1025_Read(address, buffer, 5, &notification);
+    for(index = 0; index < 500; index++)
+        buffer[index] = index;
+    
+    //bfnIIC_MEM24_1025_Write(buffer,address,bufferSize);
+    bfnIIC_MEM24_1025_Read(address, buffer, 450, &notification);
     
     while(TRUE){
         vfnEventsEngine();

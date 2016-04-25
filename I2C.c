@@ -26,10 +26,7 @@ void vfnI2C_StartBit(void);
 void vfnI2C_StopBit(void);
 
 void I2CDriverControl_SetRxCounter(WORD _wI2CRxCounter){
-    
-    if(_wI2CRxCounter > I2C_DRIVER_MAX_PAGING_DATA_SIZE)
-        return;
-    
+       
     i2cDriverControl._wI2CRxCounter = _wI2CRxCounter; 
 }
 
@@ -52,9 +49,6 @@ WORD I2CDriverControl_GetTxCounter( void ){
 }
 
 void I2CDriverControl_SetRxIndex(WORD _wI2CRxIndex){
-    
-    if(_wI2CRxIndex > I2C_DRIVER_MAX_PAGING_DATA_SIZE)
-        return;
     
     i2cDriverControl._wI2CRxIndex = _wI2CRxIndex; 
 }
@@ -83,11 +77,8 @@ void I2CDriverControl_SetRxBuffer(BYTE * buffer, WORD _wI2CRxCounter){
     i2cDriverControl._wI2CRxCounter = _wI2CRxCounter;
 }
 
-void I2CDriverControl_PutRxBufferByIndex( BYTE data, WORD _wI2CRxIndex ){
-    
-    if(_wI2CRxIndex > I2C_DRIVER_MAX_PAGING_DATA_SIZE)
-        return;
-    
+void I2CDriverControl_PutRxBufferByIndex( BYTE data, WORD _wI2CRxIndex ){    
+        
     * (i2cDriverControl._bpI2CRxBuffer + _wI2CRxIndex) = data;
 }
 
@@ -339,9 +330,10 @@ void vfnI2CDriver(void)
     {
             if(_wI2CRxCounter)
             {
+                //!print_info("_wI2CRxCounter %d", _wI2CRxCounter);
                     //Read next byte
                 //!D2_LED=~D2_LED;
-                //!CLRWDT();
+                CLRWDT();
                     register BYTE bI2CData = 0;
                     register BYTE bCounter = 8;
                     SDA_B_CONFIG_IN;
