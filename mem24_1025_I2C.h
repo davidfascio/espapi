@@ -110,7 +110,7 @@ void MEM24_1025_I2C_Clear( void );
 BOOL MEM24_1025_I2C_IsAPIBusy(void);
 void MEM24_1025_I2C_SetAPIBusy(BOOL state);
 
-BYTE API_MEM24_1025_I2C_Write(BYTE* bpData, WORD wAddress, WORD wDataSize);
+BYTE API_MEM24_1025_I2C_Write(BYTE * bpData, WORD wAddress, WORD wDataSize);
 BYTE API_MEM24_1025_I2C_Read(WORD wAddress, BYTE * receptionBuffer, WORD wDataSize, BOOL * isWaitingForResponse);
 void MEM24_1025_I2C_ResetRetriesCounter(void);
 void MEM24_1025_I2C_ErrorProcess(void);

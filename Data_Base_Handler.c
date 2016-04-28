@@ -79,7 +79,7 @@ BOOL temporal;
 BYTE bEmpty[MAC_SIZE];
 /*Pointers to Tables*/
 Meter_Eneri *tsPtrMeter;
-MAC_Short_Type *tsPtrDevice;
+Device_Eneri *tsPtrDevice;
 /*Devices Index*/
 static WORD wDevicesIndex;
 static WORD wDevicesIndxBckUp;       //Numero hasta donde hay medidores validos.
@@ -88,7 +88,7 @@ static WORD wMetersIndex;           //Numero de medidores valido.
 static WORD wMetersIndxBckUp;       //Numero hasta donde hay medidores validos.
 /*Tables declaration*/
 Meter_Eneri    tsMeter[NUM_MAX_METERS];
-MAC_Short_Type tsDevice[NUM_MAX_NODES];
+Device_Eneri tsDevice[NUM_MAX_NODES];
 Meter_Eneri    *apTemp;
 READING_LIST   *apTemp3;
 WORD wAddressGLOBAL;
@@ -306,7 +306,9 @@ void vfnBKUPReadDevicesBKIndxState(void){
  */
 /****************************************************************************************/
 void vfnBKUPGetDevicesIndexState(void)
-{   /*Asks if EEPROM is Busy*/
+{   
+    #ifndef DATA_BASE_TEST
+    /*Asks if EEPROM is Busy*/
     if (!bfnIICIsBusy())
     {   /*Validate a Coherent Value read from EEPROM Previously*/
         if (wDevicesIndxBckUp > 0 && wDevicesIndxBckUp < NUM_MAX_NODES)
@@ -333,6 +335,7 @@ void vfnBKUPGetDevicesIndexState(void)
             _tBackStartUpSM.bNextState = _BACKUP_END_STATE;
         }
     }
+    #endif
 }
 /****************************************************************************************/
 /*
@@ -496,7 +499,9 @@ void vfnInitDataBase(void)
  */
 /****************************************************************************************/
 BYTE bfnSaveData(BYTE bTableType, BYTE *vptrTableStructure)
-{   /*Asks if EEPROM is busy*/
+{   
+    #ifndef DATA_BASE_TEST
+    /*Asks if EEPROM is busy*/
     if (bfnIICIsBusy())
     {
         return (FALSE);
@@ -770,6 +775,9 @@ BYTE bfnSaveData(BYTE bTableType, BYTE *vptrTableStructure)
             }
             break;
     }
+    #else
+    return TRUE;
+    #endif
 }
 /****************************************************************************************/
 /*
@@ -786,6 +794,7 @@ BYTE bfnSaveData(BYTE bTableType, BYTE *vptrTableStructure)
 /****************************************************************************************/
 void vfnAllocMtr(WORD wIndex, BYTE bStatus)
 {
+    #ifndef DATA_BASE_TEST
     WORD wAddress = 0;
     /*bStatus Can be UNKNOWN(new infromation),FIRST(very first Data to be written)
      *and ZERO (Update Data)*/
@@ -819,6 +828,7 @@ void vfnAllocMtr(WORD wIndex, BYTE bStatus)
     API_MEM24_1025_I2C_Write(&tsMeter[wIndex].Serial_Num[0]
             , wAddress
             , METER_NAME_SIZE);
+    #endif
 }
 /****************************************************************************************/
 /*
@@ -835,6 +845,7 @@ void vfnAllocMtr(WORD wIndex, BYTE bStatus)
 /****************************************************************************************/
 void vfnAllocDev(WORD wIndex, BYTE bStatus)
 {
+    #ifndef DATA_BASE_TEST
     WORD wAddress = 0;
     /*bStatus Can be UNKNOWN(new infromation),FIRST(very first Data to be written)
      *and ZERO (Update Data)*/
@@ -868,6 +879,8 @@ void vfnAllocDev(WORD wIndex, BYTE bStatus)
     API_MEM24_1025_I2C_Write(&tsDevice[wIndex].Short_Add[0]
             , wAddress
             , Buffer_Lenght_MAC_Info);
+    #endif // DATA_BASE_TEST
+    
 }
 
 /****************************************************************************************/
@@ -886,6 +899,7 @@ void vfnAllocDev(WORD wIndex, BYTE bStatus)
 BYTE bfnConsultData(BYTE bTableType, BYTE *bptrKeyID, WORD wAllDataIndexDev
         , WORD wAllDataIndexMtr, DATA_BASE_HANDLER_QUERY_PTR query)
 {
+    #ifndef DATA_BASE_TEST
     WORD wIndex      = FALSE;
     WORD wIndexBckUp = FALSE;
     BYTE bLocated    = FALSE;
@@ -1103,6 +1117,9 @@ BYTE bfnConsultData(BYTE bTableType, BYTE *bptrKeyID, WORD wAllDataIndexDev
             }
             break;
     }
+    #else
+    return TRUE;
+    #endif // DATA_BASE_TEST
 }
 /****************************************************************************************/
 /*
@@ -1139,6 +1156,7 @@ WORD wfnIndexConsutl(BYTE bTableType)
 /****************************************************************************************/
 BYTE bfnDelAllData(BYTE bTableType,BYTE *bptrKeyID)
 {
+    #ifndef DATA_BASE_TEST
     WORD wIndex           = FALSE;
     WORD wIndexBckUp      = FALSE;
     BYTE bCompare         = FALSE;
@@ -1274,7 +1292,11 @@ BYTE bfnDelAllData(BYTE bTableType,BYTE *bptrKeyID)
             break;
     }
     return FALSE;
+    #else
+    return TRUE;
+    #endif // DATA_BASE_TEST
 }
+
 /****************************************************************************************/
 /*
  * \brief    vfnEnd - Used to end the process intializing variables
@@ -1291,3 +1313,303 @@ void vfnEnd(void)
 /****************************************************************************************/
 /****************************************************************************************/
 
+WORD DataBaseHandler_FindMeterTableIndexBySerialNumber(BYTE * serialNumber){
+	
+    Meter_Eneri_PTR meter_ptr = tsMeter;	
+    WORD index = 0;
+
+    while(index < NUM_MAX_METERS){
+
+        if(!memcmp(meter_ptr->meterItem.Serial_Num, serialNumber, ID_METER_SIZE))
+            break;
+
+        meter_ptr++;
+        index++;
+    }
+
+    if(index == NUM_MAX_METERS)
+        return DATA_BASE_HANDLER_SERIAL_NUMBER_NOT_FOUND_ERROR_CODE;
+
+    return index;
+}
+
+WORD DataBaseHandler_FindAvailableMeterTableIndex(void){
+	
+    Meter_Eneri_PTR meter_ptr = tsMeter;	
+    WORD index = 0;
+
+    while(index < NUM_MAX_METERS) {
+
+        if(!meter_ptr->meterItem.Type)
+            break;
+
+        meter_ptr++;
+        index++;
+    }
+	
+    if(index == NUM_MAX_METERS)
+	return DATA_BASE_HANDLER_NUM_MAX_METERS_REACHED_ERROR_CODE;
+		
+    return index;
+}
+
+BYTE DataBaseHandler_SetupMeterTableItemByIndex(WORD index, MTR_LIST_PTR meterItem){
+	
+    BYTE error_code;
+    Meter_Eneri_PTR meter_ptr = DataBaseHandler_GetMeterTableByIndex(index);
+	
+    if (meter_ptr == NULL)
+        return DATA_BASE_HANDLER_NULL_STRUCT_ERROR_CODE;
+	
+    // Clear Meter_Eneri Struct
+    memset(meter_ptr, 0, sizeof(Meter_Eneri));
+
+    memcpy((BYTE *) &meter_ptr->meterItem, meterItem, sizeof(MTR_LIST)); 		
+    meter_ptr->Address = (CAB_READ_Meter_ADD + (index * sizeof(Meter_Eneri)));	
+    meter_ptr->CRC = wfnCRC16( (BYTE *) meter_ptr, sizeof(Meter_Eneri) - sizeof(WORD));	
+    error_code = API_MEM24_1025_I2C_Write( (BYTE *) meter_ptr, meter_ptr->Address, sizeof(Meter_Eneri));	
+    print_error("ERROR CODE: %d", error_code);
+    
+    return DATA_BASE_HANDLER_NO_ERROR_CODE;
+}
+
+BYTE DataBaseHandler_AddNewMeterTableItem(MTR_LIST_PTR meterItem){
+	
+    WORD index;
+
+    index = DataBaseHandler_FindAvailableMeterTableIndex();	
+
+    if(index == DATA_BASE_HANDLER_NUM_MAX_METERS_REACHED_ERROR_CODE)	
+        return DATA_BASE_HANDLER_NUM_MAX_METERS_REACHED_ERROR_CODE;
+    
+    print_info("Adding New Meter Table");
+    return DataBaseHandler_SetupMeterTableItemByIndex(index, meterItem);
+}
+
+Meter_Eneri_PTR DataBaseHandler_GetMeterTableByIndex(WORD index){
+	
+    if (index >= NUM_MAX_METERS)
+	return NULL;
+	
+    return (tsMeter + index);
+}
+
+WORD DataBaseHandler_UpdateMeterTableItemByIndex(WORD index, MTR_LIST_PTR meterItem){
+	
+    Meter_Eneri_PTR foundMeter;
+    
+    foundMeter = DataBaseHandler_GetMeterTableByIndex(index);
+
+    if(foundMeter == NULL)
+        return DATA_BASE_HANDLER_NULL_STRUCT_ERROR_CODE;
+
+    if( memcmp((BYTE *) &foundMeter->meterItem, meterItem, sizeof(MTR_LIST))){		
+        
+        print_info("Updating Meter Table");
+        return DataBaseHandler_SetupMeterTableItemByIndex(index, meterItem);
+    }
+
+    print_info("Meter Table Index did not change");
+    return DATA_BASE_HANDLER_NO_ERROR_CODE;
+}
+
+BYTE DataBaseHandler_SaveMeterTableItem(MTR_LIST_PTR meterItem){
+	
+    WORD index;		
+    WORD error_code;
+
+    index = DataBaseHandler_FindMeterTableIndexBySerialNumber(meterItem->Serial_Num);
+
+    if(index == DATA_BASE_HANDLER_SERIAL_NUMBER_NOT_FOUND_ERROR_CODE){		
+
+        error_code = DataBaseHandler_AddNewMeterTableItem(meterItem);
+
+        if(error_code != DATA_BASE_HANDLER_NO_ERROR_CODE)
+            return 0;
+
+        return NEW_MTR_ADD;
+    }
+
+    error_code = DataBaseHandler_UpdateMeterTableItemByIndex(index, meterItem);
+
+    if(error_code != DATA_BASE_HANDLER_NO_ERROR_CODE)
+        return 0;
+
+    return NO_NEW_MTR_ADD;	
+}
+
+WORD DataBaseHandler_FindDeviceTableIndexByMACAddress(BYTE * macAddress){
+	
+    Device_Eneri_PTR device_ptr = tsDevice;	
+    WORD index = 0;
+	
+    while(index < NUM_MAX_NODES){
+		
+        if(!memcmp(device_ptr->deviceItem.MAC, macAddress, MAC_SIZE))
+            break;
+		
+        device_ptr++;
+        index++;
+    }
+	
+    if(index == NUM_MAX_NODES)
+        return DATA_BASE_HANDLER_MAC_ADDRESS_NOT_FOUND_ERROR_CODE;
+		
+    return index;
+}
+
+WORD DataBaseHandler_FindAvailableDeviceTableIndex(void){
+	
+    Device_Eneri_PTR device_ptr = tsDevice;	
+    WORD index = 0;
+	
+    while(index < NUM_MAX_NODES){
+		
+        if(!device_ptr->deviceItem.Type)
+            break;
+			
+        device_ptr++;
+        index++;
+    }
+	
+    if(index == NUM_MAX_NODES)
+        return DATA_BASE_HANDLER_NUM_MAX_NODES_REACHED_ERROR_CODE;
+		
+    return index;
+}
+
+Device_Eneri_PTR DataBaseHandler_GetDeviceTableByIndex(WORD index){
+	
+	if (index >= NUM_MAX_NODES)
+		return NULL;
+	
+	return (tsDevice + index);
+}
+
+BYTE DataBaseHandler_SetupDeviceTableItemByIndex(WORD index, DEV_LIST_PTR deviceItem){
+	
+	Device_Eneri_PTR device_ptr = DataBaseHandler_GetDeviceTableByIndex(index);
+	
+	if (device_ptr == NULL)
+		return DATA_BASE_HANDLER_NULL_STRUCT_ERROR_CODE;
+	
+	// Clear Meter_Eneri Struct
+	memset(device_ptr, 0, sizeof(Device_Eneri));
+		
+	memcpy( (BYTE *) &device_ptr->deviceItem, deviceItem, sizeof(DEV_LIST)); 		
+	device_ptr->Address = (CAB_READ_Meter_MAC_SHORT + (index * sizeof(Device_Eneri)));	
+	device_ptr->CRC = wfnCRC16( (BYTE *) device_ptr, sizeof(Device_Eneri) - sizeof(WORD));	
+	API_MEM24_1025_I2C_Write( (BYTE *) device_ptr, device_ptr->Address, sizeof(Device_Eneri));	
+	
+	return DATA_BASE_HANDLER_NO_ERROR_CODE;
+}
+
+BYTE DataBaseHandler_AddNewDeviceTableItem(DEV_LIST_PTR deviceItem){
+	
+	WORD index;
+	
+	index = DataBaseHandler_FindAvailableDeviceTableIndex();	
+	
+	if(index == DATA_BASE_HANDLER_NUM_MAX_NODES_REACHED_ERROR_CODE)	
+		return index;
+		
+	return DataBaseHandler_SetupDeviceTableItemByIndex(index, deviceItem);
+}
+
+
+WORD DataBaseHandler_UpdateDeviceTableItemByIndex(WORD index, DEV_LIST_PTR deviceItem){
+	
+	Device_Eneri_PTR foundDevice;	
+		
+	foundDevice = DataBaseHandler_GetDeviceTableByIndex(index);
+	
+	if(foundDevice == NULL)
+		return DATA_BASE_HANDLER_NULL_STRUCT_ERROR_CODE;
+	
+	if( memcmp( (BYTE *) &foundDevice->deviceItem, deviceItem, sizeof(DEV_LIST))){		
+		
+		return DataBaseHandler_SetupDeviceTableItemByIndex(index, deviceItem);
+	}
+	
+	return DATA_BASE_HANDLER_NO_ERROR_CODE;
+}
+
+
+BYTE DataBaseHandler_SaveDeviceTableItem(DEV_LIST_PTR deviceItem){
+	
+	WORD index;		
+	WORD error_code;
+	
+	index = DataBaseHandler_FindDeviceTableIndexByMACAddress(deviceItem->MAC);
+			
+	if(index == DATA_BASE_HANDLER_MAC_ADDRESS_NOT_FOUND_ERROR_CODE){		
+		
+		error_code = DataBaseHandler_AddNewDeviceTableItem(deviceItem);
+		
+		if(error_code != DATA_BASE_HANDLER_NO_ERROR_CODE)
+			return 0;
+		
+		// NOTE: It used to call vfnSaveIndexDev();
+		return 1;
+	}
+	
+	error_code = DataBaseHandler_UpdateDeviceTableItemByIndex(index, deviceItem);
+	
+	if(error_code != DATA_BASE_HANDLER_NO_ERROR_CODE)
+		return 0;
+	
+	// NOTE: It used to call vfnSaveIndexDev();		
+	return 1;	
+}
+
+BYTE DataBaseHandler_AddNewReadingTableItemByIndex(WORD index, READING_LIST_PTR readingItem){
+	
+	WORD address;
+	
+	address = (CAB_READ_Readings_ADD + (index * sizeof(READING_LIST)));	
+	
+	API_MEM24_1025_I2C_Write( (BYTE *) readingItem, address, sizeof(READING_LIST));	
+	
+	return DATA_BASE_HANDLER_NO_ERROR_CODE;
+}
+
+BYTE DataBaseHandler_SaveReadingTableItem(READING_LIST_PTR readingItem){
+	
+	WORD index;		
+	WORD error_code;
+	
+	index = DataBaseHandler_FindMeterTableIndexBySerialNumber(readingItem->Serial_Num);
+			
+	if(index == DATA_BASE_HANDLER_MAC_ADDRESS_NOT_FOUND_ERROR_CODE){		
+	
+		return 0;
+	}
+	
+	error_code = DataBaseHandler_AddNewReadingTableItemByIndex(index, readingItem);
+	
+	if(error_code != DATA_BASE_HANDLER_NO_ERROR_CODE)
+		return 0;
+	
+		
+	return 1;	
+}
+
+BYTE API_DataBaseHandler_SaveTable(BYTE bTableType, BYTE *vptrTableStructure ) {			
+	
+	switch(bTableType){
+		
+		case METERSTABLE:			
+			
+			return DataBaseHandler_SaveMeterTableItem((MTR_LIST_PTR) vptrTableStructure);	
+			
+		case DEVICESTABLE:		
+		
+			return DataBaseHandler_SaveDeviceTableItem((DEV_LIST_PTR) vptrTableStructure);
+			
+		case READINGSTABLE:
+		
+			return DataBaseHandler_SaveReadingTableItem((READING_LIST_PTR) vptrTableStructure);			
+	}
+	
+	return 0;
+}

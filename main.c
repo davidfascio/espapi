@@ -129,6 +129,7 @@ void FillDemoDevices(void);
 
 void FillDemoDevices(void){
     
+    #ifndef DATA_BASE_TEST
     DEV_LIST demo_dev;
     MTR_LIST demo_mtr; 
     READING_LIST demo_reading;
@@ -189,8 +190,10 @@ void FillDemoDevices(void){
         demo_dev_default_mac[7]++;
         demo_dev_index++;
     }
-    
+#endif
 }
+
+extern Meter_Eneri    tsMeter[];
 int main(int argc, char** argv) {
     
     print_log("ESP API Demo");
@@ -214,11 +217,39 @@ int main(int argc, char** argv) {
     
     //ComSerialInterface_FillBuffer(buffer,  bufferSize);
     //!FillDemoDevices();
-    for(index = 0; index < 500; index++)
-        buffer[index] = index;
+    //for(index = 0; index < 500; index++)
+    //    buffer[index] = index;
     
     //bfnIIC_MEM24_1025_Write(buffer,address,bufferSize);
-    API_MEM24_1025_I2C_Read(address, buffer, 450, &notification);
+    //API_MEM24_1025_I2C_Read(address, buffer, 450, &notification);
+    
+    /*DEV_LIST device_d;
+    memcpy(device_d.SerialNumber,"000001",6);
+    device_d.Short_Add = 0x0001;
+    device_d.Type = 1;
+    memcpy(device_d.MAC, macLongAddrByte, 8);
+            
+    API_DataBaseHandler_SaveTable(DEVICESTABLE, (BYTE*) &device_d);*/
+    
+    MTR_LIST meter_d;
+    memset(meter_d.MACAdd_Display, 0xFF, 8);
+    memcpy(meter_d.MAC_Cabinet, macLongAddrByte, 8);
+    memset(meter_d.Serial_Num, '0', 16);
+    meter_d.Signature = 'p';
+    meter_d.Type = 0x81;
+    
+    //!Meter_Eneri_PTR meter_ptr = tsMeter;    
+    //!memcpy((BYTE* ) &meter_ptr->meterItem,(BYTE* ) &meter_d, sizeof(MTR_LIST));
+    
+    READING_LIST reading_d;
+    memset(reading_d.Serial_Num, '0', 16);
+    memset(&reading_d.Reading, 0xFF, sizeof(Data_Readings));
+    reading_d.Reading.CURRENT_A_Add = 30;
+    reading_d.Reading.VOLTAGE_A_Add = 12000;
+    reading_d.Reading.ENERGY_ACT_A_Add = 2000;
+    
+    API_DataBaseHandler_SaveTable(METERSTABLE, (BYTE*) &meter_d);
+    API_DataBaseHandler_SaveTable(READINGSTABLE, (BYTE*) &reading_d);
     
     while(TRUE){
         vfnEventsEngine();

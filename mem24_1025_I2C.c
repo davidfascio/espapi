@@ -222,8 +222,8 @@ BYTE bfnIICIsBusy(void){
 
 BYTE API_MEM24_1025_I2C_Write(BYTE* bpData, WORD wAddress, WORD wDataSize){
     
-    WORD iwAddress;
-    inverted_memcpy((BYTE *) &iwAddress,(BYTE *) &wAddress, sizeof(iwAddress));
+    WORD iwAddress = wAddress;
+    //inverted_memcpy((BYTE *) &iwAddress,(BYTE *) &wAddress, sizeof(iwAddress));
     
     if(MEM24_1025_I2C_IsAPIBusy())
         return MEM24_1025_I2C_API_IS_BUSY_ERROR_CODE;

@@ -25,6 +25,17 @@
 /*-- Types Definitions -----------------------------------------------------------------*/
 #define DATA_BASE_HANDLER_QUERY_RESPONSE_MAX_SIZE                         (100)
 
+#define DATA_BASE_TEST
+//**********************************************************************
+// Error Code
+//**********************************************************************
+#define DATA_BASE_HANDLER_NO_ERROR_CODE						(0)
+#define DATA_BASE_HANDLER_NUM_MAX_METERS_REACHED_ERROR_CODE			(1)
+#define DATA_BASE_HANDLER_NULL_STRUCT_ERROR_CODE				(2)
+#define DATA_BASE_HANDLER_MAC_ADDRESS_NOT_FOUND_ERROR_CODE			(3)
+#define DATA_BASE_HANDLER_SERIAL_NUMBER_NOT_FOUND_ERROR_CODE                    (4)
+#define DATA_BASE_HANDLER_NUM_MAX_NODES_REACHED_ERROR_CODE			(5)
+
 typedef enum{
     METER_TABLE_LIST,
     READING_TABLE_LIST,
@@ -69,6 +80,34 @@ WORD wfnIndexConsutl(BYTE bTableType);
 void vfnBackUpStartDriver(void);
 BYTE bfnDelAllData(BYTE bTableType,BYTE *bptrKeyID);
 void vfnSaveIndexMet(void);
+
+
+
+//******************************************************************************
+//
+//******************************************************************************
+
+WORD DataBaseHandler_FindMeterTableIndexBySerialNumber(BYTE * serialNumber);
+WORD DataBaseHandler_FindAvailableMeterTableIndex(void);
+BYTE DataBaseHandler_SetupMeterTableItemByIndex(WORD index, MTR_LIST_PTR meterItem);
+BYTE DataBaseHandler_AddNewMeterTableItem(MTR_LIST_PTR meterItem);
+Meter_Eneri_PTR DataBaseHandler_GetMeterTableByIndex(WORD index);
+WORD DataBaseHandler_UpdateMeterTableItemByIndex(WORD index, MTR_LIST_PTR meterItem);
+BYTE DataBaseHandler_SaveMeterTableItem(MTR_LIST_PTR meterItem);
+
+WORD DataBaseHandler_FindDeviceTableIndexByMACAddress(BYTE * macAddress);
+WORD DataBaseHandler_FindAvailableDeviceTableIndex(void);
+Device_Eneri_PTR DataBaseHandler_GetDeviceTableByIndex(WORD index);
+BYTE DataBaseHandler_SetupDeviceTableItemByIndex(WORD index, DEV_LIST_PTR deviceItem);
+BYTE DataBaseHandler_AddNewDeviceTableItem(DEV_LIST_PTR deviceItem);
+WORD DataBaseHandler_UpdateDeviceTableItemByIndex(WORD index, DEV_LIST_PTR deviceItem);
+BYTE DataBaseHandler_SaveDeviceTableItem(DEV_LIST_PTR deviceItem);
+
+BYTE DataBaseHandler_AddNewReadingTableItemByIndex(WORD index, READING_LIST_PTR readingItem);
+BYTE DataBaseHandler_SaveReadingTableItem(READING_LIST_PTR readingItem);
+
+BYTE API_DataBaseHandler_SaveTable(BYTE bTableType, BYTE *vptrTableStructure );
+
 #endif
 /****************************************************************************************/
 /****************************************************************************************/
