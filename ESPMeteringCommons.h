@@ -76,7 +76,12 @@
 /*****************************************************************************
    Data Structures
  *****************************************************************************/
-typedef struct _Meter_Eneri
+
+//**********************************************************************
+// Vartypes
+//**********************************************************************
+
+/*typedef struct _Meter_Eneri
 {
     BYTE Serial_Num[ID_METER_SIZE];
     BYTE Type;
@@ -85,9 +90,9 @@ typedef struct _Meter_Eneri
     BYTE MAC_Gabinet[MAC_SIZE];
     BYTE Address[SHORT_SIZE];
     BYTE CRC[CRC_bytes];
-} Meter_Eneri;
+} Meter_Eneri, * Meter_Eneri_PTR;*/
 
-typedef struct _MAC_Short_Type
+/*typedef struct _MAC_Short_Type
 {
     BYTE Short_Add[SHORT_SIZE];
     BYTE MAC[MAC_SIZE];
@@ -95,31 +100,44 @@ typedef struct _MAC_Short_Type
     BYTE SerialNumber[SERIAL_SIZE];
     BYTE Address[SHORT_SIZE];
     BYTE CRC[CRC_bytes];
-} MAC_Short_Type;
+} MAC_Short_Type;*/
 
-typedef struct _DEV_LIST
+typedef struct __attribute__((packed,aligned(1))) _DEV_LIST
 {
-    BYTE Short_Add[SHORT_SIZE];
+    WORD Short_Add;
     BYTE MAC[MAC_SIZE];
     BYTE Type;
     BYTE SerialNumber[SERIAL_SIZE];
-} DEV_LIST;
+} DEV_LIST, * DEV_LIST_PTR;
 
-typedef struct _MTR_LIST
+typedef struct __attribute__((packed,aligned(1))) _MTR_LIST
 {
     BYTE Serial_Num[ID_METER_SIZE];
     BYTE Type;
     BYTE MACAdd_Display[MAC_SIZE];
     BYTE Signature;
     BYTE MAC_Cabinet[MAC_SIZE];
-} MTR_LIST;
+} MTR_LIST, * MTR_LIST_PTR;
 
-typedef struct _READING_LIST
+typedef struct __attribute__((packed,aligned(1))) _READING_LIST
 {
     BYTE Serial_Num[ID_METER_SIZE];
-    BYTE Reading[NUM_MAX_BYTES_Buffer];
-    BYTE CRC[CRC_bytes];
-} READING_LIST;
+    //BYTE Reading[NUM_MAX_BYTES_Buffer];
+    Data_Readings Reading;
+    WORD CRC;
+} READING_LIST, * READING_LIST_PTR;
+
+typedef struct __attribute__((packed,aligned(1))) {	
+    MTR_LIST meterItem;
+    WORD Address;
+    WORD CRC;    
+} Meter_Eneri, * Meter_Eneri_PTR;
+
+typedef struct __attribute__((packed,aligned(1))){	
+    DEV_LIST deviceItem;
+    WORD Address;
+    WORD CRC;    
+} Device_Eneri, * Device_Eneri_PTR;
 
 #define Buffer_Lenght_MAC_Info                     sizeof(MAC_Short_Type)
 
