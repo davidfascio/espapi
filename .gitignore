@@ -1,3 +1,5 @@
+test.c
+test.h
 *.o
 *.o.d
 *.hex

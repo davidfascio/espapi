@@ -23,17 +23,16 @@ void vfnUART_Char_Received_OneShot(void);
 
 const sEvent taEvents[] =
 {
-    vfnTimeBasedEventsEngine,
-    NULL, //vfnMainTask,
-    NULL, //vfnI2CDriver,
-    NULL, //vfnIIC_MEM24_1025Driver,
-    vfnBackUpStartDriver,
-    NULL, //vfnBackUpDriver,
-    vfn_tBufferLocalDriver, //vfnRLYBackUpStartDriver,
-    #if IT_HAS_SHELL
-    Shell_Task,
-    vfn_Zigbee_Network_Connection_Check,
-    #endif
+    vfnTimeBasedEventsEngine,                           //  TB_EVENT = 0
+    NULL, //vfnMainTask,                                //  SELF_CLEARING_EVENTS_LIST_END, MAIN_TASK_TEST = SELF_CLEARING_EVENTS_LIST_END,
+    vfnI2CDriver, //vfnI2CDriver,                               //  I2C_DRIVER_EVENT
+    vfnIIC_MEM24_1025Driver,                            //  IIC_EVENT,
+    vfnBackUpStartDriver,                               //  BACKUP_START_EVENT
+    NULL, //vfnBackUpDriver,                            //  BACKUP_EVENT
+    vfn_tBufferLocalDriver, //vfnRLYBackUpStartDriver,  //  BUFFER_EVENT
+    NULL, //vfnRLYBackUpStartDriver                     //  RLY_BACKUP_EVENT
+    NULL, //vfnMACBackUpStartDriver                     //  MAC_BACKUP_EVENT
+    NULL //vfnTIMEBackUpStartDriver                     //  TIME_BACKUP_EVENT
 };
 
 const sPeriodicTimers taPeriodicTimers[] =
@@ -85,7 +84,7 @@ void vfnTime_Out_Meter_Stabilize_OneShot(void){
 
 void vfnTime_Out_Meter_Response_OneShot(void){
     
-    bfnIIC_MEM24_1025_Notification();
+    //! bfnIIC_MEM24_1025_Notification();
     //!MeterControl_ExpireResponseTimeout();
     // For Debug proporse
     //MeterControl_SetDataAvailable(TRUE);    
@@ -130,6 +129,7 @@ void FillDemoDevices(void);
 
 void FillDemoDevices(void){
     
+    #ifndef DATA_BASE_TEST
     DEV_LIST demo_dev;
     MTR_LIST demo_mtr; 
     READING_LIST demo_reading;
@@ -150,7 +150,7 @@ void FillDemoDevices(void){
     
     inverted_memcpy((BYTE *) demo_reading.CRC, (BYTE *) &crcFrame, 2);
     
-    if(demo_dev_index  < 20){
+    if(demo_dev_index  < 1){
         
         
         memcpy(demo_dev.Short_Add, demo_dev_default_short_addr, sizeof(demo_dev_default_short_addr));
@@ -171,7 +171,7 @@ void FillDemoDevices(void){
         
         
         
-        for(index = 0; index < 12; index++){
+        for(index = 0; index < 0; index++){
             
             sprintf(demo_meter_serial_number, "%016d", demo_mtr_index);
             inverted_memcpy(demo_mtr.Serial_Num, demo_meter_serial_number, 16);
@@ -190,16 +190,21 @@ void FillDemoDevices(void){
         demo_dev_default_mac[7]++;
         demo_dev_index++;
     }
-    
+#endif
 }
+
+extern Meter_Eneri    tsMeter[];
 int main(int argc, char** argv) {
     
     print_log("ESP API Demo");
     
-    FillDemoDevices();
     
-    BYTE buffer[]= { 0x55, 0xCC, 0x09, 0x00, 0x1B, 0x09, 0x00, 0x02, 0x0A, 0xB6, 0xDA, 0x24, 0x32, 0x70, 0xEF, 0x33, 0xCC };
+    
+    BYTE buffer[500];
     WORD bufferSize = sizeof(buffer);
+    WORD address= 0x00b6;
+    BOOL notification;
+    WORD index;
     
     vfnEventsEngineInit();
     vfnEventEnable(TB_EVENT);
@@ -210,12 +215,52 @@ int main(int argc, char** argv) {
     vfnPeriodicTimerEnable(LED_TOGGLE_MAIN_PERTASK);
     //vfnPeriodicTimerEnable(GO_TO_READ_MTR_PERTASK);
     
-    ComSerialInterface_FillBuffer(buffer,  bufferSize);
+    //ComSerialInterface_FillBuffer(buffer,  bufferSize);
+    //!FillDemoDevices();
+    //for(index = 0; index < 500; index++)
+    //    buffer[index] = index;
+    
+    //bfnIIC_MEM24_1025_Write(buffer,address,bufferSize);
+    //API_MEM24_1025_I2C_Read(address, buffer, 450, &notification);
+    
+    /*DEV_LIST device_d;
+    memcpy(device_d.SerialNumber,"000001",6);
+    device_d.Short_Add = 0x0001;
+    device_d.Type = 1;
+    memcpy(device_d.MAC, macLongAddrByte, 8);
+            
+    API_DataBaseHandler_SaveTable(DEVICESTABLE, (BYTE*) &device_d);*/
+    
+    MTR_LIST meter_d;
+    memset(meter_d.MACAdd_Display, 0xFF, 8);
+    memcpy(meter_d.MAC_Cabinet, macLongAddrByte, 8);
+    memset(meter_d.Serial_Num, '0', 16);
+    meter_d.Signature = 'p';
+    meter_d.Type = 0x81;
+    
+    //!Meter_Eneri_PTR meter_ptr = tsMeter;    
+    //!memcpy((BYTE* ) &meter_ptr->meterItem,(BYTE* ) &meter_d, sizeof(MTR_LIST));
+    
+    READING_LIST reading_d;
+    memset(reading_d.Serial_Num, '0', 16);
+    memset(&reading_d.Reading, 0xFF, sizeof(Data_Readings));
+    reading_d.Reading.CURRENT_A_Add = 30;
+    reading_d.Reading.VOLTAGE_A_Add = 12000;
+    reading_d.Reading.ENERGY_ACT_A_Add = 2000;
+    
+    API_DataBaseHandler_SaveTable(METERSTABLE, (BYTE*) &meter_d);
+    API_DataBaseHandler_SaveTable(READINGSTABLE, (BYTE*) &reading_d);
     
     while(TRUE){
         vfnEventsEngine();
         vfnTimer();
         ComSerialInterface_Check();
+        
+        if( notification ){
+            print_info("Notify: Buffer has changed: ");
+            print_buffer(buffer, bufferSize);
+            notification = FALSE;
+        }
     }
 
     return (EXIT_SUCCESS);

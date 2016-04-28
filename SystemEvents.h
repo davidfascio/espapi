@@ -68,8 +68,7 @@
                 BUFFER_EVENT,
                 RLY_BACKUP_EVENT,
                 MAC_BACKUP_EVENT,
-                TIME_BACKUP_EVENT,
-                SHELL_TASK_EVENT,
+                TIME_BACKUP_EVENT,                
                 MAX_EVENTS
 	}eEvents;
 	

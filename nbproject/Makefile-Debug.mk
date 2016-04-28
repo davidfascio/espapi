@@ -41,6 +41,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/ESPMeteringTable.o \
 	${OBJECTDIR}/ESP_API.o \
 	${OBJECTDIR}/EventsEngine.o \
+	${OBJECTDIR}/I2C.o \
 	${OBJECTDIR}/System.o \
 	${OBJECTDIR}/SystemLog.o \
 	${OBJECTDIR}/SystemTime.o \
@@ -105,6 +106,11 @@ ${OBJECTDIR}/EventsEngine.o: EventsEngine.c
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.c) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/EventsEngine.o EventsEngine.c
+
+${OBJECTDIR}/I2C.o: I2C.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.c) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/I2C.o I2C.c
 
 ${OBJECTDIR}/System.o: System.c 
 	${MKDIR} -p ${OBJECTDIR}
