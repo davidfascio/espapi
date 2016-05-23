@@ -14,7 +14,7 @@
 #include "SystemLog.h"
 
 
-#define COM_SERIAL_INTERFACE_HANDLER_PORT                       "\\\\.\\COM62" //"\\\\.\\COM30"
+#define COM_SERIAL_INTERFACE_HANDLER_PORT                       "\\\\.\\COM24" //"\\\\.\\COM30"
 #define COM_SERIAL_INTERFACE_HANDLER_9600_BAUDRATE                (9600) 
 #define COM_SERIAL_INTERFACE_HANDLER_BYTE_7_SIZE                  (7) 
 #define COM_SERIAL_INTERFACE_HANDLER_ONE_STOP_BIT                (ONESTOPBIT)
