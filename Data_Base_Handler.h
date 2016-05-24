@@ -30,11 +30,11 @@
 // Error Code
 //**********************************************************************
 #define DATA_BASE_HANDLER_NO_ERROR_CODE						(0)
-#define DATA_BASE_HANDLER_NUM_MAX_METERS_REACHED_ERROR_CODE			(1)
-#define DATA_BASE_HANDLER_NULL_STRUCT_ERROR_CODE				(2)
-#define DATA_BASE_HANDLER_MAC_ADDRESS_NOT_FOUND_ERROR_CODE			(3)
-#define DATA_BASE_HANDLER_SERIAL_NUMBER_NOT_FOUND_ERROR_CODE                    (4)
-#define DATA_BASE_HANDLER_NUM_MAX_NODES_REACHED_ERROR_CODE			(5)
+#define DATA_BASE_HANDLER_NUM_MAX_METERS_REACHED_ERROR_CODE			(-1)
+#define DATA_BASE_HANDLER_NULL_STRUCT_ERROR_CODE				(-2)
+#define DATA_BASE_HANDLER_MAC_ADDRESS_NOT_FOUND_ERROR_CODE			(-3)
+#define DATA_BASE_HANDLER_SERIAL_NUMBER_NOT_FOUND_ERROR_CODE                    (-4)
+#define DATA_BASE_HANDLER_NUM_MAX_NODES_REACHED_ERROR_CODE			(-5)
 
 typedef enum{
     METER_TABLE_LIST,
@@ -87,23 +87,23 @@ void vfnSaveIndexMet(void);
 //
 //******************************************************************************
 
-WORD DataBaseHandler_FindMeterTableIndexBySerialNumber(BYTE * serialNumber);
-WORD DataBaseHandler_FindAvailableMeterTableIndex(void);
-BYTE DataBaseHandler_SetupMeterTableItemByIndex(WORD index, MTR_LIST_PTR meterItem);
-BYTE DataBaseHandler_AddNewMeterTableItem(MTR_LIST_PTR meterItem);
-Meter_Eneri_PTR DataBaseHandler_GetMeterTableByIndex(WORD index);
-WORD DataBaseHandler_UpdateMeterTableItemByIndex(WORD index, MTR_LIST_PTR meterItem);
+INT16 DataBaseHandler_FindMeterTableIndexBySerialNumber(BYTE * serialNumber);
+INT16 DataBaseHandler_FindAvailableMeterTableIndex(void);
+INT16 DataBaseHandler_SetupMeterTableItemByIndex(INT16 index, MTR_LIST_PTR meterItem);
+INT16 DataBaseHandler_AddNewMeterTableItem(MTR_LIST_PTR meterItem);
+Meter_Eneri_PTR DataBaseHandler_GetMeterTableByIndex(INT16 index);
+INT16 DataBaseHandler_UpdateMeterTableItemByIndex(INT16 index, MTR_LIST_PTR meterItem);
 BYTE DataBaseHandler_SaveMeterTableItem(MTR_LIST_PTR meterItem);
 
-WORD DataBaseHandler_FindDeviceTableIndexByMACAddress(BYTE * macAddress);
-WORD DataBaseHandler_FindAvailableDeviceTableIndex(void);
-Device_Eneri_PTR DataBaseHandler_GetDeviceTableByIndex(WORD index);
-BYTE DataBaseHandler_SetupDeviceTableItemByIndex(WORD index, DEV_LIST_PTR deviceItem);
-BYTE DataBaseHandler_AddNewDeviceTableItem(DEV_LIST_PTR deviceItem);
-WORD DataBaseHandler_UpdateDeviceTableItemByIndex(WORD index, DEV_LIST_PTR deviceItem);
+INT16 DataBaseHandler_FindDeviceTableIndexByMACAddress(BYTE * macAddress);
+INT16 DataBaseHandler_FindAvailableDeviceTableIndex(void);
+Device_Eneri_PTR DataBaseHandler_GetDeviceTableByIndex(INT16 index);
+INT16 DataBaseHandler_SetupDeviceTableItemByIndex(INT16 index, DEV_LIST_PTR deviceItem);
+INT16 DataBaseHandler_AddNewDeviceTableItem(DEV_LIST_PTR deviceItem);
+INT16 DataBaseHandler_UpdateDeviceTableItemByIndex(INT16 index, DEV_LIST_PTR deviceItem);
 BYTE DataBaseHandler_SaveDeviceTableItem(DEV_LIST_PTR deviceItem);
 
-BYTE DataBaseHandler_AddNewReadingTableItemByIndex(WORD index, READING_LIST_PTR readingItem);
+INT16 DataBaseHandler_AddNewReadingTableItemByIndex(INT16 index, READING_LIST_PTR readingItem);
 BYTE DataBaseHandler_SaveReadingTableItem(READING_LIST_PTR readingItem);
 
 BYTE API_DataBaseHandler_SaveTable(BYTE bTableType, BYTE *vptrTableStructure );

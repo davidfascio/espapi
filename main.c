@@ -151,7 +151,7 @@ void FillDemoDevices(void){
     
     inverted_memcpy((BYTE *) &demo_reading.CRC, (BYTE *) &crcFrame, 2);
     
-    while(demo_dev_index  < 15){
+    while(demo_dev_index  < 20){
         
         
         memcpy(&demo_dev.Short_Add, demo_dev_default_short_addr, sizeof(demo_dev_default_short_addr));

@@ -90,7 +90,7 @@ WORD ESPComInterfaceRequest_GetData(ESP_COM_INTERFACE_REQUEST_PTR requestControl
 void ESPComInterfaceRequest_Print(ESP_COM_INTERFACE_REQUEST_PTR requestControl){
     
     print_log("InvokedFunctionCode %02X", requestControl->invokedFunctionCode);
-    print_log("ReceivedData: ");
+    print_log("ReceivedData (%d Bytes): ", requestControl->dataSize);
     print_buffer(requestControl->data, requestControl->dataSize);    
 }
 
@@ -186,7 +186,7 @@ void ESPComInterface_SendCustomFrame(WORD startOfHeader, BYTE * macAddress, BYTE
     }
 
     //! ESPComInterface_WriteData(frame, frameLen);      
-    print_info("Sending Data: ");
+    print_info("Sending Data (%d Bytes): ", frameLen);
     print_buffer(frame, frameLen);
     ComSerialInterface_WriteData(frame, frameLen);
 }

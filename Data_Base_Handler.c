@@ -1313,10 +1313,10 @@ void vfnEnd(void)
 /****************************************************************************************/
 /****************************************************************************************/
 
-WORD DataBaseHandler_FindMeterTableIndexBySerialNumber(BYTE * serialNumber){
+INT16 DataBaseHandler_FindMeterTableIndexBySerialNumber(BYTE * serialNumber){
 	
     Meter_Eneri_PTR meter_ptr = tsMeter;	
-    WORD index = 0;
+    INT16 index = 0;
 
     while(index < NUM_MAX_METERS){
 
@@ -1333,10 +1333,10 @@ WORD DataBaseHandler_FindMeterTableIndexBySerialNumber(BYTE * serialNumber){
     return index;
 }
 
-WORD DataBaseHandler_FindAvailableMeterTableIndex(void){
+INT16 DataBaseHandler_FindAvailableMeterTableIndex(void){
 	
     Meter_Eneri_PTR meter_ptr = tsMeter;	
-    WORD index = 0;
+    INT16 index = 0;
 
     while(index < NUM_MAX_METERS) {
 
@@ -1353,9 +1353,9 @@ WORD DataBaseHandler_FindAvailableMeterTableIndex(void){
     return index;
 }
 
-BYTE DataBaseHandler_SetupMeterTableItemByIndex(WORD index, MTR_LIST_PTR meterItem){
+INT16 DataBaseHandler_SetupMeterTableItemByIndex(INT16 index, MTR_LIST_PTR meterItem){
 	
-    BYTE error_code;
+    INT16 error_code;
     Meter_Eneri_PTR meter_ptr = DataBaseHandler_GetMeterTableByIndex(index);
 	
     if (meter_ptr == NULL)
@@ -1374,9 +1374,9 @@ BYTE DataBaseHandler_SetupMeterTableItemByIndex(WORD index, MTR_LIST_PTR meterIt
     return DATA_BASE_HANDLER_NO_ERROR_CODE;
 }
 
-BYTE DataBaseHandler_AddNewMeterTableItem(MTR_LIST_PTR meterItem){
+INT16 DataBaseHandler_AddNewMeterTableItem(MTR_LIST_PTR meterItem){
 	
-    WORD index;
+    INT16 index;
 
     index = DataBaseHandler_FindAvailableMeterTableIndex();	
 
@@ -1385,11 +1385,9 @@ BYTE DataBaseHandler_AddNewMeterTableItem(MTR_LIST_PTR meterItem){
     
     print_info("Adding New Meter Table");
     return DataBaseHandler_SetupMeterTableItemByIndex(index, meterItem);
-    
-    
 }
 
-Meter_Eneri_PTR DataBaseHandler_GetMeterTableByIndex(WORD index){
+Meter_Eneri_PTR DataBaseHandler_GetMeterTableByIndex(INT16 index){
 	
     if (index >= NUM_MAX_METERS)
 	return NULL;
@@ -1397,7 +1395,7 @@ Meter_Eneri_PTR DataBaseHandler_GetMeterTableByIndex(WORD index){
     return (tsMeter + index);
 }
 
-WORD DataBaseHandler_UpdateMeterTableItemByIndex(WORD index, MTR_LIST_PTR meterItem){
+INT16 DataBaseHandler_UpdateMeterTableItemByIndex(INT16 index, MTR_LIST_PTR meterItem){
 	
     Meter_Eneri_PTR foundMeter;
     
@@ -1418,8 +1416,8 @@ WORD DataBaseHandler_UpdateMeterTableItemByIndex(WORD index, MTR_LIST_PTR meterI
 
 BYTE DataBaseHandler_SaveMeterTableItem(MTR_LIST_PTR meterItem){
 	
-    WORD index;		
-    WORD error_code;
+    INT16 index;		
+    INT16 error_code;
 
     index = DataBaseHandler_FindMeterTableIndexBySerialNumber(meterItem->Serial_Num);
 
@@ -1442,10 +1440,10 @@ BYTE DataBaseHandler_SaveMeterTableItem(MTR_LIST_PTR meterItem){
     return NO_NEW_MTR_ADD;	
 }
 
-WORD DataBaseHandler_FindDeviceTableIndexByMACAddress(BYTE * macAddress){
+INT16 DataBaseHandler_FindDeviceTableIndexByMACAddress(BYTE * macAddress){
 	
     Device_Eneri_PTR device_ptr = tsDevice;	
-    WORD index = 0;
+    INT16 index = 0;
 	
     while(index < NUM_MAX_NODES){
 		
@@ -1462,10 +1460,10 @@ WORD DataBaseHandler_FindDeviceTableIndexByMACAddress(BYTE * macAddress){
     return index;
 }
 
-WORD DataBaseHandler_FindAvailableDeviceTableIndex(void){
+INT16 DataBaseHandler_FindAvailableDeviceTableIndex(void){
 	
     Device_Eneri_PTR device_ptr = tsDevice;	
-    WORD index = 0;
+    INT16 index = 0;
 	
     while(index < NUM_MAX_NODES){
 		
@@ -1482,7 +1480,7 @@ WORD DataBaseHandler_FindAvailableDeviceTableIndex(void){
     return index;
 }
 
-Device_Eneri_PTR DataBaseHandler_GetDeviceTableByIndex(WORD index){
+Device_Eneri_PTR DataBaseHandler_GetDeviceTableByIndex(INT16 index){
 	
 	if (index >= NUM_MAX_NODES)
 		return NULL;
@@ -1490,7 +1488,7 @@ Device_Eneri_PTR DataBaseHandler_GetDeviceTableByIndex(WORD index){
 	return (tsDevice + index);
 }
 
-BYTE DataBaseHandler_SetupDeviceTableItemByIndex(WORD index, DEV_LIST_PTR deviceItem){
+INT16 DataBaseHandler_SetupDeviceTableItemByIndex(INT16 index, DEV_LIST_PTR deviceItem){
 	
 	Device_Eneri_PTR device_ptr = DataBaseHandler_GetDeviceTableByIndex(index);
 	
@@ -1508,21 +1506,21 @@ BYTE DataBaseHandler_SetupDeviceTableItemByIndex(WORD index, DEV_LIST_PTR device
 	return DATA_BASE_HANDLER_NO_ERROR_CODE;
 }
 
-BYTE DataBaseHandler_AddNewDeviceTableItem(DEV_LIST_PTR deviceItem){
+INT16 DataBaseHandler_AddNewDeviceTableItem(DEV_LIST_PTR deviceItem){
 	
-	WORD index;
+	INT16 index;
 	
 	index = DataBaseHandler_FindAvailableDeviceTableIndex();	
 	
 	if(index == DATA_BASE_HANDLER_NUM_MAX_NODES_REACHED_ERROR_CODE)	
 		return index;
 		
-        
+        print_info("Adding New Device Table");
 	return DataBaseHandler_SetupDeviceTableItemByIndex(index, deviceItem);
 }
 
 
-WORD DataBaseHandler_UpdateDeviceTableItemByIndex(WORD index, DEV_LIST_PTR deviceItem){
+INT16 DataBaseHandler_UpdateDeviceTableItemByIndex(INT16 index, DEV_LIST_PTR deviceItem){
 	
 	Device_Eneri_PTR foundDevice;	
 		
@@ -1542,8 +1540,8 @@ WORD DataBaseHandler_UpdateDeviceTableItemByIndex(WORD index, DEV_LIST_PTR devic
 
 BYTE DataBaseHandler_SaveDeviceTableItem(DEV_LIST_PTR deviceItem){
 	
-	WORD index;		
-	WORD error_code;
+	INT16 index;		
+	INT16 error_code;
 	
 	index = DataBaseHandler_FindDeviceTableIndexByMACAddress(deviceItem->MAC);
 			
@@ -1568,7 +1566,7 @@ BYTE DataBaseHandler_SaveDeviceTableItem(DEV_LIST_PTR deviceItem){
 	return 1;	
 }
 
-BYTE DataBaseHandler_AddNewReadingTableItemByIndex(WORD index, READING_LIST_PTR readingItem){
+INT16 DataBaseHandler_AddNewReadingTableItemByIndex(INT16 index, READING_LIST_PTR readingItem){
 	
 	WORD address;
 	
@@ -1582,8 +1580,8 @@ BYTE DataBaseHandler_AddNewReadingTableItemByIndex(WORD index, READING_LIST_PTR 
 
 BYTE DataBaseHandler_SaveReadingTableItem(READING_LIST_PTR readingItem){
 	
-	WORD index;		
-	WORD error_code;
+	INT16 index;		
+	INT16 error_code;
 	
 	index = DataBaseHandler_FindMeterTableIndexBySerialNumber(readingItem->Serial_Num);
 			
@@ -1603,20 +1601,20 @@ BYTE DataBaseHandler_SaveReadingTableItem(READING_LIST_PTR readingItem){
 
 BYTE API_DataBaseHandler_SaveTable(BYTE bTableType, BYTE *vptrTableStructure ) {			
 	
-	switch(bTableType){
-		
-		case METERSTABLE:			
-			
-			return DataBaseHandler_SaveMeterTableItem((MTR_LIST_PTR) vptrTableStructure);	
-			
-		case DEVICESTABLE:		
-		
-			return DataBaseHandler_SaveDeviceTableItem((DEV_LIST_PTR) vptrTableStructure);
-			
-		case READINGSTABLE:
-		
-			return DataBaseHandler_SaveReadingTableItem((READING_LIST_PTR) vptrTableStructure);			
-	}
-	
-	return 0;
+    switch(bTableType){
+
+            case METERSTABLE:			
+
+                    return DataBaseHandler_SaveMeterTableItem((MTR_LIST_PTR) vptrTableStructure);	
+
+            case DEVICESTABLE:		
+
+                    return DataBaseHandler_SaveDeviceTableItem((DEV_LIST_PTR) vptrTableStructure);
+
+            case READINGSTABLE:
+
+                    return DataBaseHandler_SaveReadingTableItem((READING_LIST_PTR) vptrTableStructure);			
+    }
+
+    return 0;
 }
