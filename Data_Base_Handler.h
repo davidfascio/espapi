@@ -87,26 +87,10 @@ void vfnSaveIndexMet(void);
 //
 //******************************************************************************
 
-INT16 DataBaseHandler_FindMeterTableIndexBySerialNumber(BYTE * serialNumber);
-INT16 DataBaseHandler_FindAvailableMeterTableIndex(void);
-INT16 DataBaseHandler_SetupMeterTableItemByIndex(INT16 index, MTR_LIST_PTR meterItem);
-INT16 DataBaseHandler_AddNewMeterTableItem(MTR_LIST_PTR meterItem);
-Meter_Eneri_PTR DataBaseHandler_GetMeterTableByIndex(INT16 index);
-INT16 DataBaseHandler_UpdateMeterTableItemByIndex(INT16 index, MTR_LIST_PTR meterItem);
-BYTE DataBaseHandler_SaveMeterTableItem(MTR_LIST_PTR meterItem);
-
-INT16 DataBaseHandler_FindDeviceTableIndexByMACAddress(BYTE * macAddress);
-INT16 DataBaseHandler_FindAvailableDeviceTableIndex(void);
-Device_Eneri_PTR DataBaseHandler_GetDeviceTableByIndex(INT16 index);
-INT16 DataBaseHandler_SetupDeviceTableItemByIndex(INT16 index, DEV_LIST_PTR deviceItem);
-INT16 DataBaseHandler_AddNewDeviceTableItem(DEV_LIST_PTR deviceItem);
-INT16 DataBaseHandler_UpdateDeviceTableItemByIndex(INT16 index, DEV_LIST_PTR deviceItem);
-BYTE DataBaseHandler_SaveDeviceTableItem(DEV_LIST_PTR deviceItem);
-
-INT16 DataBaseHandler_AddNewReadingTableItemByIndex(INT16 index, READING_LIST_PTR readingItem);
-BYTE DataBaseHandler_SaveReadingTableItem(READING_LIST_PTR readingItem);
-
-BYTE API_DataBaseHandler_SaveTable(BYTE bTableType, BYTE *vptrTableStructure );
+extern Meter_Eneri tsMeter[];
+extern Device_Eneri tsDevice[];
+extern WORD wDevicesIndex;
+extern WORD wMetersIndex;    
 
 #endif
 /****************************************************************************************/
