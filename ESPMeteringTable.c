@@ -564,12 +564,12 @@ void vfnBufferConsultTableState(void){
         return;
     }
     
-    if( startItem >= NUM_MAX_METERS){
+    /*if( startItem >= NUM_MAX_METERS){
      
         print_error("startItem >= NUM_MAX_METERS");
         ESPMeteringTable_ErrorProcess();
         return;
-    }
+    }*/
     
     switch(tableListType){
         

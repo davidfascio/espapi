@@ -1156,7 +1156,7 @@ WORD wfnIndexConsutl(BYTE bTableType)
 /****************************************************************************************/
 BYTE bfnDelAllData(BYTE bTableType,BYTE *bptrKeyID)
 {
-    #ifndef DATA_BASE_TEST
+    #ifdef DATA_BASE_TEST
     WORD wIndex           = FALSE;
     WORD wIndexBckUp      = FALSE;
     BYTE bCompare         = FALSE;
@@ -1167,11 +1167,11 @@ BYTE bfnDelAllData(BYTE bTableType,BYTE *bptrKeyID)
     {
         case METER:/*Delete a Data Meter Request*/
             /*Locates Data to Consult*/
-            while (wIndex <= (wMetersIndxBckUp))//locates Serial
+            while (wIndex <= (wMetersIndex))//locates Serial
                 {   /*Blank space filters*/
-                    if(tsMeter[wIndex].Type)
+                    if(tsMeter[wIndex].meterItem.Type)
                     {
-                        bCompare = memcmp((const void *) & tsMeter[wIndex].Serial_Num[0]
+                        bCompare = memcmp((const void *) & tsMeter[wIndex].meterItem.Serial_Num[0]
                                 , (const void *) & bptrKeyID[0]
                                 , ID_METER_SIZE);
                         if (!bCompare)
@@ -1184,37 +1184,45 @@ BYTE bfnDelAllData(BYTE bTableType,BYTE *bptrKeyID)
                 }
             if (bLocated)
             {   /*RAM and EEPROM erase*/
-                 wAddress = (tsMeter[wIndex].Address[0] << 8)
-                          | (tsMeter[wIndex].Address[1]);
-                 memset((BYTE*)&tsMeter[wIndex].Serial_Num[0],FALSE,METER_NAME_SIZE);
-                 if(!API_MEM24_1025_I2C_Write((BYTE*)&tsMeter[wIndex].Serial_Num
+                 /*wAddress = (tsMeter[wIndex].Address[0] << 8)
+                          | (tsMeter[wIndex].Address[1]);*/
+                 wAddress = (tsMeter[wIndex].Address);
+                 memset((BYTE*)&tsMeter[wIndex].meterItem.Serial_Num[0],FALSE,METER_NAME_SIZE);
+                 
+                  /*if(!API_MEM24_1025_I2C_Write((BYTE*)&tsMeter[wIndex].Serial_Num
                                         , wAddress
                                         , METER_NAME_SIZE)){
                      return FALSE;
-                 }
+                 }*/
+
+                 MEM_EEPROM_Write( wAddress, (BYTE*)&tsMeter[wIndex].meterItem.Serial_Num, METER_NAME_SIZE);
+                 
                  /*Decrement number of meters*/
                  wMetersIndex--;
                  /*if wIndex is the las space*/
-                 if(wIndex == (wMetersIndxBckUp-1))
-                 {  /*Decremente number of spaces to read*/
+                 
+                 /*if(wIndex == (wMetersIndxBckUp-1))
+                 {  //Decremente number of spaces to read
                      wMetersIndxBckUp--;
-                 }
+                 }*/
+                 
                  /*if there is no more meter ensure reset*/
-                 if(!wMetersIndex)
+                 /*if(!wMetersIndex)
                  {
                      wMetersIndxBckUp = FALSE;
-                 }
+                 }*/
+                 
                  return TRUE;
                  //vfnSaveIndexMet();
             }
             break;
         case DEVICE:/*Delete a Data Device Request*/
             /*Locates Data to Consult*/
-            while (wIndex <= (wDevicesIndxBckUp))//locates Serial
+            while (wIndex <= (wDevicesIndex))//locates Serial
                 {   /*Blank space filters*/
-                    if(tsDevice[wIndex].Type)
+                    if(tsDevice[wIndex].deviceItem.Type)
                     {
-                        bCompare = memcmp((const void *) & tsDevice[wIndex].MAC[0]
+                        bCompare = memcmp((const void *) & tsDevice[wIndex].deviceItem.MAC[0]
                                 , (const void *) & bptrKeyID[0]
                                 , MAC_SIZE);
                         if (!bCompare)
@@ -1227,67 +1235,72 @@ BYTE bfnDelAllData(BYTE bTableType,BYTE *bptrKeyID)
                 }
             if (bLocated)
             {   /*RAM and EEPROM erase*/
-                 wAddress = (tsDevice[wIndex].Address[0] << 8)
-                          | (tsDevice[wIndex].Address[1]);
-                 memset((BYTE*)&tsDevice[wIndex].Short_Add[0],FALSE,sizeof(MAC_Short_Type));
-                 if(!API_MEM24_1025_I2C_Write((BYTE*)&tsDevice[wIndex].Short_Add[0]
+                 /*wAddress = (tsDevice[wIndex].Address[0] << 8)
+                          | (tsDevice[wIndex].Address[1]);*/
+                wAddress = tsDevice[wIndex].Address;
+                
+                 memset((BYTE*)&tsDevice[wIndex].deviceItem.Short_Add,FALSE,sizeof(Device_Eneri));
+                 /*if(!API_MEM24_1025_I2C_Write((BYTE*)&tsDevice[wIndex].Short_Add[0]
                                         , wAddress
                                         , sizeof(MAC_Short_Type))){
                      return FALSE;
-                 }
+                 }*/
+                 MEM_EEPROM_Write(wAddress, (BYTE*)&tsDevice[wIndex].deviceItem.Short_Add,sizeof(Device_Eneri) );
                  /*Decrement number of devices*/
                  wDevicesIndex--;
                  /*if wIndex is the last space*/
-                 if(wIndex == (wDevicesIndxBckUp-1))
-                 {  /*Decremente number of spaces to read*/
+                 /*if(wIndex == (wDevicesIndxBckUp-1))
+                 {  //Decremente number of spaces to read
                      wDevicesIndxBckUp--;
-                 }
+                 }*/
                  /*if there is no more meter ensure reset*/
-                 if(!wDevicesIndex)
+                 /*if(!wDevicesIndex)
                  {
                      wDevicesIndxBckUp = FALSE;
-                 }
-                 vfnSaveIndexDev();
+                 }*/
+                 //! vfnSaveIndexDev();
                  return TRUE;
             }
             break;
         case METERSTABLE:
             /*Default Reset in RAM and EEPROM*/
             wMetersIndex     = FALSE;
-            wMetersIndxBckUp = FALSE;
-            vfnSaveIndexMet();
-            memset((BYTE *) & tsMeter[0].Serial_Num[0], 0x00
+            //! wMetersIndxBckUp = FALSE;
+            //! vfnSaveIndexMet();
+            memset((BYTE *) & tsMeter[0].meterItem.Serial_Num[0], 0x00
                     , METER_NAME_SIZE * NUM_MAX_METERS);
             return TRUE;
             break;
         case DEVICESTABLE:
             /*Default Reset in RAM and EEPROM*/
             wDevicesIndex = FALSE;
-            wDevicesIndxBckUp = FALSE;
-            vfnSaveIndexDev();
-            memset((BYTE *) & tsDevice[0].Short_Add[0], 0x00
+            //! wDevicesIndxBckUp = FALSE;
+            //! vfnSaveIndexDev();
+            memset((BYTE *) & tsDevice[0].deviceItem.Short_Add, 0x00
                     , Buffer_Lenght_MAC_Info * NUM_MAX_NODES);
             return TRUE;
             break;
         case DELETEALL:
             /*Default Reset in RAM and EEPROM*/
             wDevicesIndex = FALSE;
-            memset((BYTE *) & tsDevice[0].Short_Add[0], 0x00
+            memset((BYTE *) & tsDevice[0].deviceItem.Short_Add, 0x00
                     , Buffer_Lenght_MAC_Info * NUM_MAX_NODES);
             BYTE waDevicesIndex[2];
             waDevicesIndex[1] = (BYTE) ((wDevicesIndex & 0xFF00) >> 8);
             waDevicesIndex[0] = (BYTE) (wDevicesIndex & 0x00FF);
-            wDevicesIndxBckUp = FALSE;
-            if(!API_MEM24_1025_I2C_Write(&waDevicesIndex[0]
+            //! wDevicesIndxBckUp = FALSE;
+            /*if(!API_MEM24_1025_I2C_Write(&waDevicesIndex[0]
                     , NODES_INDEX_ADD
                     , Address_Size)){
                 return FALSE;
-            }
+            }*/
+            MEM_EEPROM_Write(NODES_INDEX_ADD, (BYTE *) &wDevicesIndex, Address_Size);
+            
             wMetersIndex = FALSE;
-            wMetersIndxBckUp = FALSE;
-            memset((BYTE *) & tsMeter[0].Serial_Num[0], 0x00
+            //!wMetersIndxBckUp = FALSE;
+            memset((BYTE *) & tsMeter[0].meterItem.Serial_Num[0], 0x00
                     , METER_NAME_SIZE * NUM_MAX_METERS);
-            vfnSaveIndexMet();
+            //! vfnSaveIndexMet();
             return TRUE;
             break;
     }
