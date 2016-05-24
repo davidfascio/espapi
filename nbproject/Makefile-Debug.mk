@@ -42,6 +42,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/ESP_API.o \
 	${OBJECTDIR}/EventsEngine.o \
 	${OBJECTDIR}/I2C.o \
+	${OBJECTDIR}/MEMEEPROM.o \
 	${OBJECTDIR}/System.o \
 	${OBJECTDIR}/SystemLog.o \
 	${OBJECTDIR}/SystemTime.o \
@@ -111,6 +112,11 @@ ${OBJECTDIR}/I2C.o: I2C.c
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.c) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/I2C.o I2C.c
+
+${OBJECTDIR}/MEMEEPROM.o: MEMEEPROM.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.c) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/MEMEEPROM.o MEMEEPROM.c
 
 ${OBJECTDIR}/System.o: System.c 
 	${MKDIR} -p ${OBJECTDIR}

@@ -12,6 +12,7 @@
 /****************************************************************************************/
 /*-- Includes --------------------------------------------------------------------------*/
 #include "Data_Base_Handler.h"
+#include "MEMEEPROM.h"
 /*-- Defines ---------------------------------------------------------------------------*/
 /*Size of Meter ID*/
 #define ID_MAX_SIZE            0x50
@@ -899,7 +900,7 @@ void vfnAllocDev(WORD wIndex, BYTE bStatus)
 BYTE bfnConsultData(BYTE bTableType, BYTE *bptrKeyID, WORD wAllDataIndexDev
         , WORD wAllDataIndexMtr, DATA_BASE_HANDLER_QUERY_PTR query)
 {
-    #ifndef DATA_BASE_TEST
+    #ifdef DATA_BASE_TEST
     WORD wIndex      = FALSE;
     WORD wIndexBckUp = FALSE;
     BYTE bLocated    = FALSE;
@@ -924,9 +925,9 @@ BYTE bfnConsultData(BYTE bTableType, BYTE *bptrKeyID, WORD wAllDataIndexDev
                 /*Locates Data to Consult*/
                 while (wIndexBckUp <= (wMetersIndex))
                 {   /*Blank Spaces Filter*/
-                    if(tsMeter[wIndex].Type)
+                    if(tsMeter[wIndex].meterItem.Type)
                     {
-                        bCompare = memcmp((const void *) & tsMeter[wIndex].Serial_Num[0]
+                        bCompare = memcmp((const void *) & tsMeter[wIndex].meterItem.Serial_Num[0]
                                 , (const void *) & apTemp2[0]
                                 , ID_METER_SIZE);
                         if (!bCompare)
@@ -946,7 +947,7 @@ BYTE bfnConsultData(BYTE bTableType, BYTE *bptrKeyID, WORD wAllDataIndexDev
                         return TRUE;
                     }
                     memcpy(query_response_buffer_ptr
-                            , (const void*) &tsMeter[wIndex].Serial_Num[0]
+                            , (const void*) &tsMeter[wIndex].meterItem.Serial_Num[0]
                             , METER_NAME_SIZE - 4);
                     return TRUE;
                 }
@@ -968,7 +969,7 @@ BYTE bfnConsultData(BYTE bTableType, BYTE *bptrKeyID, WORD wAllDataIndexDev
                 /*Locates Data to Consult*/
                 while (wIndex <= (wDevicesIndex))//Locates MAC
                 {
-                    bCompare = memcmp((BYTE *) & tsDevice[wIndex].MAC[0]
+                    bCompare = memcmp((BYTE *) & tsDevice[wIndex].deviceItem.MAC[0]
                             , (BYTE *) & apTemp2[0]
                             , MAC_SIZE);
                     if (!bCompare)
@@ -981,7 +982,7 @@ BYTE bfnConsultData(BYTE bTableType, BYTE *bptrKeyID, WORD wAllDataIndexDev
                 if (bLocated)
                 {    /*if located store data in a buffer defined by user*/
                     memcpy(query_response_buffer_ptr
-                            , (const void*) &tsDevice[wIndex].Short_Add[0]
+                            , (const void*) &tsDevice[wIndex].deviceItem.Short_Add
                             , Buffer_Lenght_MAC_Info - 4);
                     return TRUE;
                   }
@@ -1003,7 +1004,7 @@ BYTE bfnConsultData(BYTE bTableType, BYTE *bptrKeyID, WORD wAllDataIndexDev
                 /*Locates Data to Consult*/
                 while (wIndex <= (wDevicesIndex))//Locates MAC
                 {
-                    bCompare = memcmp((BYTE *) & tsDevice[wIndex].Short_Add[0]
+                    bCompare = memcmp((BYTE *) & tsDevice[wIndex].deviceItem.Short_Add
                             , (BYTE *) & apTemp2[0]
                             , SHORT_SIZE);
                     if (!bCompare)
@@ -1016,7 +1017,7 @@ BYTE bfnConsultData(BYTE bTableType, BYTE *bptrKeyID, WORD wAllDataIndexDev
                 if (bLocated)
                 {    /*if located store data in a buffer defined by user*/
                     memcpy(query_response_buffer_ptr
-                            , (const void*) &tsDevice[wIndex].Short_Add[0]
+                            , (const void*) &tsDevice[wIndex].deviceItem.Short_Add
                             , Buffer_Lenght_MAC_Info - 4);
                     return TRUE;
                 }
@@ -1039,9 +1040,9 @@ BYTE bfnConsultData(BYTE bTableType, BYTE *bptrKeyID, WORD wAllDataIndexDev
             }
             while (wIndexm <= (wMetersIndex))//Locates MAC
             {   /*Blank Spaces Filter*/
-                if(tsMeter[wIndexm].Type)
+                if(tsMeter[wIndexm].meterItem.Type)
                 {
-                    bCompare = memcmp((BYTE *) & tsMeter[wIndexm].MAC_Gabinet
+                    bCompare = memcmp((BYTE *) & tsMeter[wIndexm].meterItem.MAC_Cabinet
                             , (BYTE *) & bptrKeyID[0]
                             , MAC_SIZE);
                 }
@@ -1058,7 +1059,7 @@ BYTE bfnConsultData(BYTE bTableType, BYTE *bptrKeyID, WORD wAllDataIndexDev
                     return TRUE;
                 }
                 memcpy(query_response_buffer_ptr
-                        , (const void*) &tsMeter[wIndexm++].Serial_Num[0]
+                        , (const void*) &tsMeter[wIndexm++].meterItem.Serial_Num[0]
                         , METER_NAME_SIZE_FRAG);
                 return TRUE;
             }
@@ -1068,10 +1069,10 @@ BYTE bfnConsultData(BYTE bTableType, BYTE *bptrKeyID, WORD wAllDataIndexDev
             break;
         case ALLDATADEV:
             /*Store data in a buffer defined by user*/
-            if(tsDevice[wAllDataIndexDev].Type)
+            if(tsDevice[wAllDataIndexDev].deviceItem.Type)
             {
                 memcpy( query_response_buffer_ptr
-                        , (const void*) &tsDevice[wAllDataIndexDev].Short_Add[0]
+                        , (const void*) &tsDevice[wAllDataIndexDev].deviceItem.Short_Add
                         , Buffer_Lenght_MAC_Info - 4);
                 
                 DataBaseHandler_SetQueryResponseBufferSize(query, Buffer_Lenght_MAC_Info - 4);
@@ -1085,10 +1086,10 @@ BYTE bfnConsultData(BYTE bTableType, BYTE *bptrKeyID, WORD wAllDataIndexDev
             break;
         case ALLDATAMTR:
             /*Store data in a buffer defined by user*/
-             if(tsMeter[wAllDataIndexMtr].Type)
+             if(tsMeter[wAllDataIndexMtr].meterItem.Type)
              {
                 memcpy(query_response_buffer_ptr
-                        , (const void*) &tsMeter[wAllDataIndexMtr].Serial_Num[0]
+                        , (const void*) &tsMeter[wAllDataIndexMtr].meterItem.Serial_Num[0]
                         , METER_NAME_SIZE - 4);
                 
                 DataBaseHandler_SetQueryResponseBufferSize(query, METER_NAME_SIZE - 4);
@@ -1100,15 +1101,14 @@ BYTE bfnConsultData(BYTE bTableType, BYTE *bptrKeyID, WORD wAllDataIndexDev
             break;
         case ALLDATAREADINGS:
             /*Blank Spaces Filter*/
-            if(tsMeter[wAllDataIndexMtr].Type)
+            if(tsMeter[wAllDataIndexMtr].meterItem.Type)
             {   /*Store data in a buffer defined by user*/
                 //! bBufferIICRead = query_response_buffer_ptr;
                 wAddressGLOBAL = (WORD)(((wAllDataIndexMtr)*Buffer_Lenght_Single_reading) + CAB_READ_Readings_ADD);
-                API_MEM24_1025_I2C_Read(wAddressGLOBAL, query_response_buffer_ptr, 
-                        (WORD)Buffer_Lenght_Single_reading, &query->isWaitingForQueryResponse);
-                
+                //! API_MEM24_1025_I2C_Read(wAddressGLOBAL, query_response_buffer_ptr, (WORD)Buffer_Lenght_Single_reading, &query->isWaitingForQueryResponse);
+                MEM_EEPROM_Read(wAddressGLOBAL, query_response_buffer_ptr, (WORD)Buffer_Lenght_Single_reading);                
                 DataBaseHandler_SetQueryResponseBufferSize(query, Buffer_Lenght_Single_reading);
-                DataBaseHandler_SetWaitingForQueryResponse(query, TRUE);
+                DataBaseHandler_SetWaitingForQueryResponse(query, FALSE);
                 
                 return TRUE;
             }else
@@ -1367,8 +1367,9 @@ BYTE DataBaseHandler_SetupMeterTableItemByIndex(WORD index, MTR_LIST_PTR meterIt
     memcpy((BYTE *) &meter_ptr->meterItem, meterItem, sizeof(MTR_LIST)); 		
     meter_ptr->Address = (CAB_READ_Meter_ADD + (index * sizeof(Meter_Eneri)));	
     meter_ptr->CRC = wfnCRC16( (BYTE *) meter_ptr, sizeof(Meter_Eneri) - sizeof(WORD));	
-    error_code = API_MEM24_1025_I2C_Write( (BYTE *) meter_ptr, meter_ptr->Address, sizeof(Meter_Eneri));	
-    print_error("ERROR CODE: %d", error_code);
+    //error_code = API_MEM24_1025_I2C_Write( (BYTE *) meter_ptr, meter_ptr->Address, sizeof(Meter_Eneri));	
+    MEM_EEPROM_Write( meter_ptr->Address, (BYTE *) meter_ptr,  sizeof(Meter_Eneri));	
+    //!print_error("ERROR CODE: %d", error_code);
     
     return DATA_BASE_HANDLER_NO_ERROR_CODE;
 }
@@ -1384,6 +1385,8 @@ BYTE DataBaseHandler_AddNewMeterTableItem(MTR_LIST_PTR meterItem){
     
     print_info("Adding New Meter Table");
     return DataBaseHandler_SetupMeterTableItemByIndex(index, meterItem);
+    
+    
 }
 
 Meter_Eneri_PTR DataBaseHandler_GetMeterTableByIndex(WORD index){
@@ -1427,6 +1430,7 @@ BYTE DataBaseHandler_SaveMeterTableItem(MTR_LIST_PTR meterItem){
         if(error_code != DATA_BASE_HANDLER_NO_ERROR_CODE)
             return 0;
 
+        wMetersIndex++;
         return NEW_MTR_ADD;
     }
 
@@ -1499,8 +1503,8 @@ BYTE DataBaseHandler_SetupDeviceTableItemByIndex(WORD index, DEV_LIST_PTR device
 	memcpy( (BYTE *) &device_ptr->deviceItem, deviceItem, sizeof(DEV_LIST)); 		
 	device_ptr->Address = (CAB_READ_Meter_MAC_SHORT + (index * sizeof(Device_Eneri)));	
 	device_ptr->CRC = wfnCRC16( (BYTE *) device_ptr, sizeof(Device_Eneri) - sizeof(WORD));	
-	API_MEM24_1025_I2C_Write( (BYTE *) device_ptr, device_ptr->Address, sizeof(Device_Eneri));	
-	
+	//!API_MEM24_1025_I2C_Write( (BYTE *) device_ptr, device_ptr->Address, sizeof(Device_Eneri));	
+	MEM_EEPROM_Write(  device_ptr->Address, (BYTE *) device_ptr, sizeof(Device_Eneri));	
 	return DATA_BASE_HANDLER_NO_ERROR_CODE;
 }
 
@@ -1513,6 +1517,7 @@ BYTE DataBaseHandler_AddNewDeviceTableItem(DEV_LIST_PTR deviceItem){
 	if(index == DATA_BASE_HANDLER_NUM_MAX_NODES_REACHED_ERROR_CODE)	
 		return index;
 		
+        
 	return DataBaseHandler_SetupDeviceTableItemByIndex(index, deviceItem);
 }
 
@@ -1550,6 +1555,7 @@ BYTE DataBaseHandler_SaveDeviceTableItem(DEV_LIST_PTR deviceItem){
 			return 0;
 		
 		// NOTE: It used to call vfnSaveIndexDev();
+                wDevicesIndex++;
 		return 1;
 	}
 	
@@ -1568,7 +1574,8 @@ BYTE DataBaseHandler_AddNewReadingTableItemByIndex(WORD index, READING_LIST_PTR 
 	
 	address = (CAB_READ_Readings_ADD + (index * sizeof(READING_LIST)));	
 	
-	API_MEM24_1025_I2C_Write( (BYTE *) readingItem, address, sizeof(READING_LIST));	
+	//! API_MEM24_1025_I2C_Write( (BYTE *) readingItem, address, sizeof(READING_LIST));	
+        MEM_EEPROM_Write(  address, (BYTE *) readingItem, sizeof(READING_LIST));	
 	
 	return DATA_BASE_HANDLER_NO_ERROR_CODE;
 }

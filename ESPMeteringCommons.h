@@ -139,6 +139,6 @@ typedef struct __attribute__((packed,aligned(1))){
     WORD CRC;    
 } Device_Eneri, * Device_Eneri_PTR;
 
-#define Buffer_Lenght_MAC_Info                     sizeof(MAC_Short_Type)
+#define Buffer_Lenght_MAC_Info                     sizeof(Device_Eneri)
 
 #endif	/* __ESP_METERING_COMMONS_H__ */

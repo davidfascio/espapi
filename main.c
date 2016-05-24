@@ -13,6 +13,7 @@
 
 #include "ESP_API.h"
 #include "ComSerialInterface.h"
+#include "MEMEEPROM.h"
 
 void vfnToogling (void);
 void save_devices(void);
@@ -129,7 +130,7 @@ void FillDemoDevices(void);
 
 void FillDemoDevices(void){
     
-    #ifndef DATA_BASE_TEST
+    #ifdef DATA_BASE_TEST
     DEV_LIST demo_dev;
     MTR_LIST demo_mtr; 
     READING_LIST demo_reading;
@@ -145,15 +146,15 @@ void FillDemoDevices(void){
     dataReading.FRECUENCY_Add = 60;
     
     
-    memcpy(demo_reading.Reading, (BYTE *) & dataReading, sizeof(demo_reading.Reading));
-    crcFrame = wfnCRC_CALC(demo_reading.Reading, sizeof(demo_reading.Reading), 0xFFFF);
+    memcpy( (BYTE *) &demo_reading.Reading, (BYTE *) &dataReading, sizeof(demo_reading.Reading));
+    crcFrame = wfnCRC_CALC((BYTE *) &demo_reading.Reading, sizeof(demo_reading.Reading), 0xFFFF);
     
-    inverted_memcpy((BYTE *) demo_reading.CRC, (BYTE *) &crcFrame, 2);
+    inverted_memcpy((BYTE *) &demo_reading.CRC, (BYTE *) &crcFrame, 2);
     
-    if(demo_dev_index  < 1){
+    while(demo_dev_index  < 15){
         
         
-        memcpy(demo_dev.Short_Add, demo_dev_default_short_addr, sizeof(demo_dev_default_short_addr));
+        memcpy(&demo_dev.Short_Add, demo_dev_default_short_addr, sizeof(demo_dev_default_short_addr));
         
         
         inverted_memcpy(demo_dev.MAC, demo_dev_default_mac, sizeof(demo_dev_default_mac));
@@ -161,7 +162,8 @@ void FillDemoDevices(void){
         demo_dev.Type = demo_dev_default_type;
         memcpy(demo_dev.SerialNumber, demo_dev_default_serial_number, sizeof(demo_dev_default_serial_number));
 
-        bfnSaveData(DEVICESTABLE, (BYTE *) &demo_dev);
+        //! bfnSaveData(DEVICESTABLE, (BYTE *) &demo_dev);
+        API_DataBaseHandler_SaveTable(DEVICESTABLE, (BYTE *) &demo_dev);
         
         memcpy(demo_mtr.MACAdd_Display, demo_meter_mac_display, sizeof(demo_meter_mac_display));
         inverted_memcpy(demo_mtr.MAC_Cabinet, demo_dev_default_mac, sizeof(demo_dev_default_mac));
@@ -171,15 +173,17 @@ void FillDemoDevices(void){
         
         
         
-        for(index = 0; index < 0; index++){
+        for(index = 0; index < 12; index++){
             
             sprintf(demo_meter_serial_number, "%016d", demo_mtr_index);
             inverted_memcpy(demo_mtr.Serial_Num, demo_meter_serial_number, 16);
-            bfnSaveData (METERSTABLE, (BYTE *) &demo_mtr);
+            //! bfnSaveData (METERSTABLE, (BYTE *) &demo_mtr);
+            API_DataBaseHandler_SaveTable(METERSTABLE, (BYTE *) &demo_mtr);
             
             inverted_memcpy(demo_reading.Serial_Num , demo_meter_serial_number, 16);
             
-            bfnSaveData(READINGSTABLE, (BYTE *) &demo_reading);
+            //! bfnSaveData(READINGSTABLE, (BYTE *) &demo_reading);
+            API_DataBaseHandler_SaveTable(READINGSTABLE, (BYTE *) &demo_reading);
             
             
             demo_mtr_index++;
@@ -231,6 +235,9 @@ int main(int argc, char** argv) {
             
     API_DataBaseHandler_SaveTable(DEVICESTABLE, (BYTE*) &device_d);*/
     
+    MEM_EEPROM_Init();
+    save_devices();
+/*
     MTR_LIST meter_d;
     memset(meter_d.MACAdd_Display, 0xFF, 8);
     memcpy(meter_d.MAC_Cabinet, macLongAddrByte, 8);
@@ -247,9 +254,11 @@ int main(int argc, char** argv) {
     reading_d.Reading.CURRENT_A_Add = 30;
     reading_d.Reading.VOLTAGE_A_Add = 12000;
     reading_d.Reading.ENERGY_ACT_A_Add = 2000;
+    reading_d.Reading.TIME_STAMP_Add = 0;
+*/
     
-    API_DataBaseHandler_SaveTable(METERSTABLE, (BYTE*) &meter_d);
-    API_DataBaseHandler_SaveTable(READINGSTABLE, (BYTE*) &reading_d);
+    //!API_DataBaseHandler_SaveTable(METERSTABLE, (BYTE*) &meter_d);
+    //!API_DataBaseHandler_SaveTable(READINGSTABLE, (BYTE*) &reading_d);
     
     while(TRUE){
         vfnEventsEngine();
