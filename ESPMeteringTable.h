@@ -5,8 +5,8 @@
  * Created on 1 de abril de 2016, 13:07
  */
 
-#ifndef __DATA_BASE_HANDLER_H__
-#define	__DATA_BASE_HANDLER_H__
+#ifndef __ESP_METERING_TABLE_H__
+#define	__ESP_METERING_TABLE_H__
 
 //******************************************************************************
 // Includes
@@ -71,4 +71,4 @@ void vfn_tBufferLocalDriver(void);
 void ESPMeteringTable_SetStateMachine(BYTE actualState, BYTE nextState);
 void ESPMeteringTable_ErrorProcess(void);
 
-#endif	/* __DATA_BASE_HANDLER_H__ */
+#endif	/* __ESP_METERING_TABLE_H__ */

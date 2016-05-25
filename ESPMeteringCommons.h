@@ -8,6 +8,7 @@
 #ifndef __ESP_METERING_COMMONS_H__
 #define	__ESP_METERING_COMMONS_H__
 
+#include "Utility.h"
 #define ZERO	0
 
 /*Defines structures table*/
@@ -72,6 +73,16 @@
 #define CAB_READ_Meter_ADD                                          0x0080
 #define CAB_READ_Readings_ADD                                       0x3900
 #define CAB_READ_Meter_MAC_SHORT                                    0xB600
+
+typedef enum {
+    DBMS_HANDLER_NO_TABLE_ID,
+    AUTO_READING_TIME_TABLE_ID,            
+    DEVICE_INDEX_TABLE_ID,
+    METER_INDEX_TABLE_ID,
+    DEVICE_TABLE_ID,
+    METER_TABLE_ID,    
+    READING_TABLE_ID    
+} DBMS_HANDLER_TABLE_ID;
 
 /*****************************************************************************
    Data Structures

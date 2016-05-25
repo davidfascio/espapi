@@ -87,7 +87,7 @@ void MEM_EEPROM_Write(WORD address, BYTE * buffer, WORD bufferSize) {
 
     WORD bufferPageSize = MEM_EEPROM_MAX_BUFFER_PAGE_SIZE;
 
-    print_info("Write Data into address: %04X, Total Size: %d", address, bufferSize);
+    print_info("Write Data into address: %04X, Total Size: %d Bytes", address, bufferSize);
 
     while(bufferSize){
 

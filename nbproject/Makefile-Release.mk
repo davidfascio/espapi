@@ -36,6 +36,7 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 # Object Files
 OBJECTFILES= \
 	${OBJECTDIR}/ComSerialInterface.o \
+	${OBJECTDIR}/DBMSHandler.o \
 	${OBJECTDIR}/Data_Base_Handler.o \
 	${OBJECTDIR}/ESPComInterface.o \
 	${OBJECTDIR}/ESPMeteringTable.o \
@@ -82,6 +83,11 @@ ${OBJECTDIR}/ComSerialInterface.o: ComSerialInterface.c
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.c) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/ComSerialInterface.o ComSerialInterface.c
+
+${OBJECTDIR}/DBMSHandler.o: DBMSHandler.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.c) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/DBMSHandler.o DBMSHandler.c
 
 ${OBJECTDIR}/Data_Base_Handler.o: Data_Base_Handler.c 
 	${MKDIR} -p ${OBJECTDIR}

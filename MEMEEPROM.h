@@ -15,7 +15,7 @@
 #define MEM_EEPROM_I2C_HARDWARE_SLAVE_ADDRESS               (0x56)
 #define MEM_EEPROM_HEADER_SIZE                              (3)
 #define MEM_EEPROM_MAX_BUFFER_PAGE_SIZE                     (0x0080)
-
+#define MEM_EEPROM_MAX_MEMORY_SIZE                          (0xFFFF)
 //**********************************************************************
 //* MEM_EEPROM Datatypes
 //**********************************************************************

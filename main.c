@@ -14,6 +14,7 @@
 #include "ESP_API.h"
 #include "ComSerialInterface.h"
 #include "MEMEEPROM.h"
+#include "DBMSHandler.h"
 
 void vfnToogling (void);
 void save_devices(void);
@@ -209,6 +210,7 @@ int main(int argc, char** argv) {
     WORD address= 0x00b6;
     BOOL notification;
     WORD index;
+    WORD metersTableAddress;
     
     vfnEventsEngineInit();
     vfnEventEnable(TB_EVENT);
@@ -234,9 +236,18 @@ int main(int argc, char** argv) {
     memcpy(device_d.MAC, macLongAddrByte, 8);
             
     API_DataBaseHandler_SaveTable(DEVICESTABLE, (BYTE*) &device_d);*/
+    DBMSHandler_Init();
+    //MEM_EEPROM_Init();
     
-    MEM_EEPROM_Init();
-    save_devices();
+    metersTableAddress = DBMSHandler_GetTableAddressByTableId(METER_TABLE_ID);
+    MTR_LIST dump;
+    DBMSHandler_WriteRecord(METER_TABLE_ID, metersTableAddress,(BYTE *) &dump, sizeof(dump));    
+    DBMSHandler_ClearRecord(METER_TABLE_ID, metersTableAddress, sizeof(dump));
+    
+    
+    
+    
+    //save_devices();
 /*
     MTR_LIST meter_d;
     memset(meter_d.MACAdd_Display, 0xFF, 8);
