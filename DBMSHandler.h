@@ -51,6 +51,7 @@ BYTE DBMSHandler_GetTableId(DBMS_HANDLER_PTR dbmsItem);
 void DBMSHandler_SetTableAddress(DBMS_HANDLER_PTR dbmsItem, WORD tableAddress);
 WORD DBMSHandler_GetTableAddress(DBMS_HANDLER_PTR dbmsItem);
 WORD * DBMSHandler_GetTableAddressPtr(DBMS_HANDLER_PTR dbmsItem);
+WORD DBMSHandler_GetTableIndexAddress(DBMS_HANDLER_PTR dbmsItem, WORD index);
 
 void DBMSHandler_SetRecordSize(DBMS_HANDLER_PTR dbmsItem, WORD recordSize);
 WORD DBMSHandler_GetRecordSize(DBMS_HANDLER_PTR dbmsItem);
@@ -68,6 +69,7 @@ INT16 DBMSHandler_Write(WORD dest, BYTE * src, WORD count);
 
 DBMS_HANDLER_PTR DBMSHandler_GetDBMSItemByTableId(BYTE tableId);
 WORD DBMSHandler_GetTableAddressByTableId(BYTE tableId);
+WORD DBMSHandler_GetTableIndexAddressByTableId(BYTE tableId, WORD index);
 INT16 DBMSHandler_ValidateRecord(BYTE tableId, WORD recordAddress, WORD recordSize);
 INT16 DBMSHandler_ReadRecord(BYTE tableId, WORD recordAddress, BYTE * record, WORD recordSize);
 INT16 DBMSHandler_WriteRecord(BYTE tableId, WORD recordAddress, BYTE * record, WORD recordSize);

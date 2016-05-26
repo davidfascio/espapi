@@ -111,6 +111,24 @@ WORD * DBMSHandler_GetTableAddressPtr(DBMS_HANDLER_PTR dbmsItem) {
     return &dbmsItem->tableAddress;
 }
 
+WORD DBMSHandler_GetTableIndexAddress(DBMS_HANDLER_PTR dbmsItem, WORD index){
+    
+    WORD address;
+    WORD recordSize;
+    WORD quatityOfRecords;
+    
+    quatityOfRecords = DBMSHandler_GetQuantityOfRecords(dbmsItem);
+    
+    if(quatityOfRecords < index)
+        return DBMS_HANDLER_NOT_INIT;
+    
+    address = DBMSHandler_GetTableAddress(dbmsItem);
+    recordSize = DBMSHandler_GetRecordSize(dbmsItem);
+    address += (index * recordSize);
+    
+    return address;
+}
+
 void DBMSHandler_SetRecordSize(DBMS_HANDLER_PTR dbmsItem, WORD recordSize) {
 
     if (dbmsItem == NULL)
@@ -218,6 +236,17 @@ WORD DBMSHandler_GetTableAddressByTableId(BYTE tableId){
     return DBMSHandler_GetTableAddress(dbmsItem);
 }
 
+WORD DBMSHandler_GetTableIndexAddressByTableId(BYTE tableId, WORD index){
+    
+    DBMS_HANDLER_PTR dbmsItem;
+        
+    dbmsItem = DBMSHandler_GetDBMSItemByTableId(tableId);
+    
+    if(dbmsItem == NULL)
+        return DBMS_HANDLER_NO_TABLE_ID;
+    
+    return DBMSHandler_GetTableIndexAddress(dbmsItem, index);
+}
 
 INT16 DBMSHandler_ValidateRecord(BYTE tableId, WORD recordAddress, WORD recordSize){
     

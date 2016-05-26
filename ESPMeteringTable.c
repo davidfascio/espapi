@@ -69,15 +69,20 @@ BYTE bfnBuffer_Table_Meter(WORD quantityOfItems, DATA_BASE_HANDLER_LIST_TYPE tab
 
 INT16 ESPMeteringTable_FindMeterTableIndexBySerialNumber(BYTE * serialNumber){
 	
-    Meter_Eneri_PTR meter_ptr = tsMeter;	
+    MTR_LIST meter; 
+    WORD meterAddress;    
     INT16 index = 0;
 
+    meterAddress = DBMSHandler_GetTableAddressByTableId(METER_TABLE_ID);
+    
     while(index < NUM_MAX_METERS){
 
-        if(!memcmp(meter_ptr->meterItem.Serial_Num, serialNumber, ID_METER_SIZE))
+        DBMSHandler_ReadRecord(METER_TABLE_ID, meterAddress, (BYTE *) &meter, sizeof(MTR_LIST));
+        
+        if(!memcmp(meter.Serial_Num, serialNumber, ID_METER_SIZE))
             break;
-
-        meter_ptr++;
+        
+        meterAddress += sizeof(MTR_LIST);
         index++;
     }
 
@@ -89,15 +94,20 @@ INT16 ESPMeteringTable_FindMeterTableIndexBySerialNumber(BYTE * serialNumber){
 
 INT16 ESPMeteringTable_FindAvailableMeterTableIndex(void){
 	
-    Meter_Eneri_PTR meter_ptr = tsMeter;	
+    MTR_LIST meter;
+    WORD meterAddress;    
     INT16 index = 0;
 
+    meterAddress = DBMSHandler_GetTableAddressByTableId(METER_TABLE_ID);
+    
     while(index < NUM_MAX_METERS) {
 
-        if(!meter_ptr->meterItem.Type)
+        DBMSHandler_ReadRecord(METER_TABLE_ID, meterAddress, (BYTE *) &meter, sizeof(MTR_LIST));
+        
+        if(!meter.Type)
             break;
 
-        meter_ptr++;
+        meterAddress += sizeof(MTR_LIST);
         index++;
     }
 	
@@ -109,20 +119,23 @@ INT16 ESPMeteringTable_FindAvailableMeterTableIndex(void){
 
 INT16 ESPMeteringTable_SetupMeterTableItemByIndex(INT16 index, MTR_LIST_PTR meterItem){
 	
-    INT16 error_code;
-    Meter_Eneri_PTR meter_ptr = ESPMeteringTable_GetMeterTableByIndex(index);
+    WORD meterAddress = ESPMeteringTable_GetMeterTableByIndex(index);
 	
-    if (meter_ptr == NULL)
+    if (meterAddress == DBMS_HANDLER_NOT_INIT)
         return DATA_BASE_HANDLER_NULL_STRUCT_ERROR_CODE;
 	
     // Clear Meter_Eneri Struct
-    memset(meter_ptr, 0, sizeof(Meter_Eneri));
+    /*
+        memset(meter_ptr, 0, sizeof(Meter_Eneri));
 
-    memcpy((BYTE *) &meter_ptr->meterItem, meterItem, sizeof(MTR_LIST)); 		
-    meter_ptr->Address = (CAB_READ_Meter_ADD + (index * sizeof(Meter_Eneri)));	
-    meter_ptr->CRC = wfnCRC16( (BYTE *) meter_ptr, sizeof(Meter_Eneri) - sizeof(WORD));	
-    //error_code = API_MEM24_1025_I2C_Write( (BYTE *) meter_ptr, meter_ptr->Address, sizeof(Meter_Eneri));	
-    MEM_EEPROM_Write( meter_ptr->Address, (BYTE *) meter_ptr,  sizeof(Meter_Eneri));	
+        memcpy((BYTE *) &meter_ptr->meterItem, meterItem, sizeof(MTR_LIST)); 		
+        meter_ptr->Address = (CAB_READ_Meter_ADD + (index * sizeof(Meter_Eneri)));	
+        meter_ptr->CRC = wfnCRC16( (BYTE *) meter_ptr, sizeof(Meter_Eneri) - sizeof(WORD));	
+        //error_code = API_MEM24_1025_I2C_Write( (BYTE *) meter_ptr, meter_ptr->Address, sizeof(Meter_Eneri));	
+        MEM_EEPROM_Write( meter_ptr->Address, (BYTE *) meter_ptr,  sizeof(Meter_Eneri));	
+    */
+    
+    DBMSHandler_WriteRecord(METER_TABLE_ID, meterAddress, (BYTE *) &meterItem, sizeof(MTR_LIST));
     //!print_error("ERROR CODE: %d", error_code);
     
     return DATA_BASE_HANDLER_NO_ERROR_CODE;
@@ -141,24 +154,27 @@ INT16 ESPMeteringTable_AddNewMeterTableItem(MTR_LIST_PTR meterItem){
     return ESPMeteringTable_SetupMeterTableItemByIndex(index, meterItem);
 }
 
-Meter_Eneri_PTR ESPMeteringTable_GetMeterTableByIndex(INT16 index){
+WORD ESPMeteringTable_GetMeterTableByIndex(INT16 index){
 	
     if (index >= NUM_MAX_METERS)
-	return NULL;
+	return DBMS_HANDLER_NOT_INIT;
 	
-    return (tsMeter + index);
+    return DBMSHandler_GetTableIndexAddressByTableId(METER_TABLE_ID, index);    
 }
 
 INT16 ESPMeteringTable_UpdateMeterTableItemByIndex(INT16 index, MTR_LIST_PTR meterItem){
 	
-    Meter_Eneri_PTR foundMeter;
+    WORD foundMeterAddress;
+    MTR_LIST meter;
     
-    foundMeter = ESPMeteringTable_GetMeterTableByIndex(index);
+    foundMeterAddress = ESPMeteringTable_GetMeterTableByIndex(index);
 
-    if(foundMeter == NULL)
+    if(foundMeterAddress == DBMS_HANDLER_NOT_INIT)
         return DATA_BASE_HANDLER_NULL_STRUCT_ERROR_CODE;
 
-    if( memcmp((BYTE *) &foundMeter->meterItem, meterItem, sizeof(MTR_LIST))){		
+    DBMSHandler_ReadRecord(METER_TABLE_ID, foundMeterAddress, (BYTE *) &meter, sizeof(MTR_LIST));
+    
+    if( memcmp((BYTE *) &meter, meterItem, sizeof(MTR_LIST))){		
         
         print_info("Updating Meter Table");
         return ESPMeteringTable_SetupMeterTableItemByIndex(index, meterItem);

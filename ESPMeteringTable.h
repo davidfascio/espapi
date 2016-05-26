@@ -15,6 +15,28 @@
 #include "System.h"
 #include "Data_Base_Handler.h"
 #include "ESPCommons.h"
+#include "DBMSHandler.h"
+
+//******************************************************************************
+// ESP_METERING_TABLE DataTypes
+//******************************************************************************
+
+/*
+typedef struct {
+
+    WORD            deviceIndexRecord;
+    WORD            deviceIndexRecordAddress;
+    WORD            meterIndexRecord;
+    WORD            meterIndexRecordAddress;
+    DEV_LIST        deviceRecord;
+    WORD            deviceRecordAddress;
+    MTR_LIST        meterRecord;
+    WORD            meterRecordAddress;
+    READING_LIST    readingRecord;        
+    WORD            readingRecordAddress;        
+    
+} ESP_METERING_TABLE, * ESP_METERING_TABLE_PTR;
+*/
 
 //******************************************************************************
 // ESPMeteringTable Function Prototypes
@@ -28,7 +50,7 @@ INT16 ESPMeteringTable_FindMeterTableIndexBySerialNumber(BYTE * serialNumber);
 INT16 ESPMeteringTable_FindAvailableMeterTableIndex(void);
 INT16 ESPMeteringTable_SetupMeterTableItemByIndex(INT16 index, MTR_LIST_PTR meterItem);
 INT16 ESPMeteringTable_AddNewMeterTableItem(MTR_LIST_PTR meterItem);
-Meter_Eneri_PTR ESPMeteringTable_GetMeterTableByIndex(INT16 index);
+WORD ESPMeteringTable_GetMeterTableByIndex(INT16 index);
 INT16 ESPMeteringTable_UpdateMeterTableItemByIndex(INT16 index, MTR_LIST_PTR meterItem);
 BYTE ESPMeteringTable_SaveMeterTableItem(MTR_LIST_PTR meterItem);
 
