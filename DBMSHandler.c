@@ -24,7 +24,7 @@ DBMS_HANDLER dbmsHandlerControl[] ={
     {
         DEVICE_INDEX_TABLE_ID,          /*  BYTE tableId            */
         DBMS_HANDLER_NOT_INIT,          /*  WORD tableAddress       */
-        sizeof(WORD),                   /*  WORD recordSize         */
+        sizeof(INT16),                   /*  WORD recordSize         */
         DBMS_HANDLER_SINGLE_RECORD      /*  WORD quatityOfRecords   */
     },
     
@@ -34,7 +34,7 @@ DBMS_HANDLER dbmsHandlerControl[] ={
     {
         METER_INDEX_TABLE_ID,           /*  BYTE tableId            */
         DBMS_HANDLER_NOT_INIT,          /*  WORD tableAddress       */
-        sizeof(WORD),                   /*  WORD recordSize         */
+        sizeof(INT16),                   /*  WORD recordSize         */
         DBMS_HANDLER_SINGLE_RECORD      /*  WORD quatityOfRecords   */
     },
     
@@ -74,13 +74,13 @@ DBMS_HANDLER dbmsHandlerControl[] ={
     DBMS_HANDLER_NULL_TABLE
 };
 
-WORD DBMSHandler_MemoryLocation = DBMS_HANDLER_NOT_INIT;
+WORD DBMSHandler_MemoryLocation = DBMS_HANDLER_START_ADDRESS;
 
 //******************************************************************************
 // DBMS_HANDLER SET and GET Function Prototypes
 //******************************************************************************
 
-void DBMSHandler_SetTableId(DBMS_HANDLER_PTR dbmsItem, BYTE tableId) {
+void DBMSHandler_SetTableId(DBMS_HANDLER_PTR dbmsItem, DBMS_HANDLER_TABLE_ID tableId) {
 
     if (dbmsItem == NULL)
         return;
@@ -88,7 +88,7 @@ void DBMSHandler_SetTableId(DBMS_HANDLER_PTR dbmsItem, BYTE tableId) {
     dbmsItem->tableId = tableId;
 }
 
-BYTE DBMSHandler_GetTableId(DBMS_HANDLER_PTR dbmsItem) {
+DBMS_HANDLER_TABLE_ID DBMSHandler_GetTableId(DBMS_HANDLER_PTR dbmsItem) {
 
     return dbmsItem->tableId;
 }
@@ -111,7 +111,7 @@ WORD * DBMSHandler_GetTableAddressPtr(DBMS_HANDLER_PTR dbmsItem) {
     return &dbmsItem->tableAddress;
 }
 
-WORD DBMSHandler_GetTableIndexAddress(DBMS_HANDLER_PTR dbmsItem, WORD index){
+WORD DBMSHandler_GetTableIndexAddress(DBMS_HANDLER_PTR dbmsItem, INT16 index){
     
     WORD address;
     WORD recordSize;
@@ -206,7 +206,7 @@ INT16 DBMSHandler_Write(WORD dest, BYTE * src, WORD count) {
     MEM_EEPROM_Write(dest, src, count);
 }
 
-DBMS_HANDLER_PTR DBMSHandler_GetDBMSItemByTableId(BYTE tableId){
+DBMS_HANDLER_PTR DBMSHandler_GetDBMSItemByTableId(DBMS_HANDLER_TABLE_ID tableId){
     
     DBMS_HANDLER_PTR dbmsItem = dbmsHandlerControl;
     
@@ -224,31 +224,31 @@ DBMS_HANDLER_PTR DBMSHandler_GetDBMSItemByTableId(BYTE tableId){
     return dbmsItem;    
 }
 
-WORD DBMSHandler_GetTableAddressByTableId(BYTE tableId){
+WORD DBMSHandler_GetTableAddressByTableId(DBMS_HANDLER_TABLE_ID tableId){
 
     DBMS_HANDLER_PTR dbmsItem;
         
     dbmsItem = DBMSHandler_GetDBMSItemByTableId(tableId);
     
     if(dbmsItem == NULL)
-        return DBMS_HANDLER_NO_TABLE_ID;
+        return DBMS_HANDLER_NOT_INIT;
     
     return DBMSHandler_GetTableAddress(dbmsItem);
 }
 
-WORD DBMSHandler_GetTableIndexAddressByTableId(BYTE tableId, WORD index){
+WORD DBMSHandler_GetTableIndexAddressByTableId(DBMS_HANDLER_TABLE_ID tableId, INT16 index){
     
     DBMS_HANDLER_PTR dbmsItem;
         
     dbmsItem = DBMSHandler_GetDBMSItemByTableId(tableId);
     
     if(dbmsItem == NULL)
-        return DBMS_HANDLER_NO_TABLE_ID;
+        return DBMS_HANDLER_NOT_INIT;
     
     return DBMSHandler_GetTableIndexAddress(dbmsItem, index);
 }
 
-INT16 DBMSHandler_ValidateRecord(BYTE tableId, WORD recordAddress, WORD recordSize){
+INT16 DBMSHandler_ValidateRecord(DBMS_HANDLER_TABLE_ID tableId, WORD recordAddress, WORD recordSize){
     
     DBMS_HANDLER_PTR dbmsItem;
     WORD minTableAddress;
@@ -272,7 +272,7 @@ INT16 DBMSHandler_ValidateRecord(BYTE tableId, WORD recordAddress, WORD recordSi
     return DBMS_HANDLER_NO_ERROR_CODE;
 }
 
-INT16 DBMSHandler_ReadRecord(BYTE tableId, WORD recordAddress, BYTE * record, WORD recordSize){
+INT16 DBMSHandler_ReadRecord(DBMS_HANDLER_TABLE_ID tableId, WORD recordAddress, BYTE * record, WORD recordSize){
     
     INT16 error_code;
     
@@ -284,7 +284,7 @@ INT16 DBMSHandler_ReadRecord(BYTE tableId, WORD recordAddress, BYTE * record, WO
     return DBMSHandler_Read(recordAddress, record, recordSize);
 }
 
-INT16 DBMSHandler_WriteRecord(BYTE tableId, WORD recordAddress, BYTE * record, WORD recordSize){
+INT16 DBMSHandler_WriteRecord(DBMS_HANDLER_TABLE_ID tableId, WORD recordAddress, BYTE * record, WORD recordSize){
     
     INT16 error_code;
     
@@ -296,7 +296,7 @@ INT16 DBMSHandler_WriteRecord(BYTE tableId, WORD recordAddress, BYTE * record, W
     return DBMSHandler_Write(recordAddress, record, recordSize);
 }
 
-INT16 DBMSHandler_ClearRecord(BYTE tableId, WORD recordAddress, WORD recordSize){
+INT16 DBMSHandler_ClearRecord(DBMS_HANDLER_TABLE_ID tableId, WORD recordAddress, WORD recordSize){
     
     BYTE * dummyRecord;
     INT16 error_code;

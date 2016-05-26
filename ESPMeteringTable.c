@@ -67,6 +67,55 @@ BYTE bfnBuffer_Table_Meter(WORD quantityOfItems, DATA_BASE_HANDLER_LIST_TYPE tab
 // DataBaseHandler Function Prototypes
 //******************************************************************************
 
+INT16 ESPMeteringTable_GetIndexRecord(DBMS_HANDLER_TABLE_ID tableId){
+    
+    INT16 indexRecord;
+    WORD indexRecordAddress;
+    
+    indexRecordAddress = DBMSHandler_GetTableAddressByTableId(tableId);
+    
+    if(indexRecordAddress == DBMS_HANDLER_NOT_INIT)
+        return ESP_METERING_TABLE_ADDRESS_NOT_FOUND_ERROR_CODE;
+    
+    DBMSHandler_ReadRecord(tableId, indexRecordAddress, (BYTE *) &indexRecord, sizeof(indexRecord) );
+    
+    return indexRecord;
+}
+
+INT16 ESPMeteringTable_SetIndexRecord(DBMS_HANDLER_TABLE_ID tableId, INT16 meterIndexRecord){
+    
+    WORD indexRecordAddress;
+    
+    indexRecordAddress = DBMSHandler_GetTableAddressByTableId(tableId);
+    
+    if(indexRecordAddress == DBMS_HANDLER_NOT_INIT)
+        return ESP_METERING_TABLE_ADDRESS_NOT_FOUND_ERROR_CODE;
+    
+    DBMSHandler_WriteRecord(tableId, indexRecordAddress, (BYTE *) &meterIndexRecord, sizeof(meterIndexRecord) );
+    
+    return ESP_METERING_TABLE_NO_ERROR_CODE;
+}
+
+INT16 ESPMeteringTable_GetMeterIndex(void){
+    
+    return ESPMeteringTable_GetIndexRecord(METER_INDEX_TABLE_ID);
+}
+
+INT16 ESPMeteringTable_SetMeterIndex(INT16 meterIndexRecord){
+    
+    return ESPMeteringTable_SetIndexRecord(METER_INDEX_TABLE_ID, meterIndexRecord);
+}
+
+INT16 ESPMeteringTable_GetDeviceIndex(void){
+    
+    return ESPMeteringTable_GetIndexRecord(DEVICE_INDEX_TABLE_ID);
+}
+
+INT16 ESPMeteringTable_SetDeviceIndex(INT16 deviceIndexRecord){
+    
+    return ESPMeteringTable_SetIndexRecord(DEVICE_INDEX_TABLE_ID, deviceIndexRecord);
+}
+
 INT16 ESPMeteringTable_FindMeterTableIndexBySerialNumber(BYTE * serialNumber){
 	
     MTR_LIST meter; 
@@ -119,7 +168,7 @@ INT16 ESPMeteringTable_FindAvailableMeterTableIndex(void){
 
 INT16 ESPMeteringTable_SetupMeterTableItemByIndex(INT16 index, MTR_LIST_PTR meterItem){
 	
-    WORD meterAddress = ESPMeteringTable_GetMeterTableByIndex(index);
+    WORD meterAddress = ESPMeteringTable_GetMeterTableAddressByIndex(index);
 	
     if (meterAddress == DBMS_HANDLER_NOT_INIT)
         return DATA_BASE_HANDLER_NULL_STRUCT_ERROR_CODE;
@@ -154,7 +203,7 @@ INT16 ESPMeteringTable_AddNewMeterTableItem(MTR_LIST_PTR meterItem){
     return ESPMeteringTable_SetupMeterTableItemByIndex(index, meterItem);
 }
 
-WORD ESPMeteringTable_GetMeterTableByIndex(INT16 index){
+WORD ESPMeteringTable_GetMeterTableAddressByIndex(INT16 index){
 	
     if (index >= NUM_MAX_METERS)
 	return DBMS_HANDLER_NOT_INIT;
@@ -167,7 +216,7 @@ INT16 ESPMeteringTable_UpdateMeterTableItemByIndex(INT16 index, MTR_LIST_PTR met
     WORD foundMeterAddress;
     MTR_LIST meter;
     
-    foundMeterAddress = ESPMeteringTable_GetMeterTableByIndex(index);
+    foundMeterAddress = ESPMeteringTable_GetMeterTableAddressByIndex(index);
 
     if(foundMeterAddress == DBMS_HANDLER_NOT_INIT)
         return DATA_BASE_HANDLER_NULL_STRUCT_ERROR_CODE;
@@ -188,17 +237,21 @@ BYTE ESPMeteringTable_SaveMeterTableItem(MTR_LIST_PTR meterItem){
 	
     INT16 index;		
     INT16 error_code;
+    INT16 meterIndex; 
 
     index = ESPMeteringTable_FindMeterTableIndexBySerialNumber(meterItem->Serial_Num);
-
+    meterIndex = ESPMeteringTable_GetMeterIndex();
+    
     if(index == DATA_BASE_HANDLER_SERIAL_NUMBER_NOT_FOUND_ERROR_CODE){		
 
         error_code = ESPMeteringTable_AddNewMeterTableItem(meterItem);
 
         if(error_code != DATA_BASE_HANDLER_NO_ERROR_CODE)
-            return 0;
-
-        wMetersIndex++;
+            return 0;        
+        
+        meterIndex++;
+        ESPMeteringTable_SetMeterIndex(meterIndex);
+        
         return NEW_MTR_ADD;
     }
 
@@ -212,15 +265,21 @@ BYTE ESPMeteringTable_SaveMeterTableItem(MTR_LIST_PTR meterItem){
 
 INT16 ESPMeteringTable_FindDeviceTableIndexByMACAddress(BYTE * macAddress){
 	
-    Device_Eneri_PTR device_ptr = tsDevice;	
+    //Device_Eneri_PTR device_ptr = tsDevice;	
+    DEV_LIST device;
+    WORD deviceAddress;
     INT16 index = 0;
 	
+    deviceAddress = DBMSHandler_GetTableAddressByTableId(DEVICE_TABLE_ID);
+    
     while(index < NUM_MAX_NODES){
+        
+        DBMSHandler_ReadRecord(DEVICE_TABLE_ID, deviceAddress, (BYTE *) &device, sizeof(DEV_LIST));
 		
-        if(!memcmp(device_ptr->deviceItem.MAC, macAddress, MAC_SIZE))
+        if(!memcmp(device.MAC, macAddress, MAC_SIZE))
             break;
 		
-        device_ptr++;
+        deviceAddress += sizeof(DEV_LIST);
         index++;
     }
 	
@@ -232,15 +291,20 @@ INT16 ESPMeteringTable_FindDeviceTableIndexByMACAddress(BYTE * macAddress){
 
 INT16 ESPMeteringTable_FindAvailableDeviceTableIndex(void){
 	
-    Device_Eneri_PTR device_ptr = tsDevice;	
+    DEV_LIST device;
+    WORD deviceAddress;
     INT16 index = 0;
 	
+    deviceAddress = DBMSHandler_GetTableAddressByTableId(DEVICE_TABLE_ID);
+    
     while(index < NUM_MAX_NODES){
 		
-        if(!device_ptr->deviceItem.Type)
+        DBMSHandler_ReadRecord(DEVICE_TABLE_ID, deviceAddress, (BYTE *) &device, sizeof(DEV_LIST));
+        
+        if(!device.Type)
             break;
 			
-        device_ptr++;
+        deviceAddress += sizeof(DEV_LIST);
         index++;
     }
 	
@@ -250,21 +314,22 @@ INT16 ESPMeteringTable_FindAvailableDeviceTableIndex(void){
     return index;
 }
 
-Device_Eneri_PTR ESPMeteringTable_GetDeviceTableByIndex(INT16 index){
+WORD ESPMeteringTable_GetDeviceTableAddressByIndex(INT16 index){
 	
-	if (index >= NUM_MAX_NODES)
-		return NULL;
-	
-	return (tsDevice + index);
+    if (index >= NUM_MAX_NODES)
+            return DBMS_HANDLER_NOT_INIT;
+
+    return DBMSHandler_GetTableIndexAddressByTableId(DEVICE_TABLE_ID, index);
 }
 
 INT16 ESPMeteringTable_SetupDeviceTableItemByIndex(INT16 index, DEV_LIST_PTR deviceItem){
 	
-	Device_Eneri_PTR device_ptr = ESPMeteringTable_GetDeviceTableByIndex(index);
+	WORD deviceAddress = ESPMeteringTable_GetDeviceTableAddressByIndex(index);
 	
-	if (device_ptr == NULL)
+	if (deviceAddress == DBMS_HANDLER_NOT_INIT)
 		return DATA_BASE_HANDLER_NULL_STRUCT_ERROR_CODE;
 	
+        /*
 	// Clear Meter_Eneri Struct
 	memset(device_ptr, 0, sizeof(Device_Eneri));
 		
@@ -273,6 +338,8 @@ INT16 ESPMeteringTable_SetupDeviceTableItemByIndex(INT16 index, DEV_LIST_PTR dev
 	device_ptr->CRC = wfnCRC16( (BYTE *) device_ptr, sizeof(Device_Eneri) - sizeof(WORD));	
 	//!API_MEM24_1025_I2C_Write( (BYTE *) device_ptr, device_ptr->Address, sizeof(Device_Eneri));	
 	MEM_EEPROM_Write(  device_ptr->Address, (BYTE *) device_ptr, sizeof(Device_Eneri));	
+        */
+        DBMSHandler_WriteRecord(DEVICE_TABLE_ID, deviceAddress, (BYTE *) deviceItem, sizeof(DEV_LIST));
 	return DATA_BASE_HANDLER_NO_ERROR_CODE;
 }
 
@@ -283,7 +350,7 @@ INT16 ESPMeteringTable_AddNewDeviceTableItem(DEV_LIST_PTR deviceItem){
 	index = ESPMeteringTable_FindAvailableDeviceTableIndex();	
 	
 	if(index == DATA_BASE_HANDLER_NUM_MAX_NODES_REACHED_ERROR_CODE)	
-		return index;
+            return index;
 		
         print_info("Adding New Device Table");
 	return ESPMeteringTable_SetupDeviceTableItemByIndex(index, deviceItem);
@@ -292,83 +359,98 @@ INT16 ESPMeteringTable_AddNewDeviceTableItem(DEV_LIST_PTR deviceItem){
 
 INT16 ESPMeteringTable_UpdateDeviceTableItemByIndex(INT16 index, DEV_LIST_PTR deviceItem){
 	
-	Device_Eneri_PTR foundDevice;	
-		
-	foundDevice = ESPMeteringTable_GetDeviceTableByIndex(index);
-	
-	if(foundDevice == NULL)
-		return DATA_BASE_HANDLER_NULL_STRUCT_ERROR_CODE;
-	
-	if( memcmp( (BYTE *) &foundDevice->deviceItem, deviceItem, sizeof(DEV_LIST))){		
-		
-		return ESPMeteringTable_SetupDeviceTableItemByIndex(index, deviceItem);
-	}
-	
-	return DATA_BASE_HANDLER_NO_ERROR_CODE;
-}
+    WORD foundDeviceAddress;
+    DEV_LIST device;
 
+    foundDeviceAddress = ESPMeteringTable_GetDeviceTableAddressByIndex(index);
+
+    if(foundDeviceAddress == DBMS_HANDLER_NOT_INIT)
+        return DATA_BASE_HANDLER_NULL_STRUCT_ERROR_CODE;
+
+    DBMSHandler_ReadRecord(DEVICE_TABLE_ID, foundDeviceAddress, (BYTE *) &device, sizeof(DEV_LIST));
+
+    if( memcmp( (BYTE *) &device, deviceItem, sizeof(DEV_LIST))){		
+
+        return ESPMeteringTable_SetupDeviceTableItemByIndex(index, deviceItem);
+    }
+
+    return DATA_BASE_HANDLER_NO_ERROR_CODE;
+}
 
 BYTE ESPMeteringTable_SaveDeviceTableItem(DEV_LIST_PTR deviceItem){
 	
-	INT16 index;		
-	INT16 error_code;
-	
-	index = ESPMeteringTable_FindDeviceTableIndexByMACAddress(deviceItem->MAC);
-			
-	if(index == DATA_BASE_HANDLER_MAC_ADDRESS_NOT_FOUND_ERROR_CODE){		
-		
-		error_code = ESPMeteringTable_AddNewDeviceTableItem(deviceItem);
-		
-		if(error_code != DATA_BASE_HANDLER_NO_ERROR_CODE)
-			return 0;
-		
-		// NOTE: It used to call vfnSaveIndexDev();
-                wDevicesIndex++;
-		return 1;
-	}
-	
-	error_code = ESPMeteringTable_UpdateDeviceTableItemByIndex(index, deviceItem);
-	
-	if(error_code != DATA_BASE_HANDLER_NO_ERROR_CODE)
-		return 0;
-	
-	// NOTE: It used to call vfnSaveIndexDev();		
-	return 1;	
+    INT16 index;		
+    INT16 error_code;
+    INT16 deviceIndex;
+
+    index = ESPMeteringTable_FindDeviceTableIndexByMACAddress(deviceItem->MAC);
+    deviceIndex = ESPMeteringTable_GetDeviceIndex();
+
+    if(index == DATA_BASE_HANDLER_MAC_ADDRESS_NOT_FOUND_ERROR_CODE){		
+
+        error_code = ESPMeteringTable_AddNewDeviceTableItem(deviceItem);
+
+        if(error_code != DATA_BASE_HANDLER_NO_ERROR_CODE)
+            return 0;
+
+        deviceIndex++;
+        ESPMeteringTable_SetDeviceIndex(deviceIndex);
+        
+        return 1;
+    }
+
+    error_code = ESPMeteringTable_UpdateDeviceTableItemByIndex(index, deviceItem);
+
+    if(error_code != DATA_BASE_HANDLER_NO_ERROR_CODE)
+        return 0;
+
+    // NOTE: It used to call vfnSaveIndexDev();		
+    return 1;	
+}
+
+WORD ESPMeteringTable_GetReadingTableAddressByIndex(INT16 index){
+    
+    if (index >= NUM_MAX_METERS)
+            return DBMS_HANDLER_NOT_INIT;
+
+    return DBMSHandler_GetTableIndexAddressByTableId(READING_TABLE_ID, index);    
 }
 
 INT16 ESPMeteringTable_AddNewReadingTableItemByIndex(INT16 index, READING_LIST_PTR readingItem){
 	
-	WORD address;
-	
-	address = (CAB_READ_Readings_ADD + (index * sizeof(READING_LIST)));	
-	
-	//! API_MEM24_1025_I2C_Write( (BYTE *) readingItem, address, sizeof(READING_LIST));	
-        MEM_EEPROM_Write(  address, (BYTE *) readingItem, sizeof(READING_LIST));	
-	
-	return DATA_BASE_HANDLER_NO_ERROR_CODE;
+    WORD readingAddress;
+
+    readingAddress = ESPMeteringTable_GetReadingTableAddressByIndex(index);
+
+    if (readingAddress == DBMS_HANDLER_NOT_INIT)
+        return DATA_BASE_HANDLER_NULL_STRUCT_ERROR_CODE;
+
+    DBMSHandler_WriteRecord(READING_TABLE_ID, readingAddress, (BYTE *) readingItem, sizeof(READING_LIST));
+
+    return DATA_BASE_HANDLER_NO_ERROR_CODE;
 }
 
 BYTE ESPMeteringTable_SaveReadingTableItem(READING_LIST_PTR readingItem){
 	
-	INT16 index;		
-	INT16 error_code;
-	
-	index = ESPMeteringTable_FindMeterTableIndexBySerialNumber(readingItem->Serial_Num);
-			
-	if(index == DATA_BASE_HANDLER_MAC_ADDRESS_NOT_FOUND_ERROR_CODE){		
-	
-		return 0;
-	}
-	
-	error_code = ESPMeteringTable_AddNewReadingTableItemByIndex(index, readingItem);
-	
-	if(error_code != DATA_BASE_HANDLER_NO_ERROR_CODE)
-		return 0;
-	
-		
-	return 1;	
+    INT16 index;		
+    INT16 error_code;
+
+    index = ESPMeteringTable_FindMeterTableIndexBySerialNumber(readingItem->Serial_Num);
+
+    if(index == DATA_BASE_HANDLER_MAC_ADDRESS_NOT_FOUND_ERROR_CODE){		
+
+        return 0;
+    }
+
+    error_code = ESPMeteringTable_AddNewReadingTableItemByIndex(index, readingItem);
+
+    if(error_code != DATA_BASE_HANDLER_NO_ERROR_CODE)
+        return 0;
+
+    return 1;	
 }
 
+// Not long support
 BYTE API_ESPMeteringTable_SaveTable(BYTE bTableType, BYTE *vptrTableStructure ) {			
 	
     switch(bTableType){

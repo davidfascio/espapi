@@ -17,6 +17,8 @@
 #include "ESPCommons.h"
 #include "DBMSHandler.h"
 
+#define ESP_METERING_TABLE_NO_ERROR_CODE                                    (0)
+#define ESP_METERING_TABLE_ADDRESS_NOT_FOUND_ERROR_CODE                     (-6)
 //******************************************************************************
 // ESP_METERING_TABLE DataTypes
 //******************************************************************************
@@ -46,22 +48,30 @@ BYTE bfnBuffer_Table_Meter (WORD quantityOfItems, DATA_BASE_HANDLER_LIST_TYPE ta
 //******************************************************************************
 // ESPMeteringTable Function Prototypes
 //******************************************************************************
+INT16 ESPMeteringTable_GetIndexRecord(DBMS_HANDLER_TABLE_ID tableId);
+INT16 ESPMeteringTable_SetIndexRecord(DBMS_HANDLER_TABLE_ID tableId, INT16 meterIndexRecord);
+INT16 ESPMeteringTable_GetMeterIndex(void);
+INT16 ESPMeteringTable_SetMeterIndex(INT16 meterIndexRecord);
+INT16 ESPMeteringTable_GetDeviceIndex(void);
+INT16 ESPMeteringTable_SetDeviceIndex(INT16 deviceIndexRecord);
+
 INT16 ESPMeteringTable_FindMeterTableIndexBySerialNumber(BYTE * serialNumber);
 INT16 ESPMeteringTable_FindAvailableMeterTableIndex(void);
 INT16 ESPMeteringTable_SetupMeterTableItemByIndex(INT16 index, MTR_LIST_PTR meterItem);
 INT16 ESPMeteringTable_AddNewMeterTableItem(MTR_LIST_PTR meterItem);
-WORD ESPMeteringTable_GetMeterTableByIndex(INT16 index);
+WORD ESPMeteringTable_GetMeterTableAddressByIndex(INT16 index);
 INT16 ESPMeteringTable_UpdateMeterTableItemByIndex(INT16 index, MTR_LIST_PTR meterItem);
 BYTE ESPMeteringTable_SaveMeterTableItem(MTR_LIST_PTR meterItem);
 
 INT16 ESPMeteringTable_FindDeviceTableIndexByMACAddress(BYTE * macAddress);
 INT16 ESPMeteringTable_FindAvailableDeviceTableIndex(void);
-Device_Eneri_PTR ESPMeteringTable_GetDeviceTableByIndex(INT16 index);
+WORD ESPMeteringTable_GetDeviceTableAddressByIndex(INT16 index);
 INT16 ESPMeteringTable_SetupDeviceTableItemByIndex(INT16 index, DEV_LIST_PTR deviceItem);
 INT16 ESPMeteringTable_AddNewDeviceTableItem(DEV_LIST_PTR deviceItem);
 INT16 ESPMeteringTable_UpdateDeviceTableItemByIndex(INT16 index, DEV_LIST_PTR deviceItem);
 BYTE ESPMeteringTable_SaveDeviceTableItem(DEV_LIST_PTR deviceItem);
 
+WORD ESPMeteringTable_GetReadingTableAddressByIndex(INT16 index);
 INT16 ESPMeteringTable_AddNewReadingTableItemByIndex(INT16 index, READING_LIST_PTR readingItem);
 BYTE ESPMeteringTable_SaveReadingTableItem(READING_LIST_PTR readingItem);
 
