@@ -18,7 +18,7 @@
 // DBMS_HANDLER Defines
 //******************************************************************************
 #define DBMS_HANDLER_START_ADDRESS                                      (0x0000)
-#define DBMS_HANDLER_NOT_INIT                                           (0xFFFF)
+#define DBMS_HANDLER_NULL_ADDRESS                                       (0xFFFF)
 #define DBMS_HANDLER_SINGLE_RECORD                                          (1)
 
 // DBMS_HANDLER Error Codes
@@ -40,7 +40,7 @@ typedef struct{
     WORD quantityOfRecords;
 }DBMS_HANDLER, * DBMS_HANDLER_PTR;
 
-#define DBMS_HANDLER_NULL_TABLE                    {DBMS_HANDLER_NO_TABLE_ID, DBMS_HANDLER_NOT_INIT, DBMS_HANDLER_NOT_INIT, DBMS_HANDLER_NOT_INIT}
+#define DBMS_HANDLER_NULL_TABLE                    {DBMS_HANDLER_NO_TABLE_ID, DBMS_HANDLER_NULL_ADDRESS, DBMS_HANDLER_NULL_ADDRESS, DBMS_HANDLER_NULL_ADDRESS}
 
 //******************************************************************************
 // DBMS_HANDLER SET and GET Function Prototypes
@@ -64,7 +64,7 @@ WORD DBMSHandler_GetQuantityOfRecords(DBMS_HANDLER_PTR dbmsItem);
 // DBMS_HANDLER Function Prototypes
 //******************************************************************************
 INT16 DBMSHandler_Init(void);
-INT16 DBMSHandler_Alloc(WORD * location, WORD size);
+INT16 DBMSHandler_CreateTable(WORD * location, WORD size);
 INT16 DBMSHandler_Read(WORD src, BYTE * dest, WORD count);
 INT16 DBMSHandler_Write(WORD dest, BYTE * src, WORD count);
 
@@ -74,7 +74,7 @@ WORD DBMSHandler_GetTableIndexAddressByTableId(DBMS_HANDLER_TABLE_ID tableId, IN
 INT16 DBMSHandler_ValidateRecord(DBMS_HANDLER_TABLE_ID tableId, WORD recordAddress, WORD recordSize);
 INT16 DBMSHandler_ReadRecord(DBMS_HANDLER_TABLE_ID tableId, WORD recordAddress, BYTE * record, WORD recordSize);
 INT16 DBMSHandler_WriteRecord(DBMS_HANDLER_TABLE_ID tableId, WORD recordAddress, BYTE * record, WORD recordSize);
-INT16 DBMSHandler_ClearRecord(DBMS_HANDLER_TABLE_ID tableId, WORD recordAddress, WORD recordSize);
+INT16 DBMSHandler_DeleteRecord(DBMS_HANDLER_TABLE_ID tableId, WORD recordAddress, WORD recordSize);
 
 #endif	/* __DBMS_HANDLER_H__ */
 

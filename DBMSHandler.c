@@ -13,7 +13,7 @@ DBMS_HANDLER dbmsHandlerControl[] ={
     //******************************************************************************
     {
         AUTO_READING_TIME_TABLE_ID,     /*  BYTE tableId            */
-        DBMS_HANDLER_NOT_INIT,          /*  WORD tableAddress       */
+        DBMS_HANDLER_NULL_ADDRESS,          /*  WORD tableAddress       */
         sizeof(WORD),                   /*  WORD recordSize         */
         DBMS_HANDLER_SINGLE_RECORD      /*  WORD quatityOfRecords   */
     },   
@@ -23,7 +23,7 @@ DBMS_HANDLER dbmsHandlerControl[] ={
     //******************************************************************************
     {
         DEVICE_INDEX_TABLE_ID,          /*  BYTE tableId            */
-        DBMS_HANDLER_NOT_INIT,          /*  WORD tableAddress       */
+        DBMS_HANDLER_NULL_ADDRESS,          /*  WORD tableAddress       */
         sizeof(INT16),                   /*  WORD recordSize         */
         DBMS_HANDLER_SINGLE_RECORD      /*  WORD quatityOfRecords   */
     },
@@ -33,7 +33,7 @@ DBMS_HANDLER dbmsHandlerControl[] ={
     //******************************************************************************
     {
         METER_INDEX_TABLE_ID,           /*  BYTE tableId            */
-        DBMS_HANDLER_NOT_INIT,          /*  WORD tableAddress       */
+        DBMS_HANDLER_NULL_ADDRESS,          /*  WORD tableAddress       */
         sizeof(INT16),                   /*  WORD recordSize         */
         DBMS_HANDLER_SINGLE_RECORD      /*  WORD quatityOfRecords   */
     },
@@ -43,7 +43,7 @@ DBMS_HANDLER dbmsHandlerControl[] ={
     //******************************************************************************
     {
         DEVICE_TABLE_ID,                /*  BYTE tableId            */
-        DBMS_HANDLER_NOT_INIT,          /*  WORD tableAddress       */
+        DBMS_HANDLER_NULL_ADDRESS,          /*  WORD tableAddress       */
         sizeof(DEV_LIST),               /*  WORD recordSize         */
         NUM_MAX_NODES                   /*  WORD quatityOfRecords   */
     },
@@ -53,7 +53,7 @@ DBMS_HANDLER dbmsHandlerControl[] ={
     //******************************************************************************
     {
         METER_TABLE_ID,                 /*  BYTE tableId            */
-        DBMS_HANDLER_NOT_INIT,          /*  WORD tableAddress       */
+        DBMS_HANDLER_NULL_ADDRESS,          /*  WORD tableAddress       */
         sizeof(MTR_LIST),               /*  WORD recordSize         */
         NUM_MAX_METERS                  /*  WORD quatityOfRecords   */
     },
@@ -63,7 +63,7 @@ DBMS_HANDLER dbmsHandlerControl[] ={
     //******************************************************************************
     {
         READING_TABLE_ID,               /*  BYTE tableId            */
-        DBMS_HANDLER_NOT_INIT,          /*  WORD tableAddress       */
+        DBMS_HANDLER_NULL_ADDRESS,          /*  WORD tableAddress       */
         sizeof(READING_LIST),           /*  WORD recordSize         */
         NUM_MAX_METERS                  /*  WORD quatityOfRecords   */
     },
@@ -120,7 +120,7 @@ WORD DBMSHandler_GetTableIndexAddress(DBMS_HANDLER_PTR dbmsItem, INT16 index){
     quatityOfRecords = DBMSHandler_GetQuantityOfRecords(dbmsItem);
     
     if(quatityOfRecords < index)
-        return DBMS_HANDLER_NOT_INIT;
+        return DBMS_HANDLER_NULL_ADDRESS;
     
     address = DBMSHandler_GetTableAddress(dbmsItem);
     recordSize = DBMSHandler_GetRecordSize(dbmsItem);
@@ -168,7 +168,7 @@ INT16 DBMSHandler_Init(void) {
 
     while (DBMSHandler_GetTableId(dbmsHandler_ptr) != DBMS_HANDLER_NO_TABLE_ID) {
 
-        error_code = DBMSHandler_Alloc( DBMSHandler_GetTableAddressPtr(dbmsHandler_ptr),
+        error_code = DBMSHandler_CreateTable( DBMSHandler_GetTableAddressPtr(dbmsHandler_ptr),
                                         DBMSHandler_GetRecordSize(dbmsHandler_ptr) *
                                         DBMSHandler_GetQuantityOfRecords(dbmsHandler_ptr));
 
@@ -181,7 +181,7 @@ INT16 DBMSHandler_Init(void) {
     return DBMS_HANDLER_NO_ERROR_CODE;
 }
 
-INT16 DBMSHandler_Alloc(WORD * location, WORD size) {
+INT16 DBMSHandler_CreateTable(WORD * location, WORD size) {
 
     if ((DBMSHandler_MemoryLocation + size) > MEM_EEPROM_MAX_MEMORY_SIZE) {
 
@@ -231,7 +231,7 @@ WORD DBMSHandler_GetTableAddressByTableId(DBMS_HANDLER_TABLE_ID tableId){
     dbmsItem = DBMSHandler_GetDBMSItemByTableId(tableId);
     
     if(dbmsItem == NULL)
-        return DBMS_HANDLER_NOT_INIT;
+        return DBMS_HANDLER_NULL_ADDRESS;
     
     return DBMSHandler_GetTableAddress(dbmsItem);
 }
@@ -243,7 +243,7 @@ WORD DBMSHandler_GetTableIndexAddressByTableId(DBMS_HANDLER_TABLE_ID tableId, IN
     dbmsItem = DBMSHandler_GetDBMSItemByTableId(tableId);
     
     if(dbmsItem == NULL)
-        return DBMS_HANDLER_NOT_INIT;
+        return DBMS_HANDLER_NULL_ADDRESS;
     
     return DBMSHandler_GetTableIndexAddress(dbmsItem, index);
 }
@@ -296,7 +296,7 @@ INT16 DBMSHandler_WriteRecord(DBMS_HANDLER_TABLE_ID tableId, WORD recordAddress,
     return DBMSHandler_Write(recordAddress, record, recordSize);
 }
 
-INT16 DBMSHandler_ClearRecord(DBMS_HANDLER_TABLE_ID tableId, WORD recordAddress, WORD recordSize){
+INT16 DBMSHandler_DeleteRecord(DBMS_HANDLER_TABLE_ID tableId, WORD recordAddress, WORD recordSize){
     
     BYTE * dummyRecord;
     INT16 error_code;

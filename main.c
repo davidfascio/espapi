@@ -237,17 +237,18 @@ int main(int argc, char** argv) {
             
     API_DataBaseHandler_SaveTable(DEVICESTABLE, (BYTE*) &device_d);*/
     DBMSHandler_Init();
-    //MEM_EEPROM_Init();
+    /*BYTE originalString[] = "Hola Mundo!";
+    WORD originalStringSize = sizeof(originalString);
     
-    metersTableAddress = DBMSHandler_GetTableAddressByTableId(METER_TABLE_ID);
-    MTR_LIST dump;
-    DBMSHandler_WriteRecord(METER_TABLE_ID, metersTableAddress,(BYTE *) &dump, sizeof(dump));    
-    DBMSHandler_ClearRecord(METER_TABLE_ID, metersTableAddress, sizeof(dump));
+    BYTE flushString[50];
+    memset(flushString, 0, 50);
     
+    MEM_EEPROM_Init();
+    MEM_EEPROM_Write(0x0000, originalString,originalStringSize );
+    MEM_EEPROM_Read(0x0000, flushString, originalStringSize );
+    print_debug("%s", flushString);*/
     
-    
-    
-    //save_devices();
+    save_devices();
 /*
     MTR_LIST meter_d;
     memset(meter_d.MACAdd_Display, 0xFF, 8);
