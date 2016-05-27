@@ -13,14 +13,20 @@
 //******************************************************************************
 #include "GenericTypeDefs.h"
 #include "System.h"
-#include "Data_Base_Handler.h"
+
 #include "ESPCommons.h"
 #include "DBMSHandler.h"
+#include "Data_Base_Handler.h"
 
 //******************************************************************************
 // ESP_METERING_TABLE Defines
 //******************************************************************************
 #define ESP_METERING_TABLE_NO_ERROR_CODE                                    (0)
+#define ESP_METERING_TABLE_NULL_STRUCT_ERROR_CODE                           (-1)
+#define ESP_METERING_TABLE_MAC_ADDRESS_NOT_FOUND_ERROR_CODE                 (-2)
+#define ESP_METERING_TABLE_SERIAL_NUMBER_NOT_FOUND_ERROR_CODE               (-3)
+#define ESP_METERING_TABLE_NUM_MAX_METERS_REACHED_ERROR_CODE                (-4)
+#define ESP_METERING_TABLE_NUM_MAX_NODES_REACHED_ERROR_CODE                 (-5)
 #define ESP_METERING_TABLE_ADDRESS_NOT_FOUND_ERROR_CODE                     (-6)
 #define ESP_METERING_TABLE_RECORD_INDEX_OUT_OF_RANGE_ERROR_CODE             (-7)
 #define ESP_METERING_TABLE_NO_DATA_MATCH_ERROR_CODE                         (-8)
@@ -28,6 +34,7 @@
 //******************************************************************************
 // ESP_METERING_TABLE DataTypes
 //******************************************************************************
+
 
 //******************************************************************************
 // ESPMeteringTable Function Prototypes
@@ -85,20 +92,11 @@ BYTE API_ESPMeteringTable_SaveTable(BYTE bTableType, BYTE *vptrTableStructure );
 // ESP_API Function Prototypes
 //******************************************************************************
 
-BYTE bfnReadMTRSTable(BYTE * dataRequest, WORD dataRequestSize,
-        BYTE * dataResponse, WORD * dataResponseSize, WORD * pagingDataResponseSize);
-
-BYTE bfnReadDevicesTable(BYTE * dataRequest, WORD dataRequestSize,
-        BYTE * dataResponse, WORD * dataResponseSize, WORD * pagingDataResponseSize);
-
-BYTE bfnReadMTRReadingsTable(BYTE * dataRequest, WORD dataRequestSize,
-        BYTE * dataResponse, WORD * dataResponseSize, WORD * pagingDataResponseSize);
-
-BYTE bfnDelMTRMetersTable(BYTE * dataRequest, WORD dataRequestSize,
-        BYTE * dataResponse, WORD * dataResponseSize, WORD * pagingDataResponseSize);
-
-BYTE bfnDelMTRDevicesTable(BYTE * dataRequest, WORD dataRequestSize,
-        BYTE * dataResponse, WORD * dataResponseSize, WORD * pagingDataResponseSize);
+BYTE bfnReadMTRSTable(BYTE * dataRequest, WORD dataRequestSize, BYTE * dataResponse, WORD * dataResponseSize, WORD * pagingDataResponseSize);
+BYTE bfnReadDevicesTable(BYTE * dataRequest, WORD dataRequestSize, BYTE * dataResponse, WORD * dataResponseSize, WORD * pagingDataResponseSize);
+BYTE bfnReadMTRReadingsTable(BYTE * dataRequest, WORD dataRequestSize, BYTE * dataResponse, WORD * dataResponseSize, WORD * pagingDataResponseSize);
+BYTE bfnDelMTRMetersTable(BYTE * dataRequest, WORD dataRequestSize, BYTE * dataResponse, WORD * dataResponseSize, WORD * pagingDataResponseSize);
+BYTE bfnDelMTRDevicesTable(BYTE * dataRequest, WORD dataRequestSize, BYTE * dataResponse, WORD * dataResponseSize, WORD * pagingDataResponseSize);
 
 //******************************************************************************
 //                  LOCAL ESP METERING TABLE STATE MACHINE

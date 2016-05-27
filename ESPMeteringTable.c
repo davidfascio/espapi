@@ -1,8 +1,4 @@
 //******************************************************************************
-//* File DataBaseHandler.c
-//
-
-//******************************************************************************
 // Includes
 //******************************************************************************
 #include "ESPMeteringTable.h"
@@ -202,19 +198,7 @@ INT16 ESPMeteringTable_InsertMeterTableItemByIndex(INT16 index, MTR_LIST_PTR met
     if (meterAddress == DBMS_HANDLER_NULL_ADDRESS)
         return DATA_BASE_HANDLER_NULL_STRUCT_ERROR_CODE;
 	
-    // Clear Meter_Eneri Struct
-    /*
-        memset(meter_ptr, 0, sizeof(Meter_Eneri));
-
-        memcpy((BYTE *) &meter_ptr->meterItem, meterItem, sizeof(MTR_LIST)); 		
-        meter_ptr->Address = (CAB_READ_Meter_ADD + (index * sizeof(Meter_Eneri)));	
-        meter_ptr->CRC = wfnCRC16( (BYTE *) meter_ptr, sizeof(Meter_Eneri) - sizeof(WORD));	
-        //error_code = API_MEM24_1025_I2C_Write( (BYTE *) meter_ptr, meter_ptr->Address, sizeof(Meter_Eneri));	
-        MEM_EEPROM_Write( meter_ptr->Address, (BYTE *) meter_ptr,  sizeof(Meter_Eneri));	
-    */
-    
     DBMSHandler_WriteRecord(METER_TABLE_ID, meterAddress, (BYTE *) meterItem, sizeof(MTR_LIST));
-    //!print_error("ERROR CODE: %d", error_code);
     
     return DATA_BASE_HANDLER_NO_ERROR_CODE;
 }
@@ -334,22 +318,6 @@ INT16 ESPMeteringTable_DeleteMeterTableItemByIndex(INT16 index){
     return DATA_BASE_HANDLER_NO_ERROR_CODE;
 }
 
-/*INT16 API_ESPMeteringTable_DeleteMeterTableItemByIndex( INT16 index){
-    
-    INT16 meterIndex;
-    
-    meterIndex = ESPMeteringTable_GetMeterIndex();
-    
-    //! TODO
-    ESPMeteringTable_DeleteMeterTableItemByIndex(index);
-    
-    
-    //! TODO
-    
-    meterIndex--;
-    ESPMeteringTable_SetMeterIndex(meterIndex);
-}*/
-
 INT16 API_ESPMeteringTable_DropMeterTable(void){
     
     INT16 index;
@@ -391,7 +359,6 @@ INT16 ESPMeteringTable_FindDeviceTableIndexByRecordIndex(INT16 recordIndex){
 
 INT16 ESPMeteringTable_FindDeviceTableIndexByMACAddress(BYTE * macAddress){
 	
-    //Device_Eneri_PTR device_ptr = tsDevice;	
     DEV_LIST device;
     WORD deviceAddress;
     INT16 index = 0;
@@ -455,16 +422,6 @@ INT16 ESPMeteringTable_InsertDeviceTableItemByIndex(INT16 index, DEV_LIST_PTR de
 	if (deviceAddress == DBMS_HANDLER_NULL_ADDRESS)
 		return DATA_BASE_HANDLER_NULL_STRUCT_ERROR_CODE;
 	
-        /*
-	// Clear Meter_Eneri Struct
-	memset(device_ptr, 0, sizeof(Device_Eneri));
-		
-	memcpy( (BYTE *) &device_ptr->deviceItem, deviceItem, sizeof(DEV_LIST)); 		
-	device_ptr->Address = (CAB_READ_Meter_MAC_SHORT + (index * sizeof(Device_Eneri)));	
-	device_ptr->CRC = wfnCRC16( (BYTE *) device_ptr, sizeof(Device_Eneri) - sizeof(WORD));	
-	//!API_MEM24_1025_I2C_Write( (BYTE *) device_ptr, device_ptr->Address, sizeof(Device_Eneri));	
-	MEM_EEPROM_Write(  device_ptr->Address, (BYTE *) device_ptr, sizeof(Device_Eneri));	
-        */
         DBMSHandler_WriteRecord(DEVICE_TABLE_ID, deviceAddress, (BYTE *) deviceItem, sizeof(DEV_LIST));
 	return DATA_BASE_HANDLER_NO_ERROR_CODE;
 }
@@ -559,8 +516,7 @@ BYTE API_ESPMeteringTable_InsertDeviceTableItem(DEV_LIST_PTR deviceItem){
 
     if(error_code != DATA_BASE_HANDLER_NO_ERROR_CODE)
         return 0;
-
-    // NOTE: It used to call vfnSaveIndexDev();		
+	
     return 1;	
 }
 
@@ -658,7 +614,6 @@ BYTE API_ESPMeteringTable_InsertReadingTableItem(READING_LIST_PTR readingItem){
     return 1;	
 }
 
-// Not long support
 BYTE API_ESPMeteringTable_SaveTable(BYTE bTableType, BYTE *vptrTableStructure ) {			
 	
     switch(bTableType){
@@ -682,8 +637,7 @@ BYTE API_ESPMeteringTable_SaveTable(BYTE bTableType, BYTE *vptrTableStructure ) 
 //******************************************************************************
 // ESP_API Function Prototypes
 //******************************************************************************
-BYTE bfnReadMTRSTable(BYTE * dataRequest, WORD dataRequestSize,
-        BYTE * dataResponse, WORD * dataResponseSize, WORD * pagingDataResponseSize) {
+BYTE bfnReadMTRSTable(BYTE * dataRequest, WORD dataRequestSize, BYTE * dataResponse, WORD * dataResponseSize, WORD * pagingDataResponseSize) {
 
     INT16 meterIndex;    
     BYTE * dataResponse_ptr = dataResponse;
@@ -692,14 +646,12 @@ BYTE bfnReadMTRSTable(BYTE * dataRequest, WORD dataRequestSize,
     * dataResponse_ptr = SUCCESS_CMD;
     dataResponse_ptr += sizeof (BYTE);
 
-    //wIndexData = wfnIndexConsutl(METERSTABLE);
     meterIndex = ESPMeteringTable_GetMeterIndex();
 
     if (meterIndex > 0) {
 
         * pagingDataResponseSize = (meterIndex * sizeof (MTR_LIST));
         
-        //! bfnBuffer_Table_Meter(wIndexData, sizeof(MTR_LIST), &bpOutputData[0]); 
         bfnBuffer_Table_Meter(meterIndex, METER_TABLE_LIST);
         
         answer_code = WAIT_ANSWER;
@@ -709,8 +661,7 @@ BYTE bfnReadMTRSTable(BYTE * dataRequest, WORD dataRequestSize,
     return answer_code;
 }
 
-BYTE bfnReadDevicesTable(BYTE * dataRequest, WORD dataRequestSize,
-        BYTE * dataResponse, WORD * dataResponseSize, WORD * pagingDataResponseSize) {
+BYTE bfnReadDevicesTable(BYTE * dataRequest, WORD dataRequestSize, BYTE * dataResponse, WORD * dataResponseSize, WORD * pagingDataResponseSize) {
 
     WORD deviceIndex;
     BYTE * dataResponse_ptr = dataResponse;
@@ -719,7 +670,6 @@ BYTE bfnReadDevicesTable(BYTE * dataRequest, WORD dataRequestSize,
     * dataResponse_ptr = SUCCESS_CMD;
     dataResponse_ptr += sizeof (BYTE);
 
-    //!wIndexData = wfnIndexConsutl(DEVICESTABLE);
     deviceIndex = ESPMeteringTable_GetDeviceIndex();
 
     if (deviceIndex > 0) {
@@ -734,8 +684,7 @@ BYTE bfnReadDevicesTable(BYTE * dataRequest, WORD dataRequestSize,
     return answer_code;
 }
 
-BYTE bfnReadMTRReadingsTable(BYTE * dataRequest, WORD dataRequestSize,
-        BYTE * dataResponse, WORD * dataResponseSize, WORD * pagingDataResponseSize) {
+BYTE bfnReadMTRReadingsTable(BYTE * dataRequest, WORD dataRequestSize, BYTE * dataResponse, WORD * dataResponseSize, WORD * pagingDataResponseSize) {
 
     WORD readingIndex;
     BYTE * dataResponse_ptr = dataResponse;
@@ -744,14 +693,12 @@ BYTE bfnReadMTRReadingsTable(BYTE * dataRequest, WORD dataRequestSize,
     * dataResponse_ptr = SUCCESS_CMD;
     dataResponse_ptr += sizeof (BYTE);
 
-    //! wIndexData = wfnIndexConsutl(METERSTABLE);
     readingIndex = ESPMeteringTable_GetMeterIndex();
 
     if (readingIndex > 0) {
 
         * pagingDataResponseSize = (readingIndex * sizeof (READING_LIST));
         
-        //! bfnBuffer_Table_Meter(wIndexData, sizeof(MTR_LIST), &bpOutputData[0]); 
         bfnBuffer_Table_Meter(readingIndex, READING_TABLE_LIST);
         
         answer_code = WAIT_ANSWER;
@@ -761,22 +708,9 @@ BYTE bfnReadMTRReadingsTable(BYTE * dataRequest, WORD dataRequestSize,
     return answer_code;
 }
 
-BYTE bfnDelMTRMetersTable(BYTE * dataRequest, WORD dataRequestSize,
-        BYTE * dataResponse, WORD * dataResponseSize, WORD * pagingDataResponseSize) {
+BYTE bfnDelMTRMetersTable(BYTE * dataRequest, WORD dataRequestSize, BYTE * dataResponse, WORD * dataResponseSize, WORD * pagingDataResponseSize) {
 
     BYTE * dataResponse_ptr = dataResponse;
-    
-
-    //! It needs to implement a better command process
-    //! also the response needs to be performed
-
-    /*if (bfnDelAllData(METERSTABLE, ZERO)) {
-
-        * dataResponse_ptr = SUCCESS_CMD;
-    } else {
-
-        * dataResponse_ptr = COOR_BUSY;
-    }*/
 
     * dataResponse_ptr = SUCCESS_CMD;
     * dataResponseSize = sizeof (BYTE);
@@ -786,31 +720,17 @@ BYTE bfnDelMTRMetersTable(BYTE * dataRequest, WORD dataRequestSize,
     return ESP_DOES_NOT_WAIT_ANSWER;
 }
 
-BYTE bfnDelMTRDevicesTable(BYTE * dataRequest, WORD dataRequestSize,
-        BYTE * dataResponse, WORD * dataResponseSize, WORD * pagingDataResponseSize) {
+BYTE bfnDelMTRDevicesTable(BYTE * dataRequest, WORD dataRequestSize, BYTE * dataResponse, WORD * dataResponseSize, WORD * pagingDataResponseSize) {
 
     BYTE * dataResponse_ptr = dataResponse;
-
-    //! It needs to implement a better command process
-    //! also the response needs to be performed
-
-    /*if (bfnDelAllData(DEVICESTABLE, ZERO)) {
-
-        * dataResponse_ptr = SUCCESS_CMD;
-    } else {
-
-        * dataResponse_ptr = COOR_BUSY;
-    }*/
-
+    
     * dataResponse_ptr = SUCCESS_CMD;
     * dataResponseSize = sizeof (BYTE);
 
     API_ESPMeteringTable_DropDeviceTable();
     
     return ESP_DOES_NOT_WAIT_ANSWER;
-
 }
-
 
 //******************************************************************************
 //                  LOCAL ESP METERING TABLE STATE MACHINE
@@ -863,8 +783,6 @@ void vfnBufferConsultTableState(void){
         startItem++;
         quantityOfItems--;
         
-        //!print_info("Paging Data: ");
-        //!print_buffer(DataBaseHandler_GetQueryResponseBuffer(&espMeteringTableQuery), DataBaseHandler_GetQueryResponseBufferSize(&espMeteringTableQuery));
         ESPComInterface_SendFrame(0, DataBaseHandler_GetQueryResponseBuffer(&espMeteringTableQuery), DataBaseHandler_GetQueryResponseBufferSize(&espMeteringTableQuery), TRUE, FALSE, quantityOfItems == 0 );
         
         DataBaseHandler_SetupQuery(&espMeteringTableQuery,startItem,quantityOfItems,tableListType);                
@@ -876,30 +794,21 @@ void vfnBufferConsultTableState(void){
         ESPMeteringTable_ErrorProcess();
         return;
     }
-    
-    /*if( startItem >= NUM_MAX_METERS){
-     
-        print_error("startItem >= NUM_MAX_METERS");
-        ESPMeteringTable_ErrorProcess();
-        return;
-    }*/
-    
+        
     switch(tableListType){
         
         case METER_TABLE_LIST:
-            //! bStatusData = bfnConsultData(ALLDATAMTR, ZERO, ZERO , startItem, &espMeteringTableQuery);
+            
             bStatusData = API_ESPMeteringTable_SelectMeterTableItemByRecordIndex(startItem, &espMeteringTableQuery);
             break;
         
         case DEVICE_TABLE_LIST:
             
-            //! bStatusData = bfnConsultData(ALLDATADEV, ZERO, startItem, ZERO , &espMeteringTableQuery);
             bStatusData = API_ESPMeteringTable_SelectDeviceTableItemByRecordIndex(startItem, &espMeteringTableQuery);
             break;
             
-        case READING_TABLE_LIST:
+        case READING_TABLE_LIST:            
             
-            //! bStatusData = bfnConsultData(ALLDATAREADINGS, ZERO, ZERO, startItem , &espMeteringTableQuery);
             bStatusData = API_ESPMeteringTable_SelectReadingTableItemByRecordIndex(startItem, &espMeteringTableQuery);
             break;
             

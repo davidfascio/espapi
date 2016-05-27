@@ -156,6 +156,100 @@ WORD DBMSHandler_GetQuantityOfRecords(DBMS_HANDLER_PTR dbmsItem) {
 }
 
 //******************************************************************************
+// DBMS_HANDLER_RECORD_QUERY SET and GET Function Prototypes
+//******************************************************************************
+
+void DBMSHandler_SetupRecordQuery(DBMS_HANDLER_RECORD_QUERY_PTR recordQuery, DBMS_HANDLER_TABLE_ID tableIdRecord, WORD startRecordIdex, WORD quantityOfRecords){
+
+    if(recordQuery == NULL)
+        return;
+    
+    DBMSHandler_ClearRecordQuery(recordQuery);    
+    
+    DBMSHandler_SetStartRecordQueryIndex(recordQuery, startRecordIdex);
+    DBMSHandler_SetQuantityOfRecordQueries(recordQuery, quantityOfRecords);
+    DBMSHandler_SetTableIdRecordQuery(recordQuery, tableIdRecord);
+}
+
+void DBMSHandler_ClearRecordQuery(DBMS_HANDLER_RECORD_QUERY_PTR recordQuery){
+    
+    if(recordQuery == NULL)
+        return;
+    
+    memset(recordQuery, 0, sizeof(DBMS_HANDLER_RECORD_QUERY));
+}
+
+DBMS_HANDLER_TABLE_ID DBMSHandler_GetTableIdRecordQuery(DBMS_HANDLER_RECORD_QUERY_PTR recordQuery){
+    
+    return recordQuery->tableIdRecord;
+}
+
+void DBMSHandler_SetTableIdRecordQuery(DBMS_HANDLER_RECORD_QUERY_PTR recordQuery, DBMS_HANDLER_TABLE_ID tableIdRecord){
+    
+    if(recordQuery == NULL)
+        return;
+    
+    recordQuery->tableIdRecord = tableIdRecord;
+}
+
+WORD DBMSHandler_GetStartRecordQueryIndex(DBMS_HANDLER_RECORD_QUERY_PTR recordQuery){
+
+    return recordQuery->startRecordIdex;
+}
+
+void DBMSHandler_SetStartRecordQueryIndex(DBMS_HANDLER_RECORD_QUERY_PTR recordQuery, WORD startRecordIdex){
+    
+    if(recordQuery == NULL)
+        return;
+    
+    recordQuery->startRecordIdex = startRecordIdex;
+}
+
+WORD DBMSHandler_GetQuantityOfRecordQueries(DBMS_HANDLER_RECORD_QUERY_PTR recordQuery){
+    
+    return recordQuery->quantityOfRecords;
+}
+
+void DBMSHandler_SetQuantityOfRecordQueries(DBMS_HANDLER_RECORD_QUERY_PTR recordQuery, WORD quantityOfRecords){
+    
+    if(recordQuery == NULL)
+        return;
+    
+    recordQuery->quantityOfRecords = quantityOfRecords;    
+}
+
+BYTE * DBMSHandler_GetRecordQueryResponse(DBMS_HANDLER_RECORD_QUERY_PTR recordQuery){
+    
+    return recordQuery->recordQueryResponse;
+}
+
+WORD DBMSHandler_GetRecordQueryResponseSize(DBMS_HANDLER_RECORD_QUERY_PTR recordQuery){
+    
+    return recordQuery->recordQueryResponseSize;
+}
+
+void DBMSHandler_SetRecordQueryResponseSize(DBMS_HANDLER_RECORD_QUERY_PTR recordQuery, WORD recordQueryResponseSize){
+    
+    if(recordQuery == NULL)
+        return;
+    
+    recordQuery->recordQueryResponseSize = recordQueryResponseSize;
+}
+
+BOOL DBMSHandler_IsWaitingForRecordQueryResponse(DBMS_HANDLER_RECORD_QUERY_PTR recordQuery){
+    
+    return recordQuery->isWaitingForRecordQueryResponse;    
+}
+
+void DBMSHandler_SetWaitingForRecordQueryResponse(DBMS_HANDLER_RECORD_QUERY_PTR recordQuery, BOOL isWaitingForRecordQueryResponse){
+    
+    if(recordQuery == NULL)
+        return;
+    
+    recordQuery->isWaitingForRecordQueryResponse = isWaitingForRecordQueryResponse;
+}
+
+//******************************************************************************
 // DBMS_HANDLER Function Prototypes
 //******************************************************************************
 
@@ -168,9 +262,9 @@ INT16 DBMSHandler_Init(void) {
 
     while (DBMSHandler_GetTableId(dbmsHandler_ptr) != DBMS_HANDLER_NO_TABLE_ID) {
 
-        error_code = DBMSHandler_CreateTable( DBMSHandler_GetTableAddressPtr(dbmsHandler_ptr),
-                                        DBMSHandler_GetRecordSize(dbmsHandler_ptr) *
-                                        DBMSHandler_GetQuantityOfRecords(dbmsHandler_ptr));
+        error_code = DBMSHandler_CreateTable(   DBMSHandler_GetTableAddressPtr(dbmsHandler_ptr),
+                                                DBMSHandler_GetRecordSize(dbmsHandler_ptr) *
+                                                DBMSHandler_GetQuantityOfRecords(dbmsHandler_ptr));
 
         if (error_code != DBMS_HANDLER_NO_ERROR_CODE)
             return error_code;
@@ -183,7 +277,7 @@ INT16 DBMSHandler_Init(void) {
 
 INT16 DBMSHandler_CreateTable(WORD * location, WORD size) {
 
-    if ((DBMSHandler_MemoryLocation + size) > MEM_EEPROM_MAX_MEMORY_SIZE) {
+    if ((DBMSHandler_MemoryLocation + size) > DBMS_HANDLER_END_ADDRESS) {
 
         print_error("DBMS_HANDLER_MEMORY_OVERFLOW_ERROR_CODE");
         return DBMS_HANDLER_MEMORY_OVERFLOW_ERROR_CODE;

@@ -18,8 +18,10 @@
 // DBMS_HANDLER Defines
 //******************************************************************************
 #define DBMS_HANDLER_START_ADDRESS                                      (0x0000)
-#define DBMS_HANDLER_NULL_ADDRESS                                       (0xFFFF)
-#define DBMS_HANDLER_SINGLE_RECORD                                          (1)
+#define DBMS_HANDLER_END_ADDRESS                    (MEM_EEPROM_MAX_MEMORY_SIZE)
+#define DBMS_HANDLER_NULL_ADDRESS               (MEM_EEPROM_NULL_MEMORY_ADDRESS)
+#define DBMS_HANDLER_SINGLE_RECORD                                           (1)
+#define DBMS_HANDLER_RECORD_QUERY_RESPONSE_MAX_SIZE                        (100)
 
 // DBMS_HANDLER Error Codes
 #define DBMS_HANDLER_NO_ERROR_CODE                                          (0)
@@ -42,6 +44,15 @@ typedef struct{
 
 #define DBMS_HANDLER_NULL_TABLE                    {DBMS_HANDLER_NO_TABLE_ID, DBMS_HANDLER_NULL_ADDRESS, DBMS_HANDLER_NULL_ADDRESS, DBMS_HANDLER_NULL_ADDRESS}
 
+typedef struct{
+    DBMS_HANDLER_TABLE_ID tableIdRecord;
+    WORD startRecordIdex;
+    WORD quantityOfRecords;    
+    BYTE recordQueryResponse[DBMS_HANDLER_RECORD_QUERY_RESPONSE_MAX_SIZE];
+    WORD recordQueryResponseSize;
+    BOOL isWaitingForRecordQueryResponse;
+}DBMS_HANDLER_RECORD_QUERY, * DBMS_HANDLER_RECORD_QUERY_PTR;
+
 //******************************************************************************
 // DBMS_HANDLER SET and GET Function Prototypes
 //******************************************************************************
@@ -59,6 +70,30 @@ WORD DBMSHandler_GetRecordSize(DBMS_HANDLER_PTR dbmsItem);
 
 void DBMSHandler_SetQuantityOfRecords(DBMS_HANDLER_PTR dbmsItem, WORD quantityOfRecords);
 WORD DBMSHandler_GetQuantityOfRecords(DBMS_HANDLER_PTR dbmsItem);
+
+//******************************************************************************
+// DBMS_HANDLER_RECORD_QUERY SET and GET Function Prototypes
+//******************************************************************************
+
+void DBMSHandler_SetupRecordQuery(DBMS_HANDLER_RECORD_QUERY_PTR recordQuery, DBMS_HANDLER_TABLE_ID tableIdRecord, WORD startRecordIdex, WORD quantityOfRecords);
+void DBMSHandler_ClearRecordQuery(DBMS_HANDLER_RECORD_QUERY_PTR recordQuery);
+
+DBMS_HANDLER_TABLE_ID DBMSHandler_GetTableIdRecordQuery(DBMS_HANDLER_RECORD_QUERY_PTR recordQuery);
+void DBMSHandler_SetTableIdRecordQuery(DBMS_HANDLER_RECORD_QUERY_PTR recordQuery, DBMS_HANDLER_TABLE_ID tableIdRecord);
+
+WORD DBMSHandler_GetStartRecordQueryIndex(DBMS_HANDLER_RECORD_QUERY_PTR recordQuery);
+void DBMSHandler_SetStartRecordQueryIndex(DBMS_HANDLER_RECORD_QUERY_PTR recordQuery, WORD startRecordIdex);
+
+WORD DBMSHandler_GetQuantityOfRecordQueries(DBMS_HANDLER_RECORD_QUERY_PTR recordQuery);
+void DBMSHandler_SetQuantityOfRecordQueries(DBMS_HANDLER_RECORD_QUERY_PTR recordQuery, WORD quantityOfRecords);
+
+BYTE * DBMSHandler_GetRecordQueryResponse(DBMS_HANDLER_RECORD_QUERY_PTR recordQuery);
+
+WORD DBMSHandler_GetRecordQueryResponseSize(DBMS_HANDLER_RECORD_QUERY_PTR recordQuery);
+void DBMSHandler_SetRecordQueryResponseSize(DBMS_HANDLER_RECORD_QUERY_PTR recordQuery, WORD recordQueryResponseSize);
+
+BOOL DBMSHandler_IsWaitingForRecordQueryResponse(DBMS_HANDLER_RECORD_QUERY_PTR recordQuery);
+void DBMSHandler_SetWaitingForRecordQueryResponse(DBMS_HANDLER_RECORD_QUERY_PTR recordQuery, BOOL isWaitingForRecordQueryResponse);
 
 //******************************************************************************
 // DBMS_HANDLER Function Prototypes
