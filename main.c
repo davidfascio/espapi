@@ -152,7 +152,7 @@ void FillDemoDevices(void){
     
     inverted_memcpy((BYTE *) &demo_reading.CRC, (BYTE *) &crcFrame, 2);
     
-    while(demo_dev_index  < 45){
+    while(demo_dev_index  < 10){
         
         
         memcpy(&demo_dev.Short_Add, demo_dev_default_short_addr, sizeof(demo_dev_default_short_addr));
@@ -174,7 +174,7 @@ void FillDemoDevices(void){
         
         
         
-        for(index = 0; index < 12; index++){
+        for(index = 0; index < 10; index++){
             
             sprintf(demo_meter_serial_number, "%016d", demo_mtr_index);
             inverted_memcpy(demo_mtr.Serial_Num, demo_meter_serial_number, 16);
@@ -239,8 +239,14 @@ int main(int argc, char** argv) {
     memcpy(device_d.MAC, macLongAddrByte, 8);
             
     API_DataBaseHandler_SaveTable(DEVICESTABLE, (BYTE*) &device_d);*/
-    if (DBMSHandler_Init() != DBMS_HANDLER_NO_ERROR_CODE)
+    
+    INT16 error_code = DBMSHandler_Init();    
+    
+    if(error_code != DBMS_HANDLER_NO_ERROR_CODE)
         exit(0);
+    
+    API_ESPMeteringTable_Init();
+    API_ESPMeteringTable_Init();
     println("");
     
     

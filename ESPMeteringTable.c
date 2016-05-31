@@ -63,6 +63,34 @@ BYTE bfnBuffer_Table_Meter(WORD quantityOfItems, DBMS_HANDLER_TABLE_ID tableList
 //******************************************************************************
 // DataBaseHandler Function Prototypes
 //******************************************************************************
+INT16 ESPMeteringTable_GetRecord(DBMS_HANDLER_TABLE_ID tableId, BYTE * record, WORD recordSize ){
+    
+    WORD recordAddress;
+    
+    recordAddress = DBMSHandler_GetTableAddressByTableId(tableId);
+    
+    if(recordAddress == DBMS_HANDLER_NULL_ADDRESS)
+        return ESP_METERING_TABLE_ADDRESS_NOT_FOUND_ERROR_CODE;
+    
+    DBMSHandler_ReadRecord(tableId, recordAddress, record, recordSize );
+    
+    return ESP_METERING_TABLE_NO_ERROR_CODE;
+}
+
+INT16 ESPMeteringTable_SetRecord(DBMS_HANDLER_TABLE_ID tableId, BYTE * record, WORD recordSize){
+    
+    WORD recordAddress;
+    
+    recordAddress = DBMSHandler_GetTableAddressByTableId(tableId);
+    
+    if(recordAddress == DBMS_HANDLER_NULL_ADDRESS)
+        return ESP_METERING_TABLE_ADDRESS_NOT_FOUND_ERROR_CODE;
+    
+    DBMSHandler_WriteRecord(tableId, recordAddress, record, recordSize);
+    
+    return ESP_METERING_TABLE_NO_ERROR_CODE;    
+}
+
 
 INT16 ESPMeteringTable_GetRecordIndex(DBMS_HANDLER_TABLE_ID tableId){
     
@@ -545,7 +573,7 @@ INT16 API_ESPMeteringTable_DropDeviceTable(void){
 
 WORD ESPMeteringTable_GetReadingTableAddressByIndex(INT16 index){
     
-    if (index >= NUM_MAX_METERS)
+    if (index >= NUM_MAX_METERS) 
             return DBMS_HANDLER_NULL_ADDRESS;
 
     return DBMSHandler_GetTableIndexAddressByTableId(READING_TABLE_ID, index);    
@@ -602,7 +630,7 @@ BYTE API_ESPMeteringTable_InsertReadingTableItem(READING_LIST_PTR readingItem){
 
     index = ESPMeteringTable_FindMeterTableIndexBySerialNumber(readingItem->Serial_Num);
 
-    if(index == ESP_METERING_TABLE_MAC_ADDRESS_NOT_FOUND_ERROR_CODE){		
+    if(index == ESP_METERING_TABLE_SERIAL_NUMBER_NOT_FOUND_ERROR_CODE){		
 
         return 0;
     }
@@ -613,6 +641,42 @@ BYTE API_ESPMeteringTable_InsertReadingTableItem(READING_LIST_PTR readingItem){
         return 0;
 
     return 1;	
+}
+
+INT16 API_ESPMeteringTable_Init(void){
+
+    WORD deviceIndexKey;
+    WORD meterIndexKey;
+    INT16 error_code;   
+    
+    
+    error_code = ESPMeteringTable_GetRecord(DEVICE_INDEX_TABLE_KEY_ID, (BYTE *) &deviceIndexKey, sizeof(deviceIndexKey));
+       
+    if(error_code != ESP_METERING_TABLE_NO_ERROR_CODE)
+        exit(0);
+    
+    if (deviceIndexKey != ESP_METERING_TABLE_KEY_WORD){
+        
+        deviceIndexKey = ESP_METERING_TABLE_KEY_WORD;
+        API_ESPMeteringTable_DropDeviceTable();
+        
+        ESPMeteringTable_SetRecord(DEVICE_INDEX_TABLE_KEY_ID, (BYTE *) &deviceIndexKey, sizeof(deviceIndexKey));
+    }
+    
+    error_code = ESPMeteringTable_GetRecord(METER_INDEX_TABLE_KEY_ID, (BYTE *) &meterIndexKey, sizeof(meterIndexKey));
+    
+    if(error_code != ESP_METERING_TABLE_NO_ERROR_CODE)
+        exit(0);
+    
+    if (meterIndexKey != ESP_METERING_TABLE_KEY_WORD){
+        
+        meterIndexKey = ESP_METERING_TABLE_KEY_WORD;
+        API_ESPMeteringTable_DropMeterTable();
+        
+        ESPMeteringTable_SetRecord(METER_INDEX_TABLE_KEY_ID, (BYTE *) &meterIndexKey, sizeof(meterIndexKey));
+    }
+    
+    return ESP_METERING_TABLE_NO_ERROR_CODE;
 }
 
 BYTE API_ESPMeteringTable_SaveTable(BYTE bTableType, BYTE *vptrTableStructure ) {			

@@ -18,13 +18,13 @@
 #include "ESPCommons.h"
 #include "DBMSHandler.h"
 
-//!#include "Data_Base_Handler.h"
-
 //******************************************************************************
 // ESP_METERING_TABLE Defines
 //******************************************************************************
 #define NEW_MTR_ADD                 0x02
 #define NO_NEW_MTR_ADD              0x03
+
+#define ESP_METERING_TABLE_KEY_WORD                                     (0x1234)
 
 #define ESP_METERING_TABLE_NO_ERROR_CODE                                    (0)
 #define ESP_METERING_TABLE_NULL_STRUCT_ERROR_CODE                           (-1)
@@ -49,6 +49,9 @@ BYTE bfnBuffer_Table_Meter (WORD quantityOfItems, DBMS_HANDLER_TABLE_ID tableLis
 //******************************************************************************
 // ESPMeteringTable Function Prototypes
 //******************************************************************************
+INT16 ESPMeteringTable_GetRecord(DBMS_HANDLER_TABLE_ID tableId, BYTE * record, WORD recordSize );
+INT16 ESPMeteringTable_SetRecord(DBMS_HANDLER_TABLE_ID tableId, BYTE * record, WORD recordSize);
+
 INT16 ESPMeteringTable_GetRecordIndex(DBMS_HANDLER_TABLE_ID tableId);
 INT16 ESPMeteringTable_SetRecordIndex(DBMS_HANDLER_TABLE_ID tableId, INT16 meterIndexRecord);
 INT16 ESPMeteringTable_GetMeterIndex(void);
@@ -87,7 +90,7 @@ INT16 ESPMeteringTable_InsertReadingTableItemByIndex(INT16 index, READING_LIST_P
 INT16 API_ESPMeteringTable_SelectReadingTableItemByRecordIndex(INT16 recordIndex, DBMS_HANDLER_RECORD_QUERY_PTR recordQuery);
 BYTE  API_ESPMeteringTable_InsertReadingTableItem(READING_LIST_PTR readingItem);
 
-
+INT16 API_ESPMeteringTable_Init(void);
 
 // not support
 BYTE API_ESPMeteringTable_SaveTable(BYTE bTableType, BYTE *vptrTableStructure );

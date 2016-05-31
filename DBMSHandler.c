@@ -17,7 +17,27 @@ DBMS_HANDLER dbmsHandlerControl[] ={
         sizeof(WORD),                   /*  WORD recordSize         */
         DBMS_HANDLER_SINGLE_RECORD      /*  WORD quatityOfRecords   */
     },   
+        
+    //******************************************************************************
+    // DBMS_HANDLER DEVICES TABLE
+    //******************************************************************************
+    {
+        DEVICE_TABLE_ID,                /*  BYTE tableId            */
+        DBMS_HANDLER_NULL_ADDRESS,          /*  WORD tableAddress       */
+        sizeof(DEV_LIST),               /*  WORD recordSize         */
+        NUM_MAX_NODES                   /*  WORD quatityOfRecords   */
+    },
     
+    //******************************************************************************
+    // DBMS_HANDLER DEVICE INDEX TABLE KEY
+    //******************************************************************************
+    {
+        DEVICE_INDEX_TABLE_KEY_ID,          /*  BYTE tableId            */
+        DBMS_HANDLER_NULL_ADDRESS,          /*  WORD tableAddress       */
+        sizeof(WORD),                   /*  WORD recordSize         */
+        DBMS_HANDLER_SINGLE_RECORD      /*  WORD quatityOfRecords   */
+    },
+        
     //******************************************************************************
     // DBMS_HANDLER DEVICE INDEX TABLE
     //******************************************************************************
@@ -25,6 +45,26 @@ DBMS_HANDLER dbmsHandlerControl[] ={
         DEVICE_INDEX_TABLE_ID,          /*  BYTE tableId            */
         DBMS_HANDLER_NULL_ADDRESS,          /*  WORD tableAddress       */
         sizeof(INT16),                   /*  WORD recordSize         */
+        DBMS_HANDLER_SINGLE_RECORD      /*  WORD quatityOfRecords   */
+    },
+            
+    //******************************************************************************
+    // DBMS_HANDLER METERS TABLE
+    //******************************************************************************
+    {
+        METER_TABLE_ID,                 /*  BYTE tableId            */
+        DBMS_HANDLER_NULL_ADDRESS,          /*  WORD tableAddress       */
+        sizeof(MTR_LIST),               /*  WORD recordSize         */
+        NUM_MAX_METERS                  /*  WORD quatityOfRecords   */
+    },
+
+    //******************************************************************************
+    // DBMS_HANDLER METER INDEX TABLE KEY
+    //******************************************************************************
+    {
+        METER_INDEX_TABLE_KEY_ID,          /*  BYTE tableId            */
+        DBMS_HANDLER_NULL_ADDRESS,          /*  WORD tableAddress       */
+        sizeof(WORD),                   /*  WORD recordSize         */
         DBMS_HANDLER_SINGLE_RECORD      /*  WORD quatityOfRecords   */
     },
     
@@ -38,26 +78,6 @@ DBMS_HANDLER dbmsHandlerControl[] ={
         DBMS_HANDLER_SINGLE_RECORD      /*  WORD quatityOfRecords   */
     },
     
-    //******************************************************************************
-    // DBMS_HANDLER DEVICES TABLE
-    //******************************************************************************
-    {
-        DEVICE_TABLE_ID,                /*  BYTE tableId            */
-        DBMS_HANDLER_NULL_ADDRESS,          /*  WORD tableAddress       */
-        sizeof(DEV_LIST),               /*  WORD recordSize         */
-        NUM_MAX_NODES                   /*  WORD quatityOfRecords   */
-    },
-        
-    //******************************************************************************
-    // DBMS_HANDLER METERS TABLE
-    //******************************************************************************
-    {
-        METER_TABLE_ID,                 /*  BYTE tableId            */
-        DBMS_HANDLER_NULL_ADDRESS,          /*  WORD tableAddress       */
-        sizeof(MTR_LIST),               /*  WORD recordSize         */
-        NUM_MAX_METERS                  /*  WORD quatityOfRecords   */
-    },
-
     //******************************************************************************
     // DBMS_HANDLER READING TABLE
     //******************************************************************************
@@ -119,7 +139,7 @@ WORD DBMSHandler_GetTableIndexAddress(DBMS_HANDLER_PTR dbmsItem, INT16 index){
     
     quatityOfRecords = DBMSHandler_GetQuantityOfRecords(dbmsItem);
     
-    if(quatityOfRecords < index)
+    if((quatityOfRecords < index) || (index < 0))
         return DBMS_HANDLER_NULL_ADDRESS;
     
     address = DBMSHandler_GetTableAddress(dbmsItem);

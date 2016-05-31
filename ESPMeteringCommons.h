@@ -50,11 +50,11 @@
 #define OFSET_METER_NAME                                            26
 
 #if Funcionalidad_Num >= 4
-#define NUM_MAX_METERS                                              540 // Modificacion Display por Medidor, se seleccionaron 160 medidores y 140 nodos.
-#define NUM_MAX_NODES                                               45 // Nota: La modificacion display por gabinete se seleccionaron 230 medidores y 62 nodos.
+#define NUM_MAX_METERS                                              5//540 // Modificacion Display por Medidor, se seleccionaron 160 medidores y 140 nodos.
+#define NUM_MAX_NODES                                               3 //45 // Nota: La modificacion display por gabinete se seleccionaron 230 medidores y 62 nodos.
 #else
-#define NUM_MAX_METERS                                              540
-#define NUM_MAX_NODES                                               45
+#define NUM_MAX_METERS                                             5 //540
+#define NUM_MAX_NODES                                              3 //45
 #endif
 #define MAX_IPD_UART_BYTES                                          160
 
@@ -77,11 +77,14 @@
 typedef enum {
     DBMS_HANDLER_NO_TABLE_ID,
     AUTO_READING_TIME_TABLE_ID,            
-    DEVICE_INDEX_TABLE_ID,
-    METER_INDEX_TABLE_ID,
     DEVICE_TABLE_ID,
-    METER_TABLE_ID,    
-    READING_TABLE_ID    
+    DEVICE_INDEX_TABLE_KEY_ID,
+    DEVICE_INDEX_TABLE_ID,
+    METER_TABLE_ID,           
+    READING_TABLE_ID,   
+    METER_INDEX_TABLE_KEY_ID,
+    METER_INDEX_TABLE_ID
+    
 } DBMS_HANDLER_TABLE_ID;
 
 /*****************************************************************************
