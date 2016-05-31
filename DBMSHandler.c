@@ -257,29 +257,34 @@ INT16 DBMSHandler_Init(void) {
 
     INT16 error_code;
     DBMS_HANDLER_PTR dbmsHandler_ptr = dbmsHandlerControl;
-
+    DWORD size;
+    
     MEM_EEPROM_Init();
 
     while (DBMSHandler_GetTableId(dbmsHandler_ptr) != DBMS_HANDLER_NO_TABLE_ID) {
 
+        size = DBMSHandler_GetRecordSize(dbmsHandler_ptr) * DBMSHandler_GetQuantityOfRecords(dbmsHandler_ptr);
         error_code = DBMSHandler_CreateTable(   DBMSHandler_GetTableAddressPtr(dbmsHandler_ptr),
-                                                DBMSHandler_GetRecordSize(dbmsHandler_ptr) *
-                                                DBMSHandler_GetQuantityOfRecords(dbmsHandler_ptr));
+                                                size);
 
         if (error_code != DBMS_HANDLER_NO_ERROR_CODE)
-            return error_code;
+            break;
 
         dbmsHandler_ptr++;
     }
 
-    return DBMS_HANDLER_NO_ERROR_CODE;
+    print_info("DBMS assignation Free space size %d Bytes", DBMS_HANDLER_END_ADDRESS - DBMSHandler_MemoryLocation);
+    return error_code;
 }
 
-INT16 DBMSHandler_CreateTable(WORD * location, WORD size) {
+INT16 DBMSHandler_CreateTable(WORD * location, DWORD size) {
+    
+    DWORD memoryLocation = DBMSHandler_MemoryLocation;
 
-    if ((DBMSHandler_MemoryLocation + size) > DBMS_HANDLER_END_ADDRESS) {
+    if ((memoryLocation + size) > DBMS_HANDLER_END_ADDRESS) {
 
         print_error("DBMS_HANDLER_MEMORY_OVERFLOW_ERROR_CODE");
+        print_error("DBMS could not assign into Location: %04X Size %d Bytes", memoryLocation, size);
         return DBMS_HANDLER_MEMORY_OVERFLOW_ERROR_CODE;
     }
 
@@ -353,7 +358,7 @@ INT16 DBMSHandler_ValidateRecord(DBMS_HANDLER_TABLE_ID tableId, WORD recordAddre
     if(dbmsItem == NULL)
         return DBMS_HANDLER_NULL_PTR_ERROR_CODE;
     
-    if(recordSize > DBMSHandler_GetRecordSize(dbmsItem))
+    if(recordSize != DBMSHandler_GetRecordSize(dbmsItem))
         return DBMS_HANDLER_WRONG_RECORD_SIZE_ERROR_CODE;
     
     minTableAddress = DBMSHandler_GetTableAddress(dbmsItem);

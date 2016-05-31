@@ -37,12 +37,10 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 OBJECTFILES= \
 	${OBJECTDIR}/ComSerialInterface.o \
 	${OBJECTDIR}/DBMSHandler.o \
-	${OBJECTDIR}/Data_Base_Handler.o \
 	${OBJECTDIR}/ESPComInterface.o \
 	${OBJECTDIR}/ESPMeteringTable.o \
 	${OBJECTDIR}/ESP_API.o \
 	${OBJECTDIR}/EventsEngine.o \
-	${OBJECTDIR}/I2C.o \
 	${OBJECTDIR}/MEMEEPROM.o \
 	${OBJECTDIR}/System.o \
 	${OBJECTDIR}/SystemLog.o \
@@ -51,8 +49,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/ZCLComProtocol.o \
 	${OBJECTDIR}/ZCLMeteringControl.o \
 	${OBJECTDIR}/ZDOControl.o \
-	${OBJECTDIR}/main.o \
-	${OBJECTDIR}/mem24_1025_I2C.o
+	${OBJECTDIR}/main.o
 
 
 # C Compiler Flags
@@ -89,11 +86,6 @@ ${OBJECTDIR}/DBMSHandler.o: DBMSHandler.c
 	${RM} "$@.d"
 	$(COMPILE.c) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/DBMSHandler.o DBMSHandler.c
 
-${OBJECTDIR}/Data_Base_Handler.o: Data_Base_Handler.c 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} "$@.d"
-	$(COMPILE.c) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Data_Base_Handler.o Data_Base_Handler.c
-
 ${OBJECTDIR}/ESPComInterface.o: ESPComInterface.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
@@ -113,11 +105,6 @@ ${OBJECTDIR}/EventsEngine.o: EventsEngine.c
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.c) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/EventsEngine.o EventsEngine.c
-
-${OBJECTDIR}/I2C.o: I2C.c 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} "$@.d"
-	$(COMPILE.c) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/I2C.o I2C.c
 
 ${OBJECTDIR}/MEMEEPROM.o: MEMEEPROM.c 
 	${MKDIR} -p ${OBJECTDIR}
@@ -163,11 +150,6 @@ ${OBJECTDIR}/main.o: main.c
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.c) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/main.o main.c
-
-${OBJECTDIR}/mem24_1025_I2C.o: mem24_1025_I2C.c 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} "$@.d"
-	$(COMPILE.c) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/mem24_1025_I2C.o mem24_1025_I2C.c
 
 # Subprojects
 .build-subprojects:

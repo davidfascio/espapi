@@ -6,7 +6,7 @@
 /*
 I2C_COM_INTERFACE_CONTROL eepromComInterfaceControl;
 */
-BYTE eepromMemory[0xFFFF];
+static BYTE eepromMemory[0xFFFF];
 
 //**********************************************************************
 //* MEM_EEPROM Functions
@@ -20,6 +20,7 @@ void MEM_EEPROM_Init(void) {
                         MEM_EEPROM_I2C_HARDWARE_CLOCK_FREQUENCY,
                         MEM_EEPROM_I2C_HARDWARE_SLAVE_ADDRESS);
 */
+    memset(eepromMemory, 0, sizeof(eepromMemory));
 }
 
 void MEM_EEPROM_ReadPage(WORD address, BYTE * buffer, WORD bufferSize) {

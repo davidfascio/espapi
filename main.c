@@ -27,9 +27,9 @@ const sEvent taEvents[] =
 {
     vfnTimeBasedEventsEngine,                           //  TB_EVENT = 0
     NULL, //vfnMainTask,                                //  SELF_CLEARING_EVENTS_LIST_END, MAIN_TASK_TEST = SELF_CLEARING_EVENTS_LIST_END,
-    vfnI2CDriver, //vfnI2CDriver,                               //  I2C_DRIVER_EVENT
-    vfnIIC_MEM24_1025Driver,                            //  IIC_EVENT,
-    vfnBackUpStartDriver,                               //  BACKUP_START_EVENT
+    NULL, // vfnI2CDriver, //vfnI2CDriver,                               //  I2C_DRIVER_EVENT
+    NULL, //vfnIIC_MEM24_1025Driver,                            //  IIC_EVENT,
+    NULL, //vfnBackUpStartDriver,                               //  BACKUP_START_EVENT
     NULL, //vfnBackUpDriver,                            //  BACKUP_EVENT
     vfn_tBufferLocalDriver, //vfnRLYBackUpStartDriver,  //  BUFFER_EVENT
     NULL, //vfnRLYBackUpStartDriver                     //  RLY_BACKUP_EVENT
@@ -118,7 +118,7 @@ BYTE demo_dev_default_type = 1;
 BYTE demo_dev_default_serial_number[] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 
 BYTE demo_dev_index = 0;
-BYTE demo_mtr_index = 1;
+WORD demo_mtr_index = 1;
 
 BYTE demo_meter_serial_number[20];
 BYTE demo_meter_type = 0x81;
@@ -131,7 +131,7 @@ void FillDemoDevices(void);
 
 void FillDemoDevices(void){
     
-    #ifdef DATA_BASE_TEST
+    #ifndef DATA_BASE_TEST
     DEV_LIST demo_dev;
     MTR_LIST demo_mtr; 
     READING_LIST demo_reading;
@@ -152,7 +152,7 @@ void FillDemoDevices(void){
     
     inverted_memcpy((BYTE *) &demo_reading.CRC, (BYTE *) &crcFrame, 2);
     
-    while(demo_dev_index  < 20){
+    while(demo_dev_index  < 45){
         
         
         memcpy(&demo_dev.Short_Add, demo_dev_default_short_addr, sizeof(demo_dev_default_short_addr));
@@ -179,6 +179,9 @@ void FillDemoDevices(void){
             sprintf(demo_meter_serial_number, "%016d", demo_mtr_index);
             inverted_memcpy(demo_mtr.Serial_Num, demo_meter_serial_number, 16);
             //! bfnSaveData (METERSTABLE, (BYTE *) &demo_mtr);
+            if(demo_mtr_index == 395)
+                print("here");
+            
             API_ESPMeteringTable_SaveTable(METERSTABLE, (BYTE *) &demo_mtr);
             
             inverted_memcpy(demo_reading.Serial_Num , demo_meter_serial_number, 16);
@@ -236,7 +239,11 @@ int main(int argc, char** argv) {
     memcpy(device_d.MAC, macLongAddrByte, 8);
             
     API_DataBaseHandler_SaveTable(DEVICESTABLE, (BYTE*) &device_d);*/
-    DBMSHandler_Init();
+    if (DBMSHandler_Init() != DBMS_HANDLER_NO_ERROR_CODE)
+        exit(0);
+    println("");
+    
+    
     /*BYTE originalString[] = "Hola Mundo!";
     WORD originalStringSize = sizeof(originalString);
     

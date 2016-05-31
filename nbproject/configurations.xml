@@ -6,7 +6,6 @@
                    projectFiles="true">
       <itemPath>ComSerialInterface.h</itemPath>
       <itemPath>DBMSHandler.h</itemPath>
-      <itemPath>Data_Base_Handler.h</itemPath>
       <itemPath>ESPComInterface.h</itemPath>
       <itemPath>ESPCommands.h</itemPath>
       <itemPath>ESPCommons.h</itemPath>
@@ -15,7 +14,6 @@
       <itemPath>ESP_API.h</itemPath>
       <itemPath>EventsEngine.h</itemPath>
       <itemPath>GenericTypeDefs.h</itemPath>
-      <itemPath>I2C.h</itemPath>
       <itemPath>MEMEEPROM.h</itemPath>
       <itemPath>System.h</itemPath>
       <itemPath>SystemEvents.h</itemPath>
@@ -25,7 +23,6 @@
       <itemPath>ZCLComProtocol.h</itemPath>
       <itemPath>ZCLMeteringControl.h</itemPath>
       <itemPath>ZDOControl.h</itemPath>
-      <itemPath>mem24_1025_I2C.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
                    displayName="Resource Files"
@@ -36,12 +33,10 @@
                    projectFiles="true">
       <itemPath>ComSerialInterface.c</itemPath>
       <itemPath>DBMSHandler.c</itemPath>
-      <itemPath>Data_Base_Handler.c</itemPath>
       <itemPath>ESPComInterface.c</itemPath>
       <itemPath>ESPMeteringTable.c</itemPath>
       <itemPath>ESP_API.c</itemPath>
       <itemPath>EventsEngine.c</itemPath>
-      <itemPath>I2C.c</itemPath>
       <itemPath>MEMEEPROM.c</itemPath>
       <itemPath>System.c</itemPath>
       <itemPath>SystemLog.c</itemPath>
@@ -51,7 +46,6 @@
       <itemPath>ZCLMeteringControl.c</itemPath>
       <itemPath>ZDOControl.c</itemPath>
       <itemPath>main.c</itemPath>
-      <itemPath>mem24_1025_I2C.c</itemPath>
     </logicalFolder>
     <logicalFolder name="TestFiles"
                    displayName="Test Files"
@@ -83,10 +77,6 @@
       </item>
       <item path="DBMSHandler.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="Data_Base_Handler.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Data_Base_Handler.h" ex="false" tool="3" flavor2="0">
-      </item>
       <item path="ESPComInterface.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="ESPComInterface.h" ex="false" tool="3" flavor2="0">
@@ -110,10 +100,6 @@
       <item path="EventsEngine.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="GenericTypeDefs.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="I2C.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="I2C.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="MEMEEPROM.c" ex="false" tool="0" flavor2="0">
       </item>
@@ -150,10 +136,6 @@
       <item path="ZDOControl.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="main.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="mem24_1025_I2C.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="mem24_1025_I2C.h" ex="false" tool="3" flavor2="0">
       </item>
     </conf>
     <conf name="Release" type="1">
@@ -184,10 +166,6 @@
       </item>
       <item path="DBMSHandler.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="Data_Base_Handler.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="Data_Base_Handler.h" ex="false" tool="3" flavor2="0">
-      </item>
       <item path="ESPComInterface.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="ESPComInterface.h" ex="false" tool="3" flavor2="0">
@@ -211,10 +189,6 @@
       <item path="EventsEngine.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="GenericTypeDefs.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="I2C.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="I2C.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="MEMEEPROM.c" ex="false" tool="0" flavor2="0">
       </item>
@@ -251,10 +225,6 @@
       <item path="ZDOControl.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="main.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="mem24_1025_I2C.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="mem24_1025_I2C.h" ex="false" tool="3" flavor2="0">
       </item>
     </conf>
   </confs>

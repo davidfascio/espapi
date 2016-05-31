@@ -99,7 +99,7 @@ void DBMSHandler_SetWaitingForRecordQueryResponse(DBMS_HANDLER_RECORD_QUERY_PTR 
 // DBMS_HANDLER Function Prototypes
 //******************************************************************************
 INT16 DBMSHandler_Init(void);
-INT16 DBMSHandler_CreateTable(WORD * location, WORD size);
+INT16 DBMSHandler_CreateTable(WORD * location, DWORD size);
 INT16 DBMSHandler_Read(WORD src, BYTE * dest, WORD count);
 INT16 DBMSHandler_Write(WORD dest, BYTE * src, WORD count);
 

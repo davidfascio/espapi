@@ -50,11 +50,11 @@
 #define OFSET_METER_NAME                                            26
 
 #if Funcionalidad_Num >= 4
-#define NUM_MAX_METERS                                              260 // Modificacion Display por Medidor, se seleccionaron 160 medidores y 140 nodos.
-#define NUM_MAX_NODES                                               140 // Nota: La modificacion display por gabinete se seleccionaron 230 medidores y 62 nodos.
+#define NUM_MAX_METERS                                              540 // Modificacion Display por Medidor, se seleccionaron 160 medidores y 140 nodos.
+#define NUM_MAX_NODES                                               45 // Nota: La modificacion display por gabinete se seleccionaron 230 medidores y 62 nodos.
 #else
-#define NUM_MAX_METERS                                              260
-#define NUM_MAX_NODES                                               140
+#define NUM_MAX_METERS                                              540
+#define NUM_MAX_NODES                                               45
 #endif
 #define MAX_IPD_UART_BYTES                                          160
 
