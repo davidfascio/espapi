@@ -6,43 +6,40 @@
 //******************************************************************************
 // Variables
 //******************************************************************************
-DBMS_HANDLER_RECORD_QUERY espMeteringTableQuery;
+DBMS_HANDLER_RECORD_QUERY espMeteringTableRecordQuery;
 
 //******************************************************************************
 //                  LOCAL ESP METERING TABLE STATE MACHINE
 //******************************************************************************
 
-void vfnBufferIdleState(void);
-void vfnBufferConsultTableState(void);
-void vfnBufferTransmitTableState(void);
-void vfnBufferEndState(void);
+void ESPMeteringTable_IdleState(void);
+void ESPMeteringTable_SelectQueryState(void);
+void ESPMeteringTable_EndState(void);
 
 typedef enum {
-    _BUFFER_METER_IDLE_STATE = 0,
-    _BUFFER_CONSULT_TABLE_STATE,
-    _BUFFER_TRANSMIT_TABLE_STATE,
-    _BUFFER_END_STATE
-} eBUFFERDriverStates;
+    ESP_METERING_TABLE_IDLE_STATE = 0,
+    ESP_METERING_TABLE_SELECT_QUERY_STATE,
+    ESP_METERING_TABLE_END_STATE
+} ESPMeteringTableDriverStates;
 
-void (*const vfnaBufferDriverState[])(void) =
+void (*const ESPMeteringTablerDriverFunctionStates[])(void) =
 {
-    vfnBufferIdleState
-    ,vfnBufferConsultTableState
-    ,vfnBufferTransmitTableState
-    ,vfnBufferEndState    
+    ESPMeteringTable_IdleState,
+    ESPMeteringTable_SelectQueryState,    
+    ESPMeteringTable_EndState    
 };
 
-sSM _tBufferSM = {  _BUFFER_METER_IDLE_STATE,               /* bActualState     */
-                    _BUFFER_METER_IDLE_STATE,               /* bNextState       */
-                    _BUFFER_METER_IDLE_STATE,               /* bPrevState       */
-                    _BUFFER_METER_IDLE_STATE};              /* bErrorState      */
+sSM ESPMeteringTableSM = {  ESP_METERING_TABLE_IDLE_STATE,               /* bActualState     */
+                            ESP_METERING_TABLE_IDLE_STATE,               /* bNextState       */
+                            ESP_METERING_TABLE_IDLE_STATE,               /* bPrevState       */
+                            ESP_METERING_TABLE_IDLE_STATE};              /* bErrorState      */
 
 //******************************************************************************
 // DataBaseHandler Function Prototypes
 //******************************************************************************
-BYTE bfnBuffer_Table_Meter(WORD quantityOfItems, DBMS_HANDLER_TABLE_ID tableListType) {
+BYTE ESPMeteringTable_SelectQuery(WORD quantityOfRecords, DBMS_HANDLER_TABLE_ID tableId) {
 
-    switch (tableListType) {
+    switch (tableId) {
 
         case METER_TABLE_ID:
         case READING_TABLE_ID:
@@ -53,9 +50,8 @@ BYTE bfnBuffer_Table_Meter(WORD quantityOfItems, DBMS_HANDLER_TABLE_ID tableList
             return FALSE;
     }
     
-    //!DataBaseHandler_SetupQuery(&espMeteringTableQuery, 0, quantityOfItems, tableListType);
-    DBMSHandler_SetupRecordQuery(&espMeteringTableQuery,tableListType, 0, quantityOfItems);
-    ESPMeteringTable_SetStateMachine(_BUFFER_CONSULT_TABLE_STATE, _BUFFER_TRANSMIT_TABLE_STATE);
+    DBMSHandler_SetupRecordQuery(&espMeteringTableRecordQuery,tableId, 0, quantityOfRecords);
+    ESPMeteringTable_SetStateMachine(ESP_METERING_TABLE_SELECT_QUERY_STATE, ESP_METERING_TABLE_END_STATE);
     
     return TRUE;
 }
@@ -689,7 +685,7 @@ BYTE bfnReadMTRSTable(BYTE * dataRequest, WORD dataRequestSize, BYTE * dataRespo
 
         * pagingDataResponseSize = (meterIndex * sizeof (MTR_LIST));
         
-        bfnBuffer_Table_Meter(meterIndex, METER_TABLE_ID);
+        ESPMeteringTable_SelectQuery(meterIndex, METER_TABLE_ID);
         
         answer_code = WAIT_ANSWER;
     }
@@ -712,7 +708,7 @@ BYTE bfnReadDevicesTable(BYTE * dataRequest, WORD dataRequestSize, BYTE * dataRe
     if (deviceIndex > 0) {
 
         * pagingDataResponseSize = (deviceIndex * sizeof (DEV_LIST));
-        bfnBuffer_Table_Meter(deviceIndex, DEVICE_TABLE_ID);
+        ESPMeteringTable_SelectQuery(deviceIndex, DEVICE_TABLE_ID);
         
         answer_code = WAIT_ANSWER;
     }
@@ -736,7 +732,7 @@ BYTE bfnReadMTRReadingsTable(BYTE * dataRequest, WORD dataRequestSize, BYTE * da
 
         * pagingDataResponseSize = (readingIndex * sizeof (READING_LIST));
         
-        bfnBuffer_Table_Meter(readingIndex, READING_TABLE_ID);
+        ESPMeteringTable_SelectQuery(readingIndex, READING_TABLE_ID);
         
         answer_code = WAIT_ANSWER;
     }
@@ -773,15 +769,15 @@ BYTE bfnDelMTRDevicesTable(BYTE * dataRequest, WORD dataRequestSize, BYTE * data
 //                  LOCAL ESP METERING TABLE STATE MACHINE
 //******************************************************************************
 
-void vfn_tBufferLocalDriver(void){
+void ESPMeteringTableDriver(void){
     
-    vfnaBufferDriverState[_tBufferSM.bActualState]();
+    ESPMeteringTablerDriverFunctionStates[ESPMeteringTableSM.bActualState]();
 }
 
 void ESPMeteringTable_SetStateMachine(BYTE actualState, BYTE nextState) {
 
-    _tBufferSM.bActualState = actualState;
-    _tBufferSM.bNextState = nextState;
+    ESPMeteringTableSM.bActualState = actualState;
+    ESPMeteringTableSM.bNextState = nextState;
     
     vfnEventEnable(BUFFER_EVENT);
     vfnEventPost(BUFFER_EVENT);
@@ -789,69 +785,69 @@ void ESPMeteringTable_SetStateMachine(BYTE actualState, BYTE nextState) {
 
 void ESPMeteringTable_ErrorProcess(void){
     
-    DBMSHandler_ClearRecordQuery(&espMeteringTableQuery);
-    ESPMeteringTable_SetStateMachine(_BUFFER_END_STATE, _BUFFER_END_STATE);    
+    DBMSHandler_ClearRecordQuery(&espMeteringTableRecordQuery);
+    ESPMeteringTable_SetStateMachine(ESP_METERING_TABLE_END_STATE, ESP_METERING_TABLE_END_STATE);    
 }
 
 //******************************************************************************
 //                  LOCAL ESP METERING TABLE STATE MACHINE
 //******************************************************************************
 
-void vfnBufferIdleState(void){
+void ESPMeteringTable_IdleState(void){
     
 }
 
-void vfnBufferConsultTableState(void){
+void ESPMeteringTable_SelectQueryState(void){
     
     BYTE bStatusData;    
     
-    WORD quantityOfItems = DBMSHandler_GetQuantityOfRecordQueries(&espMeteringTableQuery);
-    WORD startItem = DBMSHandler_GetStartRecordQueryIndex(&espMeteringTableQuery);
-    DBMS_HANDLER_TABLE_ID tableListType = DBMSHandler_GetTableIdRecordQuery(&espMeteringTableQuery);
-    BOOL isWaitingForQueryResponse = DBMSHandler_IsWaitingForRecordQueryResponse(&espMeteringTableQuery);
+    WORD quantityOfRecords = DBMSHandler_GetQuantityOfRecordQueries(&espMeteringTableRecordQuery);
+    WORD startItem = DBMSHandler_GetStartRecordQueryIndex(&espMeteringTableRecordQuery);
+    DBMS_HANDLER_TABLE_ID tableId = DBMSHandler_GetTableIdRecordQuery(&espMeteringTableRecordQuery);
+    BOOL isWaitingForQueryResponse = DBMSHandler_IsWaitingForRecordQueryResponse(&espMeteringTableRecordQuery);
     
     if(isWaitingForQueryResponse){
     
         return;
     }
     
-    if(DBMSHandler_GetRecordQueryResponseSize(&espMeteringTableQuery)){
+    if(DBMSHandler_GetRecordQueryResponseSize(&espMeteringTableRecordQuery)){
             
         startItem++;
-        quantityOfItems--;
+        quantityOfRecords--;
         
         ESPComInterface_SendFrame(  0, 
-                                    DBMSHandler_GetRecordQueryResponse(&espMeteringTableQuery), 
-                                    DBMSHandler_GetRecordQueryResponseSize(&espMeteringTableQuery), 
+                                    DBMSHandler_GetRecordQueryResponse(&espMeteringTableRecordQuery), 
+                                    DBMSHandler_GetRecordQueryResponseSize(&espMeteringTableRecordQuery), 
                                     TRUE, 
                                     FALSE, 
-                                    quantityOfItems == 0 );
+                                    quantityOfRecords == 0 );
         
-        DBMSHandler_SetupRecordQuery(&espMeteringTableQuery, tableListType, startItem, quantityOfItems);           
+        DBMSHandler_SetupRecordQuery(&espMeteringTableRecordQuery, tableId, startItem, quantityOfRecords);           
     }
     
-    if( quantityOfItems == 0){
+    if( quantityOfRecords == 0){
      
-        print_warm("quantityOfItems = 0");
+        print_warm("quantityOfRecords = 0");
         ESPMeteringTable_ErrorProcess();
         return;
     }
         
-    switch(tableListType){
+    switch(tableId){
         
         case METER_TABLE_ID:
             
-            bStatusData = API_ESPMeteringTable_SelectMeterTableItemByRecordIndex(startItem, &espMeteringTableQuery);
+            bStatusData = API_ESPMeteringTable_SelectMeterTableItemByRecordIndex(startItem, &espMeteringTableRecordQuery);
             break;
         
         case DEVICE_TABLE_ID:
             
-            bStatusData = API_ESPMeteringTable_SelectDeviceTableItemByRecordIndex(startItem, &espMeteringTableQuery);
+            bStatusData = API_ESPMeteringTable_SelectDeviceTableItemByRecordIndex(startItem, &espMeteringTableRecordQuery);
             break;
             
         case READING_TABLE_ID:            
             
-            bStatusData = API_ESPMeteringTable_SelectReadingTableItemByRecordIndex(startItem, &espMeteringTableQuery);
+            bStatusData = API_ESPMeteringTable_SelectReadingTableItemByRecordIndex(startItem, &espMeteringTableRecordQuery);
             break;
             
         default:
@@ -868,11 +864,7 @@ void vfnBufferConsultTableState(void){
     }   
 }
 
-void vfnBufferTransmitTableState(void){
-    
-}
-
-void vfnBufferEndState(void){
+void ESPMeteringTable_EndState(void){
     
     vfnEventClear(BUFFER_EVENT);                                        
     vfnEventDisable(BUFFER_EVENT);

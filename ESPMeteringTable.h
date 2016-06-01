@@ -44,7 +44,7 @@
 //******************************************************************************
 // ESPMeteringTable Function Prototypes
 //******************************************************************************
-BYTE bfnBuffer_Table_Meter (WORD quantityOfItems, DBMS_HANDLER_TABLE_ID tableListType);
+BYTE ESPMeteringTable_SelectQuery (WORD quantityOfItems, DBMS_HANDLER_TABLE_ID tableListType);
 
 //******************************************************************************
 // ESPMeteringTable Function Prototypes
@@ -108,7 +108,7 @@ BYTE bfnDelMTRDevicesTable(BYTE * dataRequest, WORD dataRequestSize, BYTE * data
 //                  LOCAL ESP METERING TABLE STATE MACHINE
 //******************************************************************************
 
-void vfn_tBufferLocalDriver(void);
+void ESPMeteringTableDriver(void);
 void ESPMeteringTable_SetStateMachine(BYTE actualState, BYTE nextState);
 void ESPMeteringTable_ErrorProcess(void);
 

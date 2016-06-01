@@ -31,7 +31,7 @@ const sEvent taEvents[] =
     NULL, //vfnIIC_MEM24_1025Driver,                            //  IIC_EVENT,
     NULL, //vfnBackUpStartDriver,                               //  BACKUP_START_EVENT
     NULL, //vfnBackUpDriver,                            //  BACKUP_EVENT
-    vfn_tBufferLocalDriver, //vfnRLYBackUpStartDriver,  //  BUFFER_EVENT
+    ESPMeteringTableDriver, //vfnRLYBackUpStartDriver,  //  BUFFER_EVENT
     NULL, //vfnRLYBackUpStartDriver                     //  RLY_BACKUP_EVENT
     NULL, //vfnMACBackUpStartDriver                     //  MAC_BACKUP_EVENT
     NULL //vfnTIMEBackUpStartDriver                     //  TIME_BACKUP_EVENT
