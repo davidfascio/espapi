@@ -164,7 +164,8 @@ void FillDemoDevices(void){
         memcpy(demo_dev.SerialNumber, demo_dev_default_serial_number, sizeof(demo_dev_default_serial_number));
 
         //! bfnSaveData(DEVICESTABLE, (BYTE *) &demo_dev);
-        API_ESPMeteringTable_SaveTable(DEVICESTABLE, (BYTE *) &demo_dev);
+        //! API_ESPMeteringTable_SaveTable(DEVICESTABLE, (BYTE *) &demo_dev);
+        API_ESPMeteringTable_InsertDeviceTableItem((DEV_LIST_PTR) &demo_dev );
         
         memcpy(demo_mtr.MACAdd_Display, demo_meter_mac_display, sizeof(demo_meter_mac_display));
         inverted_memcpy(demo_mtr.MAC_Cabinet, demo_dev_default_mac, sizeof(demo_dev_default_mac));
@@ -182,12 +183,14 @@ void FillDemoDevices(void){
             if(demo_mtr_index == 395)
                 print("here");
             
-            API_ESPMeteringTable_SaveTable(METERSTABLE, (BYTE *) &demo_mtr);
+            //! API_ESPMeteringTable_SaveTable(METERSTABLE, (BYTE *) &demo_mtr);
+            API_ESPMeteringTable_InsertMeterTableItem( (MTR_LIST_PTR) &demo_mtr);
             
             inverted_memcpy(demo_reading.Serial_Num , demo_meter_serial_number, 16);
             
             //! bfnSaveData(READINGSTABLE, (BYTE *) &demo_reading);
-            API_ESPMeteringTable_SaveTable(READINGSTABLE, (BYTE *) &demo_reading);
+            //! API_ESPMeteringTable_SaveTable(READINGSTABLE, (BYTE *) &demo_reading);
+            API_ESPMeteringTable_InsertReadingTableItem( (READING_LIST_PTR) &demo_reading);
             
             
             demo_mtr_index++;

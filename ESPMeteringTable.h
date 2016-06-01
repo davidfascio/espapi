@@ -21,8 +21,11 @@
 //******************************************************************************
 // ESP_METERING_TABLE Defines
 //******************************************************************************
-#define NEW_MTR_ADD                 0x02
-#define NO_NEW_MTR_ADD              0x03
+#define ESP_METERING_TABLE_NEW_DEV_ADD                                      (1)
+#define ESP_METERING_TABLE_UPDATE_DEV_ADD                                   (2)
+#define ESP_METERING_TABLE_NEW_MTR_ADD                                      (3)
+#define ESP_METERING_TABLE_UPDATE_MTR_ADD                                   (4)
+#define ESP_METERING_TABLE_NEW_READING_ADD                                  (5)
 
 #define ESP_METERING_TABLE_KEY_WORD                                     (0x1234)
 
@@ -66,7 +69,7 @@ INT16 ESPMeteringTable_InsertMeterTableItem(MTR_LIST_PTR meterItem);
 WORD  ESPMeteringTable_GetMeterTableAddressByIndex(INT16 index);
 INT16 ESPMeteringTable_UpdateMeterTableItemByIndex(INT16 index, MTR_LIST_PTR meterItem);
 INT16 API_ESPMeteringTable_SelectMeterTableItemByRecordIndex(INT16 recordIndex, DBMS_HANDLER_RECORD_QUERY_PTR recordQuery );
-BYTE  API_ESPMeteringTable_InsertMeterTableItem(MTR_LIST_PTR meterItem);
+INT16 API_ESPMeteringTable_InsertMeterTableItem(MTR_LIST_PTR meterItem);
 INT16 ESPMeteringTable_DeleteMeterTableItemByIndex(INT16 index);
 INT16 API_ESPMeteringTable_DropMeterTable(void);
 
@@ -79,20 +82,16 @@ INT16 ESPMeteringTable_InsertDeviceTableItem(DEV_LIST_PTR deviceItem);
 WORD  ESPMeteringTable_GetDeviceTableAddressByIndex(INT16 index);
 INT16 ESPMeteringTable_UpdateDeviceTableItemByIndex(INT16 index, DEV_LIST_PTR deviceItem);
 INT16 API_ESPMeteringTable_SelectDeviceTableItemByRecordIndex(INT16 recordIndex, DBMS_HANDLER_RECORD_QUERY_PTR recordQuery);
-BYTE  API_ESPMeteringTable_InsertDeviceTableItem(DEV_LIST_PTR deviceItem);
+INT16 API_ESPMeteringTable_InsertDeviceTableItem(DEV_LIST_PTR deviceItem);
 INT16 ESPMeteringTable_DeleteDeviceTableItemByIndex(INT16 index);
 INT16 API_ESPMeteringTable_DropDeviceTable(void);
 
 WORD  ESPMeteringTable_GetReadingTableAddressByIndex(INT16 index);
 INT16 ESPMeteringTable_InsertReadingTableItemByIndex(INT16 index, READING_LIST_PTR readingItem);
 INT16 API_ESPMeteringTable_SelectReadingTableItemByRecordIndex(INT16 recordIndex, DBMS_HANDLER_RECORD_QUERY_PTR recordQuery);
-BYTE  API_ESPMeteringTable_InsertReadingTableItem(READING_LIST_PTR readingItem);
+INT16 API_ESPMeteringTable_InsertReadingTableItem(READING_LIST_PTR readingItem);
 
 INT16 API_ESPMeteringTable_Init(void);
-
-// not support
-BYTE API_ESPMeteringTable_SaveTable(BYTE bTableType, BYTE *vptrTableStructure );
-
 
 //******************************************************************************
 // ESP_API Function Prototypes

@@ -273,7 +273,7 @@ INT16 API_ESPMeteringTable_SelectMeterTableItemByRecordIndex(INT16 recordIndex, 
     return ESP_METERING_TABLE_NO_ERROR_CODE;
 }
 
-BYTE API_ESPMeteringTable_InsertMeterTableItem(MTR_LIST_PTR meterItem){
+INT16 API_ESPMeteringTable_InsertMeterTableItem(MTR_LIST_PTR meterItem){
 	
     INT16 index;		
     INT16 error_code;
@@ -287,20 +287,20 @@ BYTE API_ESPMeteringTable_InsertMeterTableItem(MTR_LIST_PTR meterItem){
         error_code = ESPMeteringTable_InsertMeterTableItem(meterItem);
 
         if(error_code != ESP_METERING_TABLE_NO_ERROR_CODE)
-            return 0;        
+            return error_code;        
         
         meterIndex++;
         ESPMeteringTable_SetMeterIndex(meterIndex);
         
-        return NEW_MTR_ADD;
+        return ESP_METERING_TABLE_NEW_MTR_ADD;
     }
 
     error_code = ESPMeteringTable_UpdateMeterTableItemByIndex(index, meterItem);
 
     if(error_code != ESP_METERING_TABLE_NO_ERROR_CODE)
-        return 0;
+        return error_code;
 
-    return NO_NEW_MTR_ADD;	
+    return ESP_METERING_TABLE_UPDATE_MTR_ADD;	
 }
 
 INT16 ESPMeteringTable_DeleteMeterTableItemByIndex(INT16 index){
@@ -322,7 +322,7 @@ INT16 API_ESPMeteringTable_DropMeterTable(void){
     for(index = 0; index < NUM_MAX_METERS; index++ )
         ESPMeteringTable_DeleteMeterTableItemByIndex(index);
     
-    ESPMeteringTable_SetMeterIndex(0);
+    return ESPMeteringTable_SetMeterIndex(0);
 }
 
 INT16 ESPMeteringTable_FindDeviceTableIndexByRecordIndex(INT16 recordIndex){
@@ -487,7 +487,7 @@ INT16 API_ESPMeteringTable_SelectDeviceTableItemByRecordIndex(INT16 recordIndex,
     return ESP_METERING_TABLE_NO_ERROR_CODE;
 }
 
-BYTE API_ESPMeteringTable_InsertDeviceTableItem(DEV_LIST_PTR deviceItem){
+INT16 API_ESPMeteringTable_InsertDeviceTableItem(DEV_LIST_PTR deviceItem){
 	
     INT16 index;		
     INT16 error_code;
@@ -501,20 +501,20 @@ BYTE API_ESPMeteringTable_InsertDeviceTableItem(DEV_LIST_PTR deviceItem){
         error_code = ESPMeteringTable_InsertDeviceTableItem(deviceItem);
 
         if(error_code != ESP_METERING_TABLE_NO_ERROR_CODE)
-            return 0;
+            return error_code;
 
         deviceIndex++;
         ESPMeteringTable_SetDeviceIndex(deviceIndex);
         
-        return 1;
+        return ESP_METERING_TABLE_NEW_DEV_ADD;
     }
 
     error_code = ESPMeteringTable_UpdateDeviceTableItemByIndex(index, deviceItem);
 
     if(error_code != ESP_METERING_TABLE_NO_ERROR_CODE)
-        return 0;
+        return error_code;
 	
-    return 1;	
+    return ESP_METERING_TABLE_UPDATE_DEV_ADD;	
 }
 
 INT16 ESPMeteringTable_DeleteDeviceTableItemByIndex(INT16 index){
@@ -536,7 +536,7 @@ INT16 API_ESPMeteringTable_DropDeviceTable(void){
     for(index = 0; index < NUM_MAX_NODES; index++ )
         ESPMeteringTable_DeleteDeviceTableItemByIndex(index);
     
-    ESPMeteringTable_SetDeviceIndex(0);
+    return ESPMeteringTable_SetDeviceIndex(0);
 }
 
 WORD ESPMeteringTable_GetReadingTableAddressByIndex(INT16 index){
@@ -591,7 +591,7 @@ INT16 API_ESPMeteringTable_SelectReadingTableItemByRecordIndex(INT16 recordIndex
     return ESP_METERING_TABLE_NO_ERROR_CODE;    
 }
 
-BYTE API_ESPMeteringTable_InsertReadingTableItem(READING_LIST_PTR readingItem){
+INT16 API_ESPMeteringTable_InsertReadingTableItem(READING_LIST_PTR readingItem){
 	
     INT16 index;		
     INT16 error_code;
@@ -600,15 +600,15 @@ BYTE API_ESPMeteringTable_InsertReadingTableItem(READING_LIST_PTR readingItem){
 
     if(index == ESP_METERING_TABLE_SERIAL_NUMBER_NOT_FOUND_ERROR_CODE){		
 
-        return 0;
+        return index;
     }
 
     error_code = ESPMeteringTable_InsertReadingTableItemByIndex(index, readingItem);
 
     if(error_code != ESP_METERING_TABLE_NO_ERROR_CODE)
-        return 0;
+        return error_code;
 
-    return 1;	
+    return ESP_METERING_TABLE_NEW_READING_ADD;	
 }
 
 INT16 API_ESPMeteringTable_Init(void){
@@ -645,26 +645,6 @@ INT16 API_ESPMeteringTable_Init(void){
     }
     
     return ESP_METERING_TABLE_NO_ERROR_CODE;
-}
-
-BYTE API_ESPMeteringTable_SaveTable(BYTE bTableType, BYTE *vptrTableStructure ) {			
-	
-    switch(bTableType){
-
-            case METERSTABLE:			
-
-                    return API_ESPMeteringTable_InsertMeterTableItem((MTR_LIST_PTR) vptrTableStructure);	
-
-            case DEVICESTABLE:		
-
-                    return API_ESPMeteringTable_InsertDeviceTableItem((DEV_LIST_PTR) vptrTableStructure);
-
-            case READINGSTABLE:
-
-                    return API_ESPMeteringTable_InsertReadingTableItem((READING_LIST_PTR) vptrTableStructure);			
-    }
-
-    return 0;
 }
 
 //******************************************************************************
