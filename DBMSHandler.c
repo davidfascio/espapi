@@ -292,7 +292,7 @@ INT16 DBMSHandler_Init(void) {
 
         dbmsHandler_ptr++;
     }
-
+    
     print_info("DBMS assignation Free space size %d Bytes", DBMS_HANDLER_END_ADDRESS - DBMSHandler_MemoryLocation);
     return error_code;
 }
@@ -367,7 +367,7 @@ WORD DBMSHandler_GetTableIndexAddressByTableId(DBMS_HANDLER_TABLE_ID tableId, IN
     return DBMSHandler_GetTableIndexAddress(dbmsItem, index);
 }
 
-INT16 DBMSHandler_ValidateRecord(DBMS_HANDLER_TABLE_ID tableId, WORD recordAddress, WORD recordSize){
+INT16 DBMSHandler_ValidateRecordByAddress(DBMS_HANDLER_TABLE_ID tableId, WORD recordAddress, WORD recordSize){
     
     DBMS_HANDLER_PTR dbmsItem;
     WORD minTableAddress;
@@ -391,11 +391,11 @@ INT16 DBMSHandler_ValidateRecord(DBMS_HANDLER_TABLE_ID tableId, WORD recordAddre
     return DBMS_HANDLER_NO_ERROR_CODE;
 }
 
-INT16 DBMSHandler_ReadRecord(DBMS_HANDLER_TABLE_ID tableId, WORD recordAddress, BYTE * record, WORD recordSize){
+INT16 DBMSHandler_ReadRecordByAddress(DBMS_HANDLER_TABLE_ID tableId, WORD recordAddress, BYTE * record, WORD recordSize){
     
     INT16 error_code;
     
-    error_code = DBMSHandler_ValidateRecord(tableId, recordAddress, recordSize);
+    error_code = DBMSHandler_ValidateRecordByAddress(tableId, recordAddress, recordSize);
     
     if(error_code != DBMS_HANDLER_NO_ERROR_CODE)
         return error_code;
@@ -403,11 +403,11 @@ INT16 DBMSHandler_ReadRecord(DBMS_HANDLER_TABLE_ID tableId, WORD recordAddress, 
     return DBMSHandler_Read(recordAddress, record, recordSize);
 }
 
-INT16 DBMSHandler_WriteRecord(DBMS_HANDLER_TABLE_ID tableId, WORD recordAddress, BYTE * record, WORD recordSize){
+INT16 DBMSHandler_WriteRecordByAddress(DBMS_HANDLER_TABLE_ID tableId, WORD recordAddress, BYTE * record, WORD recordSize){
     
     INT16 error_code;
     
-    error_code = DBMSHandler_ValidateRecord(tableId, recordAddress, recordSize);
+    error_code = DBMSHandler_ValidateRecordByAddress(tableId, recordAddress, recordSize);
     
     if(error_code != DBMS_HANDLER_NO_ERROR_CODE)
         return error_code;
@@ -415,7 +415,7 @@ INT16 DBMSHandler_WriteRecord(DBMS_HANDLER_TABLE_ID tableId, WORD recordAddress,
     return DBMSHandler_Write(recordAddress, record, recordSize);
 }
 
-INT16 DBMSHandler_DeleteRecord(DBMS_HANDLER_TABLE_ID tableId, WORD recordAddress, WORD recordSize){
+INT16 DBMSHandler_DeleteRecordByAddress(DBMS_HANDLER_TABLE_ID tableId, WORD recordAddress, WORD recordSize){
     
     BYTE * dummyRecord;
     INT16 error_code;
@@ -425,9 +425,37 @@ INT16 DBMSHandler_DeleteRecord(DBMS_HANDLER_TABLE_ID tableId, WORD recordAddress
     if(dummyRecord == NULL)
         return DBMS_HANDLER_NULL_PTR_ERROR_CODE;
     
-    error_code = DBMSHandler_WriteRecord(tableId, recordAddress, dummyRecord, recordSize);    
+    error_code = DBMSHandler_WriteRecordByAddress(tableId, recordAddress, dummyRecord, recordSize);    
     
     free(dummyRecord);
     
     return error_code;
+}
+
+INT16 DBMSHandler_GetRecord(DBMS_HANDLER_TABLE_ID tableId, BYTE * record, WORD recordSize ){
+    
+    WORD recordAddress;
+    
+    recordAddress = DBMSHandler_GetTableAddressByTableId(tableId);
+    
+    if(recordAddress == DBMS_HANDLER_NULL_ADDRESS)
+        return DBMS_HANDLER_ADDRESS_NOT_FOUND_ERROR_CODE;
+    
+    DBMSHandler_ReadRecordByAddress(tableId, recordAddress, record, recordSize );
+    
+    return DBMS_HANDLER_NO_ERROR_CODE;
+}
+
+INT16 DBMSHandler_SetRecord(DBMS_HANDLER_TABLE_ID tableId, BYTE * record, WORD recordSize){
+    
+    WORD recordAddress;
+    
+    recordAddress = DBMSHandler_GetTableAddressByTableId(tableId);
+    
+    if(recordAddress == DBMS_HANDLER_NULL_ADDRESS)
+        return DBMS_HANDLER_ADDRESS_NOT_FOUND_ERROR_CODE;
+    
+    DBMSHandler_WriteRecordByAddress(tableId, recordAddress, record, recordSize);
+    
+    return DBMS_HANDLER_NO_ERROR_CODE;
 }

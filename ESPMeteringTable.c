@@ -63,34 +63,6 @@ BYTE bfnBuffer_Table_Meter(WORD quantityOfItems, DBMS_HANDLER_TABLE_ID tableList
 //******************************************************************************
 // DataBaseHandler Function Prototypes
 //******************************************************************************
-INT16 ESPMeteringTable_GetRecord(DBMS_HANDLER_TABLE_ID tableId, BYTE * record, WORD recordSize ){
-    
-    WORD recordAddress;
-    
-    recordAddress = DBMSHandler_GetTableAddressByTableId(tableId);
-    
-    if(recordAddress == DBMS_HANDLER_NULL_ADDRESS)
-        return ESP_METERING_TABLE_ADDRESS_NOT_FOUND_ERROR_CODE;
-    
-    DBMSHandler_ReadRecord(tableId, recordAddress, record, recordSize );
-    
-    return ESP_METERING_TABLE_NO_ERROR_CODE;
-}
-
-INT16 ESPMeteringTable_SetRecord(DBMS_HANDLER_TABLE_ID tableId, BYTE * record, WORD recordSize){
-    
-    WORD recordAddress;
-    
-    recordAddress = DBMSHandler_GetTableAddressByTableId(tableId);
-    
-    if(recordAddress == DBMS_HANDLER_NULL_ADDRESS)
-        return ESP_METERING_TABLE_ADDRESS_NOT_FOUND_ERROR_CODE;
-    
-    DBMSHandler_WriteRecord(tableId, recordAddress, record, recordSize);
-    
-    return ESP_METERING_TABLE_NO_ERROR_CODE;    
-}
-
 
 INT16 ESPMeteringTable_GetRecordIndex(DBMS_HANDLER_TABLE_ID tableId){
     
@@ -102,7 +74,7 @@ INT16 ESPMeteringTable_GetRecordIndex(DBMS_HANDLER_TABLE_ID tableId){
     if(indexRecordAddress == DBMS_HANDLER_NULL_ADDRESS)
         return ESP_METERING_TABLE_ADDRESS_NOT_FOUND_ERROR_CODE;
     
-    DBMSHandler_ReadRecord(tableId, indexRecordAddress, (BYTE *) &indexRecord, sizeof(indexRecord) );
+    DBMSHandler_ReadRecordByAddress(tableId, indexRecordAddress, (BYTE *) &indexRecord, sizeof(indexRecord) );
     
     return indexRecord;
 }
@@ -116,7 +88,7 @@ INT16 ESPMeteringTable_SetRecordIndex(DBMS_HANDLER_TABLE_ID tableId, INT16 meter
     if(indexRecordAddress == DBMS_HANDLER_NULL_ADDRESS)
         return ESP_METERING_TABLE_ADDRESS_NOT_FOUND_ERROR_CODE;
     
-    DBMSHandler_WriteRecord(tableId, indexRecordAddress, (BYTE *) &meterIndexRecord, sizeof(meterIndexRecord) );
+    DBMSHandler_WriteRecordByAddress(tableId, indexRecordAddress, (BYTE *) &meterIndexRecord, sizeof(meterIndexRecord) );
     
     return ESP_METERING_TABLE_NO_ERROR_CODE;
 }
@@ -152,7 +124,7 @@ INT16 ESPMeteringTable_FindMeterTableIndexByRecordIndex(INT16 recordIndex){
     
     while(index < NUM_MAX_METERS) {
 
-        DBMSHandler_ReadRecord(METER_TABLE_ID, meterAddress, (BYTE *) &meter, sizeof(MTR_LIST));
+        DBMSHandler_ReadRecordByAddress(METER_TABLE_ID, meterAddress, (BYTE *) &meter, sizeof(MTR_LIST));
         
         if(meter.Type)         
             recordIndexCounter++;     
@@ -180,7 +152,7 @@ INT16 ESPMeteringTable_FindMeterTableIndexBySerialNumber(BYTE * serialNumber){
     
     while(index < NUM_MAX_METERS){
 
-        DBMSHandler_ReadRecord(METER_TABLE_ID, meterAddress, (BYTE *) &meter, sizeof(MTR_LIST));
+        DBMSHandler_ReadRecordByAddress(METER_TABLE_ID, meterAddress, (BYTE *) &meter, sizeof(MTR_LIST));
         
         if(!memcmp(meter.Serial_Num, serialNumber, ID_METER_SIZE))
             break;
@@ -205,7 +177,7 @@ INT16 ESPMeteringTable_FindAvailableMeterTableIndex(void){
     
     while(index < NUM_MAX_METERS) {
 
-        DBMSHandler_ReadRecord(METER_TABLE_ID, meterAddress, (BYTE *) &meter, sizeof(MTR_LIST));
+        DBMSHandler_ReadRecordByAddress(METER_TABLE_ID, meterAddress, (BYTE *) &meter, sizeof(MTR_LIST));
         
         if(!meter.Type)
             break;
@@ -227,7 +199,7 @@ INT16 ESPMeteringTable_InsertMeterTableItemByIndex(INT16 index, MTR_LIST_PTR met
     if (meterAddress == DBMS_HANDLER_NULL_ADDRESS)
         return ESP_METERING_TABLE_NULL_STRUCT_ERROR_CODE;
 	
-    DBMSHandler_WriteRecord(METER_TABLE_ID, meterAddress, (BYTE *) meterItem, sizeof(MTR_LIST));
+    DBMSHandler_WriteRecordByAddress(METER_TABLE_ID, meterAddress, (BYTE *) meterItem, sizeof(MTR_LIST));
     
     return ESP_METERING_TABLE_NO_ERROR_CODE;
 }
@@ -263,7 +235,7 @@ INT16 ESPMeteringTable_UpdateMeterTableItemByIndex(INT16 index, MTR_LIST_PTR met
     if(foundMeterAddress == DBMS_HANDLER_NULL_ADDRESS)
         return ESP_METERING_TABLE_NULL_STRUCT_ERROR_CODE;
 
-    DBMSHandler_ReadRecord(METER_TABLE_ID, foundMeterAddress, (BYTE *) &meter, sizeof(MTR_LIST));
+    DBMSHandler_ReadRecordByAddress(METER_TABLE_ID, foundMeterAddress, (BYTE *) &meter, sizeof(MTR_LIST));
     
     if( memcmp((BYTE *) &meter, meterItem, sizeof(MTR_LIST))){		
         
@@ -298,7 +270,7 @@ INT16 API_ESPMeteringTable_SelectMeterTableItemByRecordIndex(INT16 recordIndex, 
 	   
     DBMSHandler_SetRecordQueryResponseSize(recordQuery, sizeof(MTR_LIST));
     
-    DBMSHandler_ReadRecord( METER_TABLE_ID, meterAddress, 
+    DBMSHandler_ReadRecordByAddress( METER_TABLE_ID, meterAddress, 
                             (BYTE *) DBMSHandler_GetRecordQueryResponse(recordQuery), 
                             DBMSHandler_GetRecordQueryResponseSize(recordQuery));
             
@@ -342,7 +314,7 @@ INT16 ESPMeteringTable_DeleteMeterTableItemByIndex(INT16 index){
     if (meterAddress == DBMS_HANDLER_NULL_ADDRESS)
         return ESP_METERING_TABLE_NULL_STRUCT_ERROR_CODE;
 
-    DBMSHandler_DeleteRecord(METER_TABLE_ID, meterAddress, sizeof(MTR_LIST));
+    DBMSHandler_DeleteRecordByAddress(METER_TABLE_ID, meterAddress, sizeof(MTR_LIST));
     
     return ESP_METERING_TABLE_NO_ERROR_CODE;
 }
@@ -368,7 +340,7 @@ INT16 ESPMeteringTable_FindDeviceTableIndexByRecordIndex(INT16 recordIndex){
     
     while(index < NUM_MAX_NODES) {
 
-        DBMSHandler_ReadRecord(DEVICE_TABLE_ID, deviceAddress, (BYTE *) &device, sizeof(DEV_LIST));
+        DBMSHandler_ReadRecordByAddress(DEVICE_TABLE_ID, deviceAddress, (BYTE *) &device, sizeof(DEV_LIST));
         
         if(device.Type)         
             recordIndexCounter++;     
@@ -396,7 +368,7 @@ INT16 ESPMeteringTable_FindDeviceTableIndexByMACAddress(BYTE * macAddress){
     
     while(index < NUM_MAX_NODES){
         
-        DBMSHandler_ReadRecord(DEVICE_TABLE_ID, deviceAddress, (BYTE *) &device, sizeof(DEV_LIST));
+        DBMSHandler_ReadRecordByAddress(DEVICE_TABLE_ID, deviceAddress, (BYTE *) &device, sizeof(DEV_LIST));
 		
         if(!memcmp(device.MAC, macAddress, MAC_SIZE))
             break;
@@ -421,7 +393,7 @@ INT16 ESPMeteringTable_FindAvailableDeviceTableIndex(void){
     
     while(index < NUM_MAX_NODES){
 		
-        DBMSHandler_ReadRecord(DEVICE_TABLE_ID, deviceAddress, (BYTE *) &device, sizeof(DEV_LIST));
+        DBMSHandler_ReadRecordByAddress(DEVICE_TABLE_ID, deviceAddress, (BYTE *) &device, sizeof(DEV_LIST));
         
         if(!device.Type)
             break;
@@ -451,7 +423,7 @@ INT16 ESPMeteringTable_InsertDeviceTableItemByIndex(INT16 index, DEV_LIST_PTR de
 	if (deviceAddress == DBMS_HANDLER_NULL_ADDRESS)
 		return ESP_METERING_TABLE_NULL_STRUCT_ERROR_CODE;
 	
-        DBMSHandler_WriteRecord(DEVICE_TABLE_ID, deviceAddress, (BYTE *) deviceItem, sizeof(DEV_LIST));
+        DBMSHandler_WriteRecordByAddress(DEVICE_TABLE_ID, deviceAddress, (BYTE *) deviceItem, sizeof(DEV_LIST));
 	return ESP_METERING_TABLE_NO_ERROR_CODE;
 }
 
@@ -479,7 +451,7 @@ INT16 ESPMeteringTable_UpdateDeviceTableItemByIndex(INT16 index, DEV_LIST_PTR de
     if(foundDeviceAddress == DBMS_HANDLER_NULL_ADDRESS)
         return ESP_METERING_TABLE_NULL_STRUCT_ERROR_CODE;
 
-    DBMSHandler_ReadRecord(DEVICE_TABLE_ID, foundDeviceAddress, (BYTE *) &device, sizeof(DEV_LIST));
+    DBMSHandler_ReadRecordByAddress(DEVICE_TABLE_ID, foundDeviceAddress, (BYTE *) &device, sizeof(DEV_LIST));
 
     if( memcmp( (BYTE *) &device, deviceItem, sizeof(DEV_LIST))){		
 
@@ -512,7 +484,7 @@ INT16 API_ESPMeteringTable_SelectDeviceTableItemByRecordIndex(INT16 recordIndex,
 	     
     DBMSHandler_SetRecordQueryResponseSize(recordQuery, sizeof(DEV_LIST));
     
-    DBMSHandler_ReadRecord( DEVICE_TABLE_ID, deviceAddress, 
+    DBMSHandler_ReadRecordByAddress( DEVICE_TABLE_ID, deviceAddress, 
                             (BYTE *) DBMSHandler_GetRecordQueryResponse(recordQuery), 
                             DBMSHandler_GetRecordQueryResponseSize(recordQuery));
         
@@ -556,7 +528,7 @@ INT16 ESPMeteringTable_DeleteDeviceTableItemByIndex(INT16 index){
     if (deviceAddress == DBMS_HANDLER_NULL_ADDRESS)
         return ESP_METERING_TABLE_NULL_STRUCT_ERROR_CODE;
 
-    DBMSHandler_DeleteRecord(DEVICE_TABLE_ID, deviceAddress, sizeof(DEV_LIST));
+    DBMSHandler_DeleteRecordByAddress(DEVICE_TABLE_ID, deviceAddress, sizeof(DEV_LIST));
     
     return ESP_METERING_TABLE_NO_ERROR_CODE;
 }
@@ -588,7 +560,7 @@ INT16 ESPMeteringTable_InsertReadingTableItemByIndex(INT16 index, READING_LIST_P
     if (readingAddress == DBMS_HANDLER_NULL_ADDRESS)
         return ESP_METERING_TABLE_NULL_STRUCT_ERROR_CODE;
 
-    DBMSHandler_WriteRecord(READING_TABLE_ID, readingAddress, (BYTE *) readingItem, sizeof(READING_LIST));
+    DBMSHandler_WriteRecordByAddress(READING_TABLE_ID, readingAddress, (BYTE *) readingItem, sizeof(READING_LIST));
 
     return ESP_METERING_TABLE_NO_ERROR_CODE;
 }
@@ -616,7 +588,7 @@ INT16 API_ESPMeteringTable_SelectReadingTableItemByRecordIndex(INT16 recordIndex
 	   
     DBMSHandler_SetRecordQueryResponseSize(recordQuery, sizeof(READING_LIST));
     
-    DBMSHandler_ReadRecord( READING_TABLE_ID, readingAddress, 
+    DBMSHandler_ReadRecordByAddress( READING_TABLE_ID, readingAddress, 
                             (BYTE *) DBMSHandler_GetRecordQueryResponse(recordQuery), 
                             DBMSHandler_GetRecordQueryResponseSize(recordQuery));
         
@@ -650,9 +622,9 @@ INT16 API_ESPMeteringTable_Init(void){
     INT16 error_code;   
     
     
-    error_code = ESPMeteringTable_GetRecord(DEVICE_INDEX_TABLE_KEY_ID, (BYTE *) &deviceIndexKey, sizeof(deviceIndexKey));
+    error_code = DBMSHandler_GetRecord(DEVICE_INDEX_TABLE_KEY_ID, (BYTE *) &deviceIndexKey, sizeof(deviceIndexKey));
        
-    if(error_code != ESP_METERING_TABLE_NO_ERROR_CODE)
+    if(error_code != DBMS_HANDLER_NO_ERROR_CODE)
         exit(0);
     
     if (deviceIndexKey != ESP_METERING_TABLE_KEY_WORD){
@@ -660,12 +632,12 @@ INT16 API_ESPMeteringTable_Init(void){
         deviceIndexKey = ESP_METERING_TABLE_KEY_WORD;
         API_ESPMeteringTable_DropDeviceTable();
         
-        ESPMeteringTable_SetRecord(DEVICE_INDEX_TABLE_KEY_ID, (BYTE *) &deviceIndexKey, sizeof(deviceIndexKey));
+        DBMSHandler_SetRecord(DEVICE_INDEX_TABLE_KEY_ID, (BYTE *) &deviceIndexKey, sizeof(deviceIndexKey));
     }
     
-    error_code = ESPMeteringTable_GetRecord(METER_INDEX_TABLE_KEY_ID, (BYTE *) &meterIndexKey, sizeof(meterIndexKey));
+    error_code = DBMSHandler_GetRecord(METER_INDEX_TABLE_KEY_ID, (BYTE *) &meterIndexKey, sizeof(meterIndexKey));
     
-    if(error_code != ESP_METERING_TABLE_NO_ERROR_CODE)
+    if(error_code != DBMS_HANDLER_NO_ERROR_CODE)
         exit(0);
     
     if (meterIndexKey != ESP_METERING_TABLE_KEY_WORD){
@@ -673,7 +645,7 @@ INT16 API_ESPMeteringTable_Init(void){
         meterIndexKey = ESP_METERING_TABLE_KEY_WORD;
         API_ESPMeteringTable_DropMeterTable();
         
-        ESPMeteringTable_SetRecord(METER_INDEX_TABLE_KEY_ID, (BYTE *) &meterIndexKey, sizeof(meterIndexKey));
+        DBMSHandler_SetRecord(METER_INDEX_TABLE_KEY_ID, (BYTE *) &meterIndexKey, sizeof(meterIndexKey));
     }
     
     return ESP_METERING_TABLE_NO_ERROR_CODE;

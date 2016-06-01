@@ -49,8 +49,6 @@ BYTE bfnBuffer_Table_Meter (WORD quantityOfItems, DBMS_HANDLER_TABLE_ID tableLis
 //******************************************************************************
 // ESPMeteringTable Function Prototypes
 //******************************************************************************
-INT16 ESPMeteringTable_GetRecord(DBMS_HANDLER_TABLE_ID tableId, BYTE * record, WORD recordSize );
-INT16 ESPMeteringTable_SetRecord(DBMS_HANDLER_TABLE_ID tableId, BYTE * record, WORD recordSize);
 
 INT16 ESPMeteringTable_GetRecordIndex(DBMS_HANDLER_TABLE_ID tableId);
 INT16 ESPMeteringTable_SetRecordIndex(DBMS_HANDLER_TABLE_ID tableId, INT16 meterIndexRecord);

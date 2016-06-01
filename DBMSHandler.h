@@ -29,6 +29,7 @@
 #define DBMS_HANDLER_NULL_PTR_ERROR_CODE                                    (-2)
 #define DBMS_HANDLER_WRONG_RECORD_SIZE_ERROR_CODE                           (-3)
 #define DBMS_HANDLER_RECORD_ADDRESS_OUT_OF_RANGE_ERROR_CODE                 (-4)
+#define DBMS_HANDLER_ADDRESS_NOT_FOUND_ERROR_CODE                           (-5)
 
 
 //******************************************************************************
@@ -106,10 +107,13 @@ INT16 DBMSHandler_Write(WORD dest, BYTE * src, WORD count);
 DBMS_HANDLER_PTR DBMSHandler_GetDBMSItemByTableId(DBMS_HANDLER_TABLE_ID tableId);
 WORD DBMSHandler_GetTableAddressByTableId(DBMS_HANDLER_TABLE_ID tableId);
 WORD DBMSHandler_GetTableIndexAddressByTableId(DBMS_HANDLER_TABLE_ID tableId, INT16 index);
-INT16 DBMSHandler_ValidateRecord(DBMS_HANDLER_TABLE_ID tableId, WORD recordAddress, WORD recordSize);
-INT16 DBMSHandler_ReadRecord(DBMS_HANDLER_TABLE_ID tableId, WORD recordAddress, BYTE * record, WORD recordSize);
-INT16 DBMSHandler_WriteRecord(DBMS_HANDLER_TABLE_ID tableId, WORD recordAddress, BYTE * record, WORD recordSize);
-INT16 DBMSHandler_DeleteRecord(DBMS_HANDLER_TABLE_ID tableId, WORD recordAddress, WORD recordSize);
+INT16 DBMSHandler_ValidateRecordByAddress(DBMS_HANDLER_TABLE_ID tableId, WORD recordAddress, WORD recordSize);
+INT16 DBMSHandler_ReadRecordByAddress(DBMS_HANDLER_TABLE_ID tableId, WORD recordAddress, BYTE * record, WORD recordSize);
+INT16 DBMSHandler_WriteRecordByAddress(DBMS_HANDLER_TABLE_ID tableId, WORD recordAddress, BYTE * record, WORD recordSize);
+INT16 DBMSHandler_DeleteRecordByAddress(DBMS_HANDLER_TABLE_ID tableId, WORD recordAddress, WORD recordSize);
+
+INT16 DBMSHandler_GetRecord(DBMS_HANDLER_TABLE_ID tableId, BYTE * record, WORD recordSize );
+INT16 DBMSHandler_SetRecord(DBMS_HANDLER_TABLE_ID tableId, BYTE * record, WORD recordSize);
 
 #endif	/* __DBMS_HANDLER_H__ */
 
